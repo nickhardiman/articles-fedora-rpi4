@@ -1,0 +1,84 @@
+= view network settings
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 13-09-2021
+
+Use the commands _nmcli connection show_, _nmcli device status_ and _ip addr show_ to see how the network is configured. 
+
+
+== nmcli
+
+NetworkManager manages network settings in Fedora. 
+The nmcli command is a tool for using NetworkManager on the command line. 
+
+List configured connections
+
+[source,shell]
+....
+[root@host1 libvirt]# nmcli con
+NAME                   UUID                                  TYPE      DEVICE   
+pubbr0                 55f8ba23-10c4-4195-8aed-7acaf50f462c  bridge    pubbr0   
+virbr0                 c702daef-cb12-42eb-afa8-2d01857ce314  bridge    virbr0   
+bridge-slave-enp2s0f0  40a0b1af-2e5c-4c64-8b82-624d341b68ab  ethernet  enp2s0f0 
+enp2s0f0               f3604b81-5eaf-470b-a788-f1fee74543f1  ethernet  --       
+[root@host1 libvirt]# 
+....
+
+Network Manager can also show a list of devices. 
+This is longer because it shows devices that are not currently active. 
+For instance, there is a wifi device but no wifi connection.
+
+[source,shell]
+....
+[root@host1 libvirt]# nmcli device status
+DEVICE          TYPE      STATE                   CONNECTION            
+pubbr0          bridge    connected               pubbr0                
+virbr0          bridge    connected (externally)  virbr0                
+enp2s0f0        ethernet  connected               bridge-slave-enp2s0f0 
+wlp3s0          wifi      disconnected            --                    
+p2p-dev-wlp3s0  wifi-p2p  disconnected            --                    
+lo              loopback  unmanaged               --                    
+virbr0-nic      tun       unmanaged               --                    
+[root@host1 libvirt]# 
+....
+
+The IP address list command _ip addr show_ has a lot more detail, so it can be harder to spot the same information. 
+This list no longer shows device _enp2s0f0_. 
+Its address _192.168.1.195_ now belongs to _pubbr0_.
+
+
+== ip 
+
+[source,shell]
+....
+[root@host1 libvirt]# ip addr show 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: enp2s0f0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel master pubbr0 state UP group default qlen 1000
+    link/ether 24:4b:fe:c8:40:a9 brd ff:ff:ff:ff:ff:ff
+3: wlp3s0: <BROADCAST,MULTICAST> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 1e:e6:fa:89:a5:1f brd ff:ff:ff:ff:ff:ff
+4: virbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether 52:54:00:1c:9b:1c brd ff:ff:ff:ff:ff:ff
+    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+       valid_lft forever preferred_lft forever
+5: virbr0-nic: <BROADCAST,MULTICAST> mtu 1500 qdisc fq_codel master virbr0 state DOWN group default qlen 1000
+    link/ether 52:54:00:1c:9b:1c brd ff:ff:ff:ff:ff:ff
+9: pubbr0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 24:4b:fe:c8:40:a9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.195/24 brd 192.168.1.255 scope global dynamic noprefixroute pubbr0
+       valid_lft 86307sec preferred_lft 86307sec
+    inet6 2a00:23c8:1d05:1e00:d91c:e888:61c0:9f37/64 scope global dynamic noprefixroute 
+       valid_lft 315359998sec preferred_lft 315359998sec
+    inet6 fdaa:bbcc:ddee:0:92fd:59ee:e1f3:c59f/64 scope global noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::f7d7:45df:937f:51a2/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+[root@host1 libvirt]# 
+....
+
+

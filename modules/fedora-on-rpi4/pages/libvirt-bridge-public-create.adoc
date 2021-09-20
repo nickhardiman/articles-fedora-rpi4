@@ -1,0 +1,273 @@
+= create a public bridge
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 13-09-2021
+
+Define another bridge, so rpi4 has two.  
+
+* NAT bridge *virbr0*
+* public bridge *pubbr0*
+
+The default bridge _virbr0_ uses https://en.wikipedia.org/wiki/Network_address_translation[NAT (Network Address Translation)].
+It's a technique that means VMs can send requests to the network, but nothing can send requests to the VMs. 
+These VMs will be used to test services, so clients must be able to send requests to the VMs. 
+
+pubbr0 is a public bridge that makes VMs part of the home lab network. 
+This bridge is like a network switch that you can plug many computers into. 
+
+Use the root account. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+----
+
+== view NetworkManager's devices
+
+There is a device enabcm6e4ei0 and a connection enabcm6e4ei0. 
+Some devices are  physical, like the one the ethernet cable is plugged into, and the WIFI radio. 
+Others are virtual devices that only exist in software, like the loopback interface and the libvirt bridge.  
+
+[root@rpi4 libvirt]# nmcli device status
+DEVICE        TYPE      STATE                   CONNECTION                
+virbr0        bridge    connected (externally)  virbr0                    
+enabcm6e4ei0  ethernet  connected               enabcm6e4ei0 
+vnet0         tun       connected (externally)  vnet0                     
+wlan0         wifi      unavailable             --                        
+lo            loopback  unmanaged               --                        
+virbr0-nic    tun       unmanaged               --                        
+[root@rpi4 libvirt]# 
+
+
+== view NetworkManager's connections
+
+NetworkManager creates a list of configuration settings for each device. 
+It gives each list a name, which is usually the same as the device name.  
+
+[source,shell]
+....
+[root@rpi4 ~]# nmcli connection show
+NAME          UUID                                  TYPE      DEVICE       
+enabcm6e4ei0  d081aca2-710f-3322-b354-ee17697208de  ethernet  enabcm6e4ei0 
+virbr0        ab5d26bf-c7b8-4dcf-b44d-cde3febd35d0  bridge    virbr0       
+vnet0         f1f5bed6-f3b3-4605-8460-5ec5767c9373  tun       vnet0        
+[root@rpi4 ~]# 
+....
+
+
+
+== create the linux bridge pubbr0
+
+Add a new bridge. 
+
+[source,shell]
+....
+[root@rpi4 ~]# nmcli con add ifname pubbr0 type bridge con-name pubbr0
+Connection 'pubbr0' (fc6ffe1b-dc17-4640-ac55-93129d2ceb74) successfully added.
+[root@rpi4 ~]# 
+....
+
+== plug in the physical interface. 
+
+Add another NetworkManager connection. 
+If you see a warning like this, then check the last command worked. 
+`Warning: master='pubbr0' doesn't refer to any existing profile.`
+
+[source,shell]
+....
+[root@rpi4 ~]# nmcli con add type bridge-slave ifname enabcm6e4ei0 master pubbr0
+Connection 'bridge-slave-enabcm6e4ei0' (a1621ce8-a178-403b-afe7-c84b1a8447ef) successfully added.
+[root@rpi4 ~]# 
+....
+
+Check. 
+
+One more connection _bridge-slave-enabcm6e4ei0_ has appeared. 
+The command _nmcli con_ is an abbreviation of _nmcli connection show_.
+
+[source,shell]
+....
+[root@rpi4 ~]# nmcli con
+NAME                       UUID                                  TYPE      DEVICE       
+pubbr0                     fc6ffe1b-dc17-4640-ac55-93129d2ceb74  bridge    pubbr0       
+enabcm6e4ei0               d081aca2-710f-3322-b354-ee17697208de  ethernet  enabcm6e4ei0 
+virbr0                     ab5d26bf-c7b8-4dcf-b44d-cde3febd35d0  bridge    virbr0       
+vnet0                      f1f5bed6-f3b3-4605-8460-5ec5767c9373  tun       vnet0        
+bridge-slave-enabcm6e4ei0  a1621ce8-a178-403b-afe7-c84b1a8447ef  ethernet  --           
+[root@rpi4 ~]# 
+....
+
+
+
+== clone the MAC address 
+
+Changing interfaces may change the ethernet MAC address.
+This means a DHCP server on the home network may give the rpi4 a new addresss. 
+Any connections to the old address, such as SSH, stop working. 
+
+Avoid this by copying the MAC address of device enabcm6e4ei0.
+
+Show devices and their MAC addresses. 
+The MAC address of _enabcm6e4ei0_ is _dc:a6:32:d1:32:a9_.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ip -brief link show
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+enabcm6e4ei0     UP             dc:a6:32:d1:32:a9 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+wlan0            DOWN           5e:c7:49:da:df:2d <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+virbr0           UP             52:54:00:af:1d:a3 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+virbr0-nic       DOWN           52:54:00:af:1d:a3 <BROADCAST,MULTICAST> 
+vnet0            UNKNOWN        fe:54:00:65:48:27 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+pubbr0           DOWN           c2:a3:a6:8c:36:b7 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 libvirt]# 
+....
+
+Clone the MAC address. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# nmcli connection modify pubbr0 ethernet.cloned-mac-address dc:a6:32:d1:32:a9
+[root@rpi4 libvirt]# 
+....
+
+Check. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ip -brief link show dev pubbr0
+pubbr0           DOWN           dc:a6:32:d1:32:a9 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 libvirt]# 
+....
+
+
+== connect the physical interface to the new bridge
+
+The _DEVICE_ field of new entry _bridge-slave-enp2s0f0_ is not set so this new device won't work. 
+It will work after some stop-start action. 
+Afterwards, the DEVICE field will show _enabcm6e4ei0_.
+
+Use a script to avoid breaking the SSH connection. 
+
+This is the first file related to libvirt. 
+Create a directory to keep files related to libvirt.
+
+[source,shell]
+....
+[root@rpi4 ~]# mkdir libvirt
+[root@rpi4 ~]# 
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# vi pubbr0-up.sh 
+....
+
+Use this script content. 
+
+[source,bash]
+....
+#!/bin/bash
+nmcli con down enabcm6e4ei0
+nmcli con up pubbr0
+....
+
+Make the script executable. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]#  chmod 754 pubbr0-up.sh 
+[root@rpi4 libvirt]# 
+....
+
+Bring up the new interface. 
+This pauses for a few seconds. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ./pubbr0-up.sh 
+Connection 'enabcm6e4ei0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/11)
+Connection successfully activated (master waiting for slaves) (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/15)
+[root@rpi4 libvirt]# 
+....
+
+Check. 
+Device _enabcm6e4ei0_ is now listed with connection _bridge-slave-enabcm6e4ei0_, not connection _enabcm6e4ei0_.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# nmcli con show 
+NAME                       UUID                                  TYPE      DEVICE       
+pubbr0                     b9b37120-2b00-4ca5-9992-3f212c7e1642  bridge    pubbr0       
+virbr0                     ab5d26bf-c7b8-4dcf-b44d-cde3febd35d0  bridge    virbr0       
+bridge-slave-enabcm6e4ei0  da09ae43-7994-4626-8107-4646c578b387  ethernet  enabcm6e4ei0 
+vnet0                      f1f5bed6-f3b3-4605-8460-5ec5767c9373  tun       vnet0        
+enabcm6e4ei0               d081aca2-710f-3322-b354-ee17697208de  ethernet  --           
+[root@rpi4 libvirt]# 
+....
+
+
+=== delete the new bridge 
+
+If something is wrong, back out with these _nmcli_ commands. 
+
+Create a script to do the work. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# vi pubbr0-delete.sh
+....
+
+Add these lines. 
+
+[source,bash]
+....
+#!/bin/bash
+nmcli con down pubbr0
+nmcli connection delete bridge-slave-enabcm6e4ei0
+nmcli connection delete pubbr0 
+nmcli con up enabcm6e4ei0
+....
+
+Run it. 
+
+[source,shell]
+....
+[root@host1 libvirt]# chmod 754 pubbr0-delete.sh 
+[root@host1 libvirt]# 
+[root@host1 libvirt]# ./pubbr0-delete.sh 
+Connection 'pubbr0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/6)
+Connection 'bridge-slave-enp2s0f0' (0ae977d2-7c5c-490c-bad8-be647014886a) successfully deleted.
+Connection 'pubbr0' (a4d5ddf3-e0db-49f6-85c1-09b124537dd1) successfully deleted.
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)
+[root@host1 libvirt]# 
+....
+
+Check device _bridge-slave-enabcm6e4ei0_ is gone.
+
+[source,shell]
+....
+[nick@rpi4 ~]$ nmcli device status 
+DEVICE        TYPE      STATE                   CONNECTION   
+enabcm6e4ei0  ethernet  connected               enabcm6e4ei0 
+virbr0        bridge    connected (externally)  virbr0       
+vnet0         tun       connected (externally)  vnet0        
+wlan0         wifi      unavailable             --           
+lo            loopback  unmanaged               --           
+virbr0-nic    tun       unmanaged               --           
+[nick@rpi4 ~]$ 
+....
+
+Check connection pubbr0 is gone. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ nmcli connection show 
+NAME          UUID                                  TYPE      DEVICE       
+enabcm6e4ei0  d081aca2-710f-3322-b354-ee17697208de  ethernet  enabcm6e4ei0 
+virbr0        ab5d26bf-c7b8-4dcf-b44d-cde3febd35d0  bridge    virbr0       
+vnet0         f1f5bed6-f3b3-4605-8460-5ec5767c9373  tun       vnet0        
+[nick@rpi4 ~]$ 
+....
+
+

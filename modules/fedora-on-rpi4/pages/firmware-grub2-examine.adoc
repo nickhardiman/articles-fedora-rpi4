@@ -1,0 +1,167 @@
+= look at GRUB2 files
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-09-2021
+
+GRUB2 is one of the chain-loaded programs that run when the machine is powered up.
+BIOS starts GRUB2, then GRUB2 starts the kernel.
+BIOS and GRUB2 provide low-level device management. 
+
+GRUB2 is a collection of firmware programs. 
+GRUB2 handles tasks like displaying the boot menu, user interaction, loading kernel files into memory, and starting the kernel stage. 
+
+
+== how it works  
+
+There are a few GRUB programs, run in this sequence.
+
+. The BIOS loads a tiny 
+https://www.gnu.org/software/grub/manual/grub/html_node/Images.html[boot.img] file from the MBR (the very start of the disk). This boot image is a program that does nothing except kick off the next GRUB program. There isn't enough room in the MBR to store anything interesting. 
+. The second program is a much bigger *core image*. This provides the framework to search for the _/boot/grub2_ directory and load the rest of GRUB from there. The _core.img_ file is built from kernel module code by a utility called grub2-mkimage. 
+. The _core.img_ program runs the _/boot/grub2/i386-pc/normal.mod_ module, and that sets up everything required to complete the booting process. 
+
+== the boot loader partition 
+
+The core image is stored in its own small disk partition, called the https://en.wikipedia.org/wiki/BIOS_boot_partition[BIOS boot partition].
+It's difficult to see this from the command line. 
+The parted command can show that it exists, but not what's in it. 
+
+Parted shows two devices here. 
+The USB drive is the first one, starting with the line "Model:  USB  SanDisk 3.2Gen1 (scsi)".
+The second one is nothing to do with GRUB2 - It's a RAM drive called https://fedoraproject.org/wiki/Changes/SwapOnZRAM[zram].
+
+The Number 1 partition is where the boot loader is. The partition is marked with the flag _lba_ (Linear Block Adressing, one way of reading a storage drive).
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo parted -l
+[sudo] password for nick: 
+Model:  USB  SanDisk 3.2Gen1 (scsi)
+Disk /dev/sda: 30.8GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+Disk Flags: 
+
+Number  Start   End     Size    Type      File system  Flags
+ 1      1049kB  1075MB  1074MB  primary   fat32        lba
+ 2      1075MB  1704MB  629MB   primary   fat32        boot
+ 3      1704MB  2778MB  1074MB  primary   xfs
+ 4      2778MB  30.8GB  28.0GB  extended
+ 5      2779MB  30.8GB  28.0GB  logical                lvm
+
+
+Model: Unknown (unknown)
+Disk /dev/zram0: 4076MB
+Sector size (logical/physical): 4096B/4096B
+Partition Table: loop
+Disk Flags: 
+
+Number  Start  End     Size    File system     Flags
+ 1      0.00B  4076MB  4076MB  linux-swap(v1)
+
+
+[nick@rpi4 ~]$ 
+----
+
+== configuration files 
+
+[nick@rpi4 ~]$ sudo ls /etc/grub.d/
+00_header	      10_reset_boot_success  20_ppc_terminfo   41_custom
+01_users	      12_menu_auto_hide      30_os-prober      README
+08_fallback_counting  14_menu_show_once      30_uefi-firmware
+10_linux	      20_linux_xen	     40_custom
+[nick@rpi4 ~]$ 
+
+=== the /boot/grub2 directory
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo ls -l /boot/grub2/
+total 0
+lrwxrwxrwx. 1 root root 25 Apr 11 23:55 grubenv -> ../efi/EFI/fedora/grubenv
+drwxr-xr-x. 3 root root 20 Apr 15 13:20 themes
+[nick@rpi4 ~]$ 
+----
+
+
+== directories 
+
+The /boot/ directory contains the current kernel and a few older ones, in case the new kernel has issues. 
+
+
+
+
+== list kernel details with the grubby command 
+
+The grubby command manages configuration. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ sudo grubby --info=/boot/vmlinuz-$KERNEL_RELEASE
+[sudo] password for nick: 
+index=3
+kernel="/boot/vmlinuz-4.18.0-193.6.3.el8_2.x86_64"
+args="ro console=ttyS0 console=ttyS0,115200n8 no_timer_check net.ifnames=0 crashkernel=auto $tuned_params"
+root="UUID=3cd0d4ca-93f6-423b-a469-70ab2b10b667"
+initrd="/boot/initramfs-4.18.0-193.6.3.el8_2.x86_64.img $tuned_initrd"
+title="Red Hat Enterprise Linux (4.18.0-193.6.3.el8_2.x86_64) 8.2 (Ootpa)"
+id="5b3bf4e5791e42a283a85f36070e5fcc-4.18.0-193.6.3.el8_2.x86_64"
+[nick@guest1 ~]$ 
+----
+
+
+== change kernels with grub2-reboot 
+
+The grub2-reboot command can tell GRUB which kernel to use on the next reboot. 
+
+Check the current release, list options and choose an earlier kernel release.
+
+[source,shell]
+----
+[nick@guest1 ~]$ uname -r
+4.18.0-193.13.2.el8_2.x86_64
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ sudo grubby --info=ALL | grep title
+title="Red Hat Enterprise Linux (4.18.0-193.el8.x86_64) 8.2 (Ootpa)"
+title="Red Hat Enterprise Linux (0-rescue-92b1f5dc7a31458b86b8af1f768ef406) 8.2 (Ootpa)"
+title="Red Hat Enterprise Linux (4.18.0-193.13.2.el8_2.x86_64) 8.2 (Ootpa)"
+title="Red Hat Enterprise Linux (4.18.0-193.6.3.el8_2.x86_64) 8.2 (Ootpa)"
+title="Red Hat Enterprise Linux (0-rescue-5b3bf4e5791e42a283a85f36070e5fcc) 8.2 (Ootpa)"
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ sudo grub2-reboot "Red Hat Enterprise Linux (4.18.0-193.6.3.el8_2.x86_64) 8.2 (Ootpa)"
+[nick@guest1 ~]$ 
+----
+
+Use that kernel. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ sudo systemctl reboot 
+Connection to guest1.lab.example.com closed by remote host.
+Connection to guest1.lab.example.com closed.
+[nick@host1 ~]$ 
+[nick@host1 ~]$ ssh nick@guest1.lab.example.com
+...
+[nick@guest1 ~]$ uname -r
+4.18.0-193.6.3.el8_2.x86_64
+[nick@guest1 ~]$ 
+----
+
+Return to the default. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ sudo grub2-reboot "Red Hat Enterprise Linux (4.18.0-193.13.2.el8_2.x86_64) 8.2 (Ootpa)"
+[sudo] password for nick: 
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ sudo systemctl reboot
+Connection to guest1.lab.example.com closed by remote host.
+Connection to guest1.lab.example.com closed.
+[nick@host1 ~]$ 
+[nick@host1 ~]$ ssh nick@guest1.lab.example.com
+...
+[nick@guest1 ~]$ uname -r
+4.18.0-193.13.2.el8_2.x86_64
+[nick@guest1 ~]$ 
+----
+

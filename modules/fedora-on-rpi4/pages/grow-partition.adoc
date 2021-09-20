@@ -1,0 +1,124 @@
+= grow the root partition
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 20-11-2020
+
+Expand the root partition so it takes up the whole SD card. 
+
+
+== before 
+
+[source,shell]
+----
+[root@rpi4 ~]# fdisk -l /dev/mmcblk1
+Disk /dev/mmcblk1: 59.48 GiB, 63864569856 bytes, 124735488 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xcf32e326
+
+Device         Boot   Start      End Sectors  Size Id Type
+/dev/mmcblk1p1 *       2048  1230847 1228800  600M  6 FAT16
+/dev/mmcblk1p2      1230848  3327999 2097152    1G 83 Linux
+/dev/mmcblk1p3      3328000 10485759 7157760  3.4G 83 Linux
+[root@rpi4 ~]# 
+----
+
+
+
+[source,shell]
+----
+[root@rpi4 ~]$ growpart /dev/mmcblk1 3 -N
+[sudo] password for nick: 
+CHANGE: partition=3 start=3328000 old: size=7157760 end=10485760 new: size=121407455 end=124735455
+# === old sfdisk -d ===
+label: dos
+label-id: 0xcf32e326
+device: /dev/mmcblk1
+unit: sectors
+sector-size: 512
+
+/dev/mmcblk1p1 : start=        2048, size=     1228800, type=6, bootable
+/dev/mmcblk1p2 : start=     1230848, size=     2097152, type=83
+/dev/mmcblk1p3 : start=     3328000, size=     7157760, type=83
+# === new sfdisk -d ===
+label: dos
+label-id: 0xcf32e326
+device: /dev/mmcblk1
+unit: sectors
+sector-size: 512
+
+/dev/mmcblk1p1 : start=        2048, size=     1228800, type=6, bootable
+/dev/mmcblk1p2 : start=     1230848, size=     2097152, type=83
+/dev/mmcblk1p3 : start=     3328000, size=     121407455, type=83
+[root@rpi4 ~]$ 
+----
+
+
+== expand 
+
+[source,shell]
+----
+[root@rpi4 ~]# growpart /dev/mmcblk1 3 
+CHANGED: partition=3 start=3328000 old: size=7157760 end=10485760 new: size=121407455 end=124735455
+[root@rpi4 ~]# 
+----
+
+[source,shell]
+----
+[root@rpi4 ~]# resize2fs /dev/mmcblk1p3
+resize2fs 1.45.6 (20-Mar-2020)
+Filesystem at /dev/mmcblk1p3 is mounted on /; on-line resizing required
+old_desc_blocks = 1, new_desc_blocks = 8
+The filesystem on /dev/mmcblk1p3 is now 15175931 (4k) blocks long.
+
+[root@rpi4 ~]# 
+----
+
+
+== check 
+
+after
+ 
+[source,shell]
+----
+[root@rpi4 ~]# fdisk -l /dev/mmcblk1
+Disk /dev/mmcblk1: 59.48 GiB, 63864569856 bytes, 124735488 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xcf32e326
+
+Device         Boot   Start       End   Sectors  Size Id Type
+/dev/mmcblk1p1 *       2048   1230847   1228800  600M  6 FAT16
+/dev/mmcblk1p2      1230848   3327999   2097152    1G 83 Linux
+/dev/mmcblk1p3      3328000 124735454 121407455 57.9G 83 Linux
+[root@rpi4 ~]# 
+----
+
+[source,shell]
+----
+[root@rpi4 ~]# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        3.8G     0  3.8G   0% /dev
+tmpfs           3.9G     0  3.9G   0% /dev/shm
+tmpfs           1.6G  668K  1.6G   1% /run
+/dev/mmcblk1p3   57G  2.6G   53G   5% /
+tmpfs           3.9G  4.0K  3.9G   1% /tmp
+/dev/mmcblk1p2  976M  133M  777M  15% /boot
+/dev/mmcblk1p1  599M   31M  569M   6% /boot/efi
+tmpfs           784M     0  784M   0% /run/user/1000
+[root@rpi4 ~]# 
+----
+
+[source,shell]
+----
+[root@rpi4 ~]# df -h /
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/mmcblk1p3   57G  2.6G   53G   5% /
+[root@rpi4 ~]# 
+----
+
+

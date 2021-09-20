@@ -1,0 +1,54 @@
+= create virtual machine guest2
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 21-11-2021
+
+
+Create another virtual machine just like guest1. 
+Call this one guest2. 
+
+.physical machine and virtual machines 
+....
+.------------------------.
+|                        |
+|  rpi4                  |
+|                        |   
+|   +----------------+   |    
+|   |                |   |  
+|   |  guest1        |   |
+|   |                |   |   
+|   +----------------+   |  
+|                        |   
+|   +----------------+   |    
+|   |                |   |  
+|   |  guest2        |   |
+|   |                |   |   
+|   +----------------+   |  
+.------------------------.  
+....
+
+Follow the procedure for creating guest1. 
+
+There are only a few things to change. 
+
+Replace guest1 with guest2
+
+Create the VM with this command. 
+The name and MAC address are different. 
+The rest is identical. 
+
+[source,shell]
+----
+virt-install \
+  --name="guest2" \
+  --vcpus=1 \
+  --ram=1024 \
+  --disk path=/var/lib/libvirt/images/guest2 \
+  --network network=pubbr0,mac=52:54:00:00:00:02   \
+  --boot uefi \
+  --os-variant fedora33 \
+  --graphics none \
+  --noautoconsole
+----
+
+

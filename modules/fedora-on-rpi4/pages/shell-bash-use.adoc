@@ -1,0 +1,112 @@
+= use the GNU Bash shell 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 16-10-2020
+
+You can type Bash commands on the CLI. 
+
+
+Bash knowledge is not shared out equally. 
+Some knowledge is universal - you can't use Bash for five minutes without running _ls_. 
+And some knowledge is arcane, like job control.
+
+== learn Bash 
+
+This is not a bash tutorial. There are plenty of free resources out there on the web and in bookstores. 
+
+Learn the basics.
+
+* https://learnxinyminutes.com/docs/bash/
+* Pimoroni, the Raspberry Pi store, has learning resources. https://learn.pimoroni.com/getting-started-with-bash
+* The GNU foundation provide a manual. https://www.gnu.org/software/bash/manual/bash.html[manual]. 
+* And so does The Linux Documentation Project. https://tldp.org/LDP/Bash-Beginners-Guide/html/.
+
+Cheat sheets summarize Bash commands. There are many on the web. 
+
+* Julien Le Coupanec's page on GitHub: https://github.com/LeCoupa/awesome-cheatsheets/blob/master/languages/bash.sh
+* https://github.com/rstacruz[Rico Sta. Cruz] made this pretty Devhints page: https://devhints.io/bash
+* Many more have been posted to Cheatography: https://cheatography.com/tag/bash/
+
+Read a book. 
+
+* "Learning the bash Shell" is old and well-loved. https://www.oreilly.com/library/view/learning-the-bash/0596009658/
+* Books on Linux include plenty about Bash, like "Chapter 10. Working with files and folders on the command line" in "Learn Linux in a Month of Lunches".  https://www.manning.com/books/learn-linux-in-a-month-of-lunches
+* Bookauthority lists many more books. https://bookauthority.org/books/best-bash-books
+
+RTFM 
+
+If you have already learned how to do something but can't quite remember the syntax, run `man bash`. This displays a dense page, crammed with brief descriptions. It's no use to beginners. 
+
+
+== a shell script 
+
+You can put many Bash commands in a file - that's a script.
+
+The naming is a little off.
+A file full of commands is more like a recipe than a play, but the _script_ name stuck a long time ago and it isn't going anywhere. 
+A script is usually called a https://en.wikipedia.org/wiki/Shell_script[shell script], rather than "Bash script" or just "script".
+
+
+== the GNU Bash process
+
+After logging in, you find yourself using GNU Bash, version 5. 
+The OS is running a Bash process for you. 
+The `ps` command lists running processes. 
+While it's busy listing running processes, it lists itself because ps is a running process.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ps
+    PID TTY          TIME CMD
+   3361 pts/0    00:00:00 bash
+   3771 pts/0    00:00:00 ps
+[nick@rpi4 ~]$ 
+----
+
+* PID (Process ID) - Many things in Linux get a number, including running processes. 
+* TTY (TeleTYpe) - the terminal you are using to read and write. 
+* TIME - how much CPU time you have used up, in the format hours:minutes:seconds. These commands have so far used less than a second.
+* CMD The command that started this process
+
+
+== view resource files 
+
+The home directory contains many configuration files. 
+They are known as dotfiles, or hidden files - they start with "." and Bash doesn't display them.
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ ls -d .*
+.   .bash_history  .bash_profile  .cache   .local    .ssh
+..  .bash_logout   .bashrc        .config  .mozilla
+[nick@rpi4 ~]$ 
+----
+
+* .bash_history  - a list of all the commands you have run so far. To see the maximum number of commands this stores, run _echo $HISTSIZE_.
+* .bash_logout  - When Bash exits, any commands in here are run. Usually, no-one bothers adding any. 
+* .bash_profile  - This is the traditional place for a user to add their own customized settings. There's a similar file (/etc/profile) that defines settings everyone gets. 
+* .bashrc  - functions and aliases. You also get everything in /etc/bashrc.
+* .ssh - This one's actually a directory used by SSH, not Bash.
+
+If you want to know more about dotfiles, read this great https://fedoramagazine.org/customizing-bash/[Customizing Bash] article.
+
+
+
+
+=== try completion 
+
+Typing long commands is annoying. 
+That's why the GNU project added  https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html[programmable completion].
+The easiest completion is typing the first few characters of a command (three usually does it) and hitting the tab key (⇥). 
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ host⇥
+host         hostid       hostname     hostnamectl  
+[nick@rpi4 ~]$ host
+----
+
+Try the same thing with less letters and more tabbing. 
+Entering _hos_ and hitting tab only matches _host_, so that appears on the same line.  
+Hitting tab twice more displays the list of commands that start with _host_.
+

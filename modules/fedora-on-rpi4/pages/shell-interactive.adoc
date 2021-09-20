@@ -1,0 +1,26 @@
+= compare your interactive shell with a non-interactive shell 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 09-09-2021
+
+
+An https://www.gnu.org/software/bash/manual/bash.html#Interactive-Shells[interactive shell] is connected to a user terminal - it reads from the keyboard and writes to the screen. 
+
+== interactive shell vs. non-interactive shell 
+
+An https://www.gnu.org/software/bash/manual/bash.html#Interactive-Shells[interactive shell] is connected to a user terminal - it reads from the keyboard and writes to the screen. 
+
+The shell knows whether it is interactive.
+It behaves differently frorm a non-interactive shell. 
+To see the interactiive option, use the variable *$-* to display a list of shell options.
+The option _i_ means interactive.
+If you want to know what the other letters mean, run _man bash_ and look for _set_ in the _BASH BUILTIN COMMANDS_ section.
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ echo $-
+himBHs
+[nick@rpi4 ~]$ 
+----
+
+Also, if it's got a prompt, it's an interactive shell.

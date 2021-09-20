@@ -1,0 +1,19 @@
+site:
+  title: Nick's Home Lab, hackity hack
+  url: https://fedora-on-rpi4.netlify.app
+  start_page: articles:ROOT:index.adoc
+  keys:
+    google_analytics: 'G-7K2RCE6KXL'
+content:
+  sources: 
+  - url: https://github.com/nickhardiman/articles.git
+    branches: main
+ui: 
+  bundle:
+    url: https://github.com/nickhardiman/antora-ui/raw/master/build/ui-bundle.zip
+    snapshot: true
+  supplemental_files: ./supplemental_ui
+asciidoc:
+  attributes:
+    experimental: true 
+    page-pagination: true 

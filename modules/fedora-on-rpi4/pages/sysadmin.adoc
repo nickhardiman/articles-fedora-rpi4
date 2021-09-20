@@ -1,0 +1,45 @@
+= sysadmin   
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+Carry out the first system administration tasks.
+Actually, the first sysadmin tasks were setting up the hardware and installing Fedora. 
+These are the first sysadmin tasks on your fully operational system. 
+
+
+== update software
+
+This image file is not updated very often, so some packages get out of date.   
+Dozens of packages can be upgraded.
+
+* Update packages with `dnf update`.  
+* Reboot the machine with `systemctl reboot`.
+
+Over the years, a lot of people have put a lot of work into making the Raspberry Pi devices work. 
+Use the latest software to make sure you get the benefit of their hard work. 
+If you skip this step, you may find some things just don’t work.
+
+The update downloads and installs about a hundred packages. Since the storage is a micro-SD card, writing new software is a slow process. This is what using computing storage felt like in the 1990s.
+
+
+== start customizing the system
+
+There are a few other things to be set up at this point.
+
+The _hostname_ command shows the full name is _localhost.localdomain_.
+
+[source,shell]
+----
+[root@localhost ~]# hostname
+localhost.localdomain
+[root@localhost ~]# 
+----
+
+Replace the _localhost_ hostname with the command `sudo hostnamectl set-hostname host1.lab.example.com`. 
+The prompt doesn't change until you start another shell. 
+
+* Start another shell with the command 'exec bash'. Now the prompt looks like _[root@host1 ~]#_.
+* Find the IP address with `ip addr`.
+* Try an SSH login from your workstation.
+* Power down with `systemctl poweroff`.

@@ -1,0 +1,204 @@
+= create a test VM 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 21-11-2020
+
+
+Create a virtual machine called _does-it-work_. 
+The only purpose of this VM is to check the libvirt system works. 
+The VM is created, checked, then deleted.
+
+The _rpi4_ machine is the physical machine that hosts the _does-it-work_ guest. 
+
+.physical machine and virtual machine 
+....
+.------------------------.
+|                        |
+|  rpi4                  |
+|                        |   
+|   +----------------+   |    
+|   |                |   |  
+|   |  does-it-work  |   |
+|   |                |   |   
+|   +----------------+   |  
+.------------------------.  
+....
+
+
+
+
+
+No VMs exist yet. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh list --all
+ Id   Name   State
+--------------------
+
+[root@rpi4 images]# 
+....
+
+
+== copy the image file 
+ 
+Use the root account. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+....
+
+Change to libvirt's images directory. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd /var/lib/libvirt/images/
+[root@rpi4 images]# 
+----
+
+Create a copy of this raw image. 
+The copy gets used by the machine, leaving the downloaded version untouched. 
+
+[source,shell]
+----
+[root@rpi4 images]# cp Fedora-Minimal-33-1.3.aarch64.raw does-it-work.raw
+[root@rpi4 images]# 
+----
+
+
+== create the virtual machine 
+
+Create a VM using the ready-made Fedora disk image. 
+
+A new VM can be created using a command like ``virsh define my-machine.xml``, 
+similar to the way a storage pool can be created using ``virsh pool-define storage-pool.xml``.
+It requires a ready-made XML file. 
+But the XML configuration that defines a virtual machine is complicated. 
+It's easier to use the ``virt-install`` command to do the hard work. 
+
+This ``virt-install`` command is pretty long. 
+The first option sets the name. 
+The next three options add resources - 1 CPU, 1024MiB memory and the 5GiB disk.
+The boot option sets the firmware -   UEFI rather than the older BIOS.
+The os-variant option sets up some default values.
+There are no graphics, so this machine can only be connected to using a serial console.  
+And finally the virt-install command kicks off the build of the VM but doesn't hang around and connect to the console. 
+That's done as a seperate step. 
+
+[source,shell]
+----
+virt-install \
+  --name="does-it-work" \
+  --vcpus=1 \
+  --ram=1024 \
+  --disk path=/var/lib/libvirt/images/does-it-work.raw \
+  --boot uefi \
+  --os-variant fedora33 \
+  --graphics none \
+  --noautoconsole
+----
+
+libvirt adds XML configuration 
+
+[source,shell]
+----
+[root@rpi4 images]# virt-install \
+>   --name="does-it-work" \
+>   --vcpus=1 \
+>   --ram=1024 \
+>   --disk path=/var/lib/libvirt/images/does-it-work.raw \
+>   --boot uefi \
+>   --os-variant fedora33 \
+>   --graphics none \
+>   --noautoconsole
+
+Starting install...
+Domain creation completed.
+[root@rpi4 images]# 
+----
+
+Now there is a VM.
+
+[source,shell]
+----
+[root@rpi4 images]# virsh list --all
+ Id   Name           State
+------------------------------
+ 1    does-it-work   running
+
+[root@rpi4 images]# 
+----
+
+
+A storage pool has been automatically created. 
+Libvirt creates a new XML configuration file /etc/libvirt/storage/images.xml. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh pool-list
+ Name     State    Autostart
+------------------------------
+ images   active   yes
+
+[root@rpi4 images]# 
+....
+
+This storage pool holds our new image files. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh vol-list images
+ Name                                Path
+------------------------------------------------------------------------------------------------
+ does-it-work.raw                    /var/lib/libvirt/images/does-it-work.raw
+ Fedora-Minimal-33-1.3.aarch64.raw   /var/lib/libvirt/images/Fedora-Minimal-33-1.3.aarch64.raw
+
+[root@rpi4 images]# 
+....
+
+
+
+== use the console 
+
+Connect to the console with the ``virsh console`` command.
+It takes a minute for boot-up to finish, so you may see many boot-up messages appearing on the console. 
+Finally anaconda starts to handle the install process, and stops at the first interactive prompt. 
+
+
+[source,shell]
+----
+[root@rpi4 images]# virsh console does-it-work
+Connected to domain does-it-work
+Escape character is ^] (Ctrl + ])
+[  OK  ] Finished Rebuild Hardware Database.
+         Starting Rule-based Manage…for Device Events and Files...
+[  OK  ] Started Rule-based Manager for Device Events and Files.
+[  OK  ] Finished Monitoring of LVM… dmeventd or progress polling.
+...
+================================================================================
+1) [x] Language settings                 2) [x] Time settings
+       (English (United States))                (US/Eastern timezone)
+3) [x] Network configuration             4) [x] Root password
+       (Wired (enp1s0) connected)               (Disabled. Set password to
+                                                enable root account.)
+5) [ ] User creation
+       (No user will be created)
+
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]: 
+----
+
+That's enough to prove the virtual machine runs. 
+
+Disconnect from the console. 
+The disconnection command is ``ctrl`` + ``]``
+
+[source,shell]
+----
+^]
+[root@rpi4 images]# 
+----
+

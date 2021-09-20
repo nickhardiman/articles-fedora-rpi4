@@ -1,0 +1,53 @@
+= use the vi editor
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 25-01-2021
+
+
+Use the https://en.wikipedia.org/wiki/Vi[vi] text editor to change a file. 
+
+It's not everyone's favourite, and there are many alternative editors. 
+But vi is installed by default in Fedora.
+You can rely on it being available, so it is worth climbing vi's learning curve.
+Coping with vi's modes, single character commands and buffers is as difficult as getting to grips with the command line. 
+
+
+== learn vi 
+
+* http://ex-vi.sourceforge.net/viin/paper.html[An Introduction to Display Editing with Vi] - the original guide by the original author (well, a close copy)
+* https://www.oreilly.com/library/view/learning-the-vi/9780596529833/[Learning the vi and Vim Editors], an O'Reilly book
+
+
+== configure 
+
+/etc/virc
+
+[source,bash]
+----
+[nick@rpi4 ~]$ cat -v /etc/virc
+if v:lang =~ "utf8$" || v:lang =~ "UTF-8$"
+   set fileencodings=ucs-bom,utf-8,latin1
+endif
+...
+if &term=="xterm"
+     set t_Co=8
+     set t_Sb=^[[4%dm
+     set t_Sf=^[[3%dm
+endif
+[nick@rpi4 ~]$ 
+----
+
+
+== use
+
+help 
+
+movement   
+
+modes 
+
+[source,shell]
+----
+----
+
+

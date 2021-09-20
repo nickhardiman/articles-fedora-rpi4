@@ -1,0 +1,103 @@
+= inspect your terminal 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-02-2021
+
+
+The https://en.wikipedia.org/wiki/Computer_terminal[computer terminal] you use to communicate with the Raspberry Pi is the new software equivalent of an old piece of hardware.
+
+Over many decades, many terminals were sold with many unique selling points. 
+The https://en.wikipedia.org/wiki/Terminfo[terminfo] database was created to keep track of what each terminal could do. 
+
+Physical terminals have been largely replaced by workstations running software terminals.
+A software terminal emulates what a physical terminal could do. 
+
+The terminal type used by the Raspberry Pi is stored in the environment variable TERM.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ echo $TERM
+xterm-256color
+[nick@rpi4 ~]$ 
+----
+
+Using SSH to connect to the Pi starts an eumlator called https://en.wikipedia.org/wiki/Xterm[xterm]. 
+There are many other emulator programs https://en.wikipedia.org/wiki/List_of_terminal_emulators[terminal emulators]. 
+Opening a terminal in the Gnome desktop starts the https://en.wikipedia.org/wiki/GNOME_Terminal[Gnome terminal]. 
+
+== the terminfo database
+
+Configuration is stored in files like this. 
+This is not plain text and can't be displayed.
+Tput can read it and translate the settings to something readable. 
+
+
+[source,shell]
+----
+[nick@rpi4 ~]$ file /usr/share/terminfo/x/xterm-256color
+/usr/share/terminfo/x/xterm-256color: Compiled 32-bit terminfo entry "xterm-256color"
+[nick@rpi4 ~]$ 
+----
+
+This file contains a mystifying list of capabilities and key sequences. 
+The infocmp command can display all these, but the list can only be read by terminal wizards. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ infocmp $TERM
+#	Reconstructed via infocmp from file: /usr/share/terminfo/x/xterm-256colo
+xterm-256color|xterm with 256 colors,
+	am, bce, ccc, km, mc5i, mir, msgr, npc, xenl,
+	colors#0x100, cols#80, it#8, lines#24, pairs#0x10000,
+	acsc=``aaffggiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
+...
+	smkx=\E[?1h\E=, smm=\E[?1034h, smso=\E[7m, smul=\E[4m,
+	tbc=\E[3g, u6=\E[%i%d;%dR, u7=\E[6n,
+	u8=\E[?%[;0123456789]c, u9=\E[c, vpa=\E[%i%p1%dd,
+[nick@rpi4 ~]$ 
+----
+
+These capabilities were https://pubs.opengroup.org/onlinepubs/7908799/xcurses/terminfo.html[standardized back in the days of UNIX], and can be pretty obscure. 
+
+* am is a boolean, and stands for automatic margins
+* colors is a string, and sets the maximum number of colors on the screen. 
+* vpa is a key, which sets the vertical position to absolute #1.
+
+
+
+== read settings with tput 
+
+The tput command can read the terminfo database and change settings.
+
+Read the terminal descrption and display it.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ tput longname
+xterm with 256 colors[nick@rpi4 ~]$ 
+----
+
+Find out how many lines high and how many columns across your terminal is. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ tput lines
+30
+[nick@rpi4 ~]$ 
+[nick@rpi4 ~]$ echo "Rows=$(tput lines) Cols=$(tput cols)"
+Rows=30 Cols=80
+[nick@rpi4 ~]$ 
+----
+
+For more examples, run `man tput` and look for the EXAMPLES section.
+
+
+== write settings with tput 
+
+Some programs run commands like these for fancy text effects.
+
+* turn on underline: tput smul
+* turn off underline: tput rmul
+* make the foreground (text) green: tput setaf 2
+* make the foreground black: tput setaf 0
+

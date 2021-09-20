@@ -1,0 +1,151 @@
+= examine storage
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 26-10-2020
+
+The USB drive is the storage device. 
+
+== storage device files
+
+Linux treats pretty much everything as a file, even the storage device.
+The OS gives this drive a special file in the /dev/ directory named /dev/sda. 
+Partitions also get their own file, like /dev/sda1.
+
+Use ls to list these files.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -l /dev/sda*
+brw-rw----. 1 root disk 8, 0 Jul 20 01:00 /dev/sda
+brw-rw----. 1 root disk 8, 1 Jul 20 01:00 /dev/sda1
+brw-rw----. 1 root disk 8, 2 Jul 20 01:00 /dev/sda2
+brw-rw----. 1 root disk 8, 3 Jul 20 01:00 /dev/sda3
+brw-rw----. 1 root disk 8, 4 Jul 20 01:00 /dev/sda4
+brw-rw----. 1 root disk 8, 5 Jul 20 01:00 /dev/sda5
+[nick@rpi4 ~]$ 
+----
+
+Each line is a data record. 
+Many fields are packed into each record. 
+* brw-rw----. is many fields in one. 
+** b - block device 
+** rw- permissions the user has (read and write)
+** rw- permissions for the group
+** --- permissions for the rest of the world (none)
+** . - a flag that shows  this file has SELinux settings
+* 1 - number of hard links
+* root - user who owns this file
+* disk - group that can use this file 
+* 8, 5  - major and minor numbers, related to the device driver
+* Jul 20 01:00 - date this file was last modified
+
+== partitions 
+
+This drive is split into five partitions.
+The last two start and end in the same place. 
+It's one partition that is handled by LVM.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo fdisk -l /dev/sda
+[sudo] password for nick: 
+Disk /dev/sda: 28.65 GiB, 30765219840 bytes, 60088320 sectors
+Disk model:  SanDisk 3.2Gen1
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x135b6780
+
+Device     Boot   Start      End  Sectors  Size Id Type
+/dev/sda1          2048  2099199  2097152    1G  c W95 FAT32 (LBA)
+/dev/sda2  *    2099200  3327999  1228800  600M  6 FAT16
+/dev/sda3       3328000  5425151  2097152    1G 83 Linux
+/dev/sda4       5425152 60088319 54663168 26.1G  5 Extended
+/dev/sda5       5427200 60088319 54661120 26.1G 8e Linux LVM
+[nick@rpi4 ~]$ 
+----
+
+
+* /dev/sda1 is the UEFI boot partition. 
+* /dev/sda2 is /boot/efi, also used by EFI. 
+* /dev/sda3 is /boot, the Linux boot partition
+* /dev/sda4 and /dev/sda5 are /, the root partition.
+
+
+
+== filesystem
+
+The partitions are formatted with different file systems. 
+
+/dev/sda1 uses https://en.wikipedia.org/wiki/File_Allocation_Table#FAT32[FAT32] (File Allocation Table system with 32 bit entries). All UEFI partitions use this. 
+
+/dev/sda2 is https://en.wikipedia.org/wiki/File_Allocation_Table[FAT16] (File Allocation Table system with 16 bit entries). This is an old file system that stretches way back to the days of MS-DOS and the IBM PC AT in the 1980s.
+The OS calls this type _vfat_. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ df -T /dev/sda2
+Filesystem     Type 1K-blocks  Used Available Use% Mounted on
+/dev/sda2      vfat    613184  7140    606044   2% /boot/efi
+[nick@rpi4 ~]$ 
+----
+
+/dev/sda3 is https://en.wikipedia.org/wiki/XFS[XFS], the Fedora default. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ df -T /dev/sda3
+Filesystem     Type 1K-blocks   Used Available Use% Mounted on
+/dev/sda3      xfs    1038336 321020    717316  31% /boot
+[nick@rpi4 ~]$ 
+----
+
+There are no https://en.wikipedia.org/wiki/Ext4[ext4] partitions. Ext4 (fourth extended filesystem) is a Linux file system that was the default for about 10 years. 
+If you're wondering what it extended, that'll be the https://en.wikipedia.org/wiki/MINIX_file_system[Minix file system]. 
+Minix is an OS built decades ago as a teaching aid. It is a forerunner of Linux. 
+
+And anyway, why is it filesystem? What's wrong with two words, "file system"? 
+
+== mount shows more file systems.
+
+These aren't the only three filesystems used on your machine. 
+If you enter the command _mount_, you will see about 20 lines with many more types of filesystem: sysfs, proc, devtmpfs, devpts, cgroup2, pstore, efivarfs, bpf, tracefs, configfs, selinuxfs, autofs, mqueue, hugetlbfs and debugfs.
+What can they all mean? 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ mount 
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime,seclabel)
+proc on /proc type proc (rw,nosuid,nodev,noexec,relatime)
+devtmpfs on /dev type devtmpfs (rw,nosuid,noexec,seclabel,size=3928624k,nr_inodes=982156,mode=755,inode64)
+... many more lines ...
+tmpfs on /run/user/42 type tmpfs (rw,nosuid,nodev,relatime,seclabel,size=796104k,nr_inodes=199026,mode=700,uid=42,gid=42,inode64)
+tmpfs on /run/user/1000 type tmpfs (rw,nosuid,nodev,relatime,seclabel,size=796104k,nr_inodes=199026,mode=700,uid=1000,gid=1000,inode64)
+[nick@rpi4 ~]$ 
+----
+
+More file systems are listed in the file /proc/filesystems.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ cat /proc/filesystems 
+nodev	sysfs
+nodev	tmpfs
+nodev	bdev
+...
+nodev	fusectl
+	vfat
+nodev	rpc_pipefs
+[nick@rpi4 ~]$ 
+----
+
+Some of these are temporary filesystems that store files in memory, rather than on the USB drive. 
+Everything in /proc, /run and /tmp ceases to exist when the computer is switched off. 
+These temporary filesystems are useful for some specialised work like storing session data, sharing data fast, and interacting with the kernel.
+
+If you want to play with more filesystems that do store files permanently, there are many to choose from including iso9660, one for CD-ROMs, and NFS, the Network File System. 
+
+
+
+

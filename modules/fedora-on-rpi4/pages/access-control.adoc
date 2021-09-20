@@ -1,0 +1,24 @@
+= access control  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+access control frameworks 
+
+MAC  Mandatory Access Control
+https://en.wikipedia.org/wiki/Mandatory_access_control
+
+DAC  Discretionary Access Control
+https://en.wikipedia.org/wiki/Discretionary_access_control
+
+RBAC Role-Based Access Control  
+https://en.wikipedia.org/wiki/Role-based_access_control
+https://docs.fedoraproject.org/en-US/Fedora/17/html/FreeIPA_Guide/defining-roles.html
+
+ACL  Access Control List
+https://en.wikipedia.org/wiki/Access-control_list
+https://docs.fedoraproject.org/en-US/Fedora/14/html/Storage_Administration_Guide/ch-acls.html
+
+
+
+

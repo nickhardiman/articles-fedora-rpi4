@@ -1,0 +1,283 @@
+= create virtual machine guest1 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 21-11-2021
+
+
+Create a virtual machine to check the libvirt system works. 
+This is the same procedure that created the test VM _does-it-work_.
+
+.physical machine and virtual machine 
+....
+.------------------------.
+|                        |
+|  rpi4                  |
+|                        |   
+|   +----------------+   |    
+|   |                |   |  
+|   |  guest1        |   |
+|   |                |   |   
+|   +----------------+   |  
+.------------------------.  
+....
+
+
+
+== copy the image file 
+ 
+Use the root account. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+....
+
+Change to libvirt's images directory. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd /var/lib/libvirt/images/
+[root@rpi4 images]# 
+----
+
+Create a copy of this raw image. 
+The copy gets used by the machine, leaving the downloaded version untouched. 
+
+[source,shell]
+----
+[root@rpi4 images]# cp Fedora-Minimal-33-1.3.aarch64.raw guest1
+[root@rpi4 images]# 
+----
+
+Create the virtual machine.
+
+[source,shell]
+----
+virt-install \
+  --name="guest1" \
+  --vcpus=1 \
+  --ram=1024 \
+  --disk path=/var/lib/libvirt/images/guest1 \
+  --network network=pubbr0,mac=52:54:00:00:00:01   \
+  --boot uefi \
+  --os-variant fedora33 \
+  --graphics none \
+  --noautoconsole
+----
+
+Check the compute resource. 
+
+[source,shell]
+----
+[root@rpi4 images]# virsh list --all
+ Id   Name     State
+------------------------
+ 1    guest1   running
+
+[root@rpi4 images]# 
+----
+
+Check the storage resource. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh vol-list images
+ Name                                Path
+------------------------------------------------------------------------------------------------
+ Fedora-Minimal-33-1.3.aarch64.raw   /var/lib/libvirt/images/Fedora-Minimal-33-1.3.aarch64.raw
+ guest1                              /var/lib/libvirt/images/guest1
+
+[root@rpi4 images]# 
+....
+
+== configure the new VM using the console
+
+Connect to the console. 
+Nothing appears for a minute, then the anaconda install options menu appears.
+Sometimes nothing appears. 
+Hit the return key to display an anaconda prompt.
+
+[source,shell]
+....
+[root@rpi4 images]# virsh console guest1
+Connected to domain guest1
+Escape character is ^] (Ctrl + ])
+[⏎]
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]: 
+....
+
+Finish the installation. 
+
+[source,shell]
+....
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]: 
+[r]
+================================================================================
+================================================================================
+1) [x] Language settings                 2) [x] Time settings
+       (English (United States))                (US/Eastern timezone)
+3) [x] Network configuration             4) [x] Root password
+       (Wired (enp1s0) connected)               (Disabled. Set password to
+                                                enable root account.)
+5) [ ] User creation
+       (No user will be created)
+
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]: 
+....
+
+Using Anaconda on the command line feels a little odd, entering many numbers and other values.
+It ends by showing a login prompt. 
+
+[source,shell]
+....
+================================================================================
+1) [x] Language settings                 2) [x] Time settings
+       (English (United Kingdom))               (Europe/London timezone)
+3) [x] Network configuration             4) [x] Root password
+       (Wired (enp1s0) connected)               (Password is set.)
+5) [x] User creation
+       (Administrator nick will be
+       created)
+
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to
+refresh]: 
+c
+
+Fedora 33 (Thirty Three)
+Kernel 5.8.15-301.fc33.aarch64 on an aarch64 (ttyAMA0)
+
+localhost login: 
+....
+
+Login. 
+Use the root account. 
+
+Find the IP address. 
+
+[source,shell]
+....
+[root@localhost ~]# ip -brief addr
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp1s0           UP             192.168.1.173/24 2a00:23a8:4b47:fc00:5054:ff:fe33:8501/64 fdaa:bbcc:ddee:0:5054:ff:fe33:8501/64 fe80::5054:ff:fe33:8501/64 
+[root@localhost ~]# 
+....
+
+Disconnect.
+Logging out takes you to the login prompt. 
+You are still connected to the console. 
+Use the escape character ^] (Ctrl + ]).
+
+[source,shell]
+....
+[root@localhost ~]# exit
+logout
+
+Fedora 33 (Thirty Three)
+Kernel 5.8.15-301.fc33.aarch64 on an aarch64 (ttyAMA0)
+
+localhost login: 
+^]
+[root@rpi4 images]# 
+....
+
+== SSH to the new VM
+
+Use workstation. 
+
+Try logging in with SSH and your new user.  
+
+[source,shell]
+....
+workstation:~ nick$ ssh nick@192.168.1.173
+The authenticity of host '192.168.1.173 (192.168.1.173)' can't be established.
+ECDSA key fingerprint is SHA256:rcmH5ZsrgN0TPwl1eEG9mRbCvCOJEUcOBumgnEwysx8.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.173' (ECDSA) to the list of known hosts.
+nick@192.168.1.173's password: 
+[nick@localhost ~]$ 
+....
+
+Log out. 
+
+[source,shell]
+....
+[nick@localhost ~]$ exit
+logout
+Connection to 192.168.1.214 closed.
+workstation:~ nhardima$ 
+....
+
+== shut down the new VM 
+
+Check before making any changes. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh list 
+ Id   Name     State
+------------------------
+ 1    guest1   running
+
+[root@rpi4 images]# 
+....
+
+Power down the VM. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh shutdown guest1
+Domain guest1 is being shutdown
+
+[root@rpi4 images]# 
+[root@rpi4 images]# virsh list 
+ Id   Name   State
+--------------------
+
+[root@rpi4 images]# 
+....
+
+Check after. 
+
+[source,shell]
+.... 
+[root@rpi4 images]# virsh list 
+ Id   Name   State
+--------------------
+
+[root@rpi4 images]# 
+....
+
+
+=== delete the VM
+
+There is no need to remove the new VM. 
+If something goes wrong, you can remove your additions.
+
+* Pull the plug on the VM with _virsh destroy_.
+* Remove libvirt's new VM config with _virsh undefine_.
+* Remove the new storage volume file with _virsh vol-delete_. For the impatient, you can avoid typing another command by adding another option to virsh undefine: _virsh undefine --nvram --remove-all-storage $HOST_.
+
+
+[source,shell]
+....
+[root@rpi4 images]# HOST=guest1
+[root@rpi4 images]# virsh destroy $HOST
+Domain guest1 destroyed
+
+[root@rpi4 images]#
+[root@rpi4 images]# virsh undefine --nvram $HOST
+Domain guest1 has been undefined
+
+[root@rpi4 images]#
+[root@rpi4 images]#  virsh vol-delete $HOST --pool images
+Vol guest1 deleted
+
+[root@rpi4 images]#
+....
+
+

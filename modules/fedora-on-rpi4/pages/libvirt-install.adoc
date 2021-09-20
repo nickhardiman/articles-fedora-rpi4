@@ -1,0 +1,220 @@
+= libvirt on RPi4
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 18-11-2020
+
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+It ties together a few infrastructure building blocks like QEMU, bridge, DHCP and DNS.
+The libvirt daemon manages the virtualization. 
+
+The version is a https://libvirt.org/news.html[couple years old]. 
+
+
+== the daemon libvirtd
+
+The OS includes a few libvirt components.
+One of these is the https://libvirt.org/daemons.html[libvirt daemon] libvirtd.
+The libvirtd service started, created network devices, kicked off dnsmasq and exited. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ systemctl status libvirtd
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Mon 2021-09-13 06:57:59 BST; 6h ago
+TriggeredBy: ● libvirtd.socket
+             ● libvirtd-ro.socket
+             ● libvirtd-admin.socket
+       Docs: man:libvirtd(8)
+             https://libvirt.org
+    Process: 1024 ExecStart=/usr/sbin/libvirtd $LIBVIRTD_ARGS (code=exited, status=0/SUCCESS)
+   Main PID: 1024 (code=exited, status=0/SUCCESS)
+        CPU: 819ms
+
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq-dhcp[1224]: DHCP, IP range 192.168.122.2 -- 192.168.122.254, lease time 1h
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq-dhcp[1224]: DHCP, sockets bound exclusively to interface virbr0
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq[1224]: reading /etc/resolv.conf
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq[1224]: using nameserver 127.0.0.53#53
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq[1224]: read /etc/hosts - 2 addresses
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq[1224]: read /var/lib/libvirt/dnsmasq/default.addnhosts - 0 addresses
+Sep 13 06:56:02 rpi4.lab.example.com dnsmasq-dhcp[1224]: read /var/lib/libvirt/dnsmasq/default.hostsfile
+Sep 13 06:57:59 rpi4.lab.example.com systemd[1]: libvirtd.service: Succeeded.
+Sep 13 06:57:59 rpi4.lab.example.com systemd[1]: libvirtd.service: Unit process 1224 (dnsmasq) remains running after unit stopped.
+Sep 13 06:57:59 rpi4.lab.example.com systemd[1]: libvirtd.service: Unit process 1225 (dnsmasq) remains running after unit stopped.
+[nick@rpi4 ~]$ 
+----
+
+
+
+== the bridge device virbr0
+
+A bridge is a kind of internal layer 2 switch that connects virtual machines to the physical network.
+
+virbr0 is a bridge. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ nmcli device status
+DEVICE        TYPE      STATE                   CONNECTION   
+enabcm6e4ei0  ethernet  connected               enabcm6e4ei0 
+virbr0        bridge    connected (externally)  virbr0       
+wlan0         wifi      unavailable             --           
+lo            loopback  unmanaged               --           
+virbr0-nic    tun       unmanaged               --           
+[nick@rpi4 ~]$ 
+----
+
+NetworkManager is configured to manage virbr0.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ nmcli con show
+NAME                UUID                                  TYPE      DEVICE 
+Wired connection 1  b8265e30-441b-3ee9-a547-9d675b065fe9  ethernet  eth0   
+virbr0              2c3ccfd7-882c-4ddb-84b1-4b594955fb1e  bridge    virbr0 
+enp1s0              83d67bc4-4398-454c-8bf8-602edb3bb501  ethernet  --     
+[nick@rpi4 ~]$ 
+----
+
+
+== The TUN device virbr0-nic
+
+a https://en.wikipedia.org/wiki/TUN/TAP[TUN/TAP] network interface named virbr0-nic, 
+used by the bridge. 
+
+It has an IP address. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ip -brief a
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enabcm6e4ei0     UP             192.168.1.201/24 2a00:23a8:4b47:fc00:dea6:32ff:fed1:32a9/64 fdaa:bbcc:ddee:0:dea6:32ff:fed1:32a9/64 fe80::dea6:32ff:fed1:32a9/64 
+wlan0            DOWN           
+virbr0           DOWN           192.168.122.1/24 
+virbr0-nic       DOWN           
+[nick@rpi4 ~]$ 
+----
+
+The network interface virbr0-nic doesn't handle traffic. 
+The only job of this interface is to https://www.redhat.com/archives/libvirt-users/2012-September/msg00038.html
+[provide a MAC address that doesn't change]. 
+
+
+
+
+== the DHCP and DNS service dnsmasq
+
+dnsmasq handles some infrastructure services for the virtual network. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ps -C dnsmasq
+    PID TTY          TIME CMD
+   1224 ?        00:00:00 dnsmasq
+   1225 ?        00:00:00 dnsmasq
+[nick@rpi4 ~]$ 
+----
+
+
+== the character device kvm 
+
+The /dev/ directory has a character device named kvm. 
+You can tell this file is a character device because the long list starts with a "c".
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -l /dev/kvm 
+crw-rw-rw-. 1 root kvm 10, 232 Sep 30 01:00 /dev/kvm
+[nick@rpi4 ~]$ 
+----
+
+
+== install the virtualization group 
+
+https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-virtualization/
+https://fedoraproject.org/wiki/Architectures/ARM/HowToQemu
+
+[source,shell]
+----
+sudo dnf groupinstall virtualization
+sudo dnf install qemu-system-arm
+sudo systemctl start libvirtd 
+----
+
+The two dnf commands install lots of packages. 
+
+[source,shell]
+----
+[root@host1 ~]# yum install qemu-system-arm
+Fedora 33 openh264 (From Cisco) - aarch64       829  B/s | 2.5 kB     00:03    
+Fedora Modular 33 - aarch64                      61 kB/s | 3.2 MB     00:53    
+...
+Total download size: 3.9 M
+Installed size: 15 M
+Is this ok [y/N]: Y
+Downloading Packages:
+(1/2): qemu-system-arm-5.1.0-9.fc33.aarch64.rpm  81 kB/s |  13 kB     00:00    
+(2/2): qemu-system-arm-core-5.1.0-9.fc33.aarch6 3.6 MB/s | 3.9 MB     00:01    
+...
+Installed:
+  qemu-system-arm-2:5.1.0-9.fc33.aarch64                                        
+  qemu-system-arm-core-2:5.1.0-9.fc33.aarch64                                   
+
+Complete!
+[nick@rpi4 ~]$ 
+----
+
+
+
+
+== start the libvirt daemon 
+
+Libvirtd doesn't run all the time. Systemd starts libvirtd when there is work to do. 
+You can start the libvirt daemon, but it stops a couple minutes later. 
+
+The _TriggeredBy_ section of the status display lists sockets.
+A socket is an address where requests are delivered.
+Systemd manages these sockets and starts libvirtd when requests arrive. 
+
+[nick@rpi4 ~]$ systemctl status --no-pager -l libvirtd
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Mon 2021-09-13 14:00:04 BST; 11min ago
+TriggeredBy: ● libvirtd-admin.socket
+             ● libvirtd-ro.socket
+             ● libvirtd.socket
+
+
+You can start the libvirt daemon.
+The libvirt daemon runs for couple minutes then stops. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo systemctl start libvirtd 
+[nick@rpi4 ~]$ 
+----
+
+Check the status, 
+[source,shell]
+----
+[nick@rpi4 ~]$ systemctl status libvirtd
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor >
+     Active: active (running) since Mon 2021-09-13 13:58:04 BST; 2s ago
+...
+[nick@rpi4 ~]$ 
+[nick@rpi4 ~]$ systemctl status --no-pager -l libvirtd
+● libvirtd.service - Virtualization daemon
+     Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
+     Active: inactive (dead) since Mon 2021-09-13 14:00:04 BST; 11min ago
+...
+[nick@rpi4 ~]$ 
+----
+
+
+
+
+
+
+

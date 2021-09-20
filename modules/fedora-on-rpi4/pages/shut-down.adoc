@@ -1,0 +1,16 @@
+== shut down 
+
+Shut down (or power down, or power off) the Pi.
+
+Don't turn off the power while the computer is running. 
+Some data that should be written to disk is stored in memory. 
+Some services need to clean up files before they stop. 
+
+
+If using the CLI, enter the command `sudo systemctl poweroff`.
+If using Gnome, click the ⏻ menu option. 
+
+
+Wait a few seconds. The screen goes dark and the activity LED on the board stops flashing.
+
+Switch off the power. 

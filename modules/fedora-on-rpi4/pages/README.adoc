@@ -1,0 +1,24 @@
+= 100 things Fedora idea 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 16-10-2020
+
+[NOTE]
+====
+Most of these are not written yet, let alone published.
+What would you like to read? 
+All feedback is welcome. 
+
+The files here are my attempt to document what is bundled with the free developer subscription, 
+and how to use it.
+The docs cover activities like these. 
+
+File content is https://asciidoctor.org/[ASCIIDoctor] markdown.
+Some diagrams created with http://asciiflow.com/[asciiflow] and converted to SVG files by https://github.com/asciitosvg/asciitosvg[asciitosvg]. 
+====
+
+I'd like to write more Fedora step-by-step articles like 
+https://fedoramagazine.org/create-a-wifi-hotspot-with-raspberry-pi-3-and-fedora/[this one I wrote for Fedora Magazine].
+Only this time I'd like to use my new toy, an RPi4.
+
+

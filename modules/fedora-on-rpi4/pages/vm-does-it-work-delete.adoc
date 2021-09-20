@@ -1,0 +1,68 @@
+= delete the test VM 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 21-11-2020
+
+The _does-it-work_ VM is short-lived - it's created, checked, then deleted.
+
+
+== stop the VM
+
+Usually we stop a VM with the command ``virsh shutdown guest1``. 
+This is a graceful shutdown, like running ``systemctl poweroff``.
+
+But here we want to pull the plug, using ``virsh destroy guest1``.
+Despite the dramatic _destroy_ name, this does not delete anything. 
+
+[source,shell]
+----
+[root@rpi4 images]# virsh destroy does-it-work
+Domain does-it-work destroyed
+
+[root@rpi4 images]# 
+----
+
+
+== delete the VM
+
+There are two resources to get rid of - the compute part and the storage part. 
+
+Delete the new VM with the command  ``virsh undefine``.
+
+[source,shell]
+----
+[root@rpi4 images]# virsh undefine --nvram does-it-work 
+Domain does-it-work has been undefined
+
+[root@rpi4 images]# 
+----
+
+Check it's gone. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh list --all
+ Id   Name   State
+--------------------
+
+[root@rpi4 images]# 
+....
+
+Remove the image file. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh vol-list images
+ Name                                Path
+------------------------------------------------------------------------------------------------
+ does-it-work.raw                    /var/lib/libvirt/images/does-it-work.raw
+ Fedora-Minimal-33-1.3.aarch64.raw   /var/lib/libvirt/images/Fedora-Minimal-33-1.3.aarch64.raw
+
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# virsh vol-delete does-it-work.raw --pool images
+Vol does-it-work.raw deleted
+
+[root@rpi4 libvirt]# 
+....
+
+

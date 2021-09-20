@@ -1,0 +1,183 @@
+= create the libvirt network pubbr0
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 13-09-2021
+
+
+
+== view libvirt's default network
+
+Libvirt has network configuration named _default_.
+This tells libvirt about the _virbr0_ NAT bridge.
+
+Use the root account. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+----
+
+List networks.
+
+[source,shell]
+....
+[root@rpi4 ~]# virsh net-list
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+
+[root@rpi4 ~]# 
+....
+
+
+== view the XML 
+
+The _default_ configuration contains the XML tag _forward_. 
+The _mode_ attribute is set to 'nat', which means it's easy for virtual machines using this bridge to send requests to the home network, but impossible for the clients on the home network to send requests to these virtual machines. 
+
+The virsh net-dumpxml command displays libvirt's network config. 
+
+[source,shell]
+....
+[root@rpi4 ~]# virsh net-dumpxml default 
+....
+
+This is how the default network is configured. 
+
+[source,XML]
+....
+<network>
+  <name>default</name>
+  <uuid>beb06c88-f2a8-47b6-b82a-d07f7170bacd</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:1c:9b:1c'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+....
+
+
+
+== create the libvirt network pubbr0  
+
+Add another network to libvirt's configuration.
+The config tells libvirt about bridge _pubbr0_.
+
+Create a new XML file. 
+
+[source,shell]
+....
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# vi net-pubbr0.xml 
+....
+
+This XML file defines the new network.
+
+[source,XML]
+....
+<network>
+  <name>pubbr0</name>
+  <forward mode="bridge"/>
+  <bridge name="pubbr0" />
+</network>
+....
+
+Tell libvirt about the new configuration.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh net-define net-pubbr0.xml
+Network pubbr0 defined from net-pubbr0.xml
+
+[root@rpi4 libvirt]# 
+....
+
+Check with the _virsh net-list_ command. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh net-list --all
+ Name      State      Autostart   Persistent
+----------------------------------------------
+ default   active     yes         yes
+ pubbr0    inactive   no          yes
+
+[root@rpi4 libvirt]# 
+....
+
+
+=== delete libvirt's pubbr0 
+
+If something's not right, remove the new config with _virsh net-undefine_.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh net-undefine pubbr0
+Network pubbr0 has been undefined
+
+[root@rpi4 libvirt]# 
+....
+
+
+
+== start the libvirt network
+
+This is a temporary change. 
+The network stays active until the machine turns off. 
+After the next reboot, this will be inactive again. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh net-start pubbr0
+Network pubbr0 started
+
+[root@rpi4 libvirt]# 
+....
+
+Check. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh net-list --all
+ Name         State    Autostart   Persistent
+-----------------------------------------------
+ default      active   yes         yes
+ pubbr0       active   no          yes
+
+[root@rpi4 libvirt]# 
+....
+
+Make the change permanent. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh net-autostart pubbr0
+Network pubbr0 marked as autostarted
+
+[root@rpi4 libvirt]# 
+....
+
+Check. 
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+ pubbr0    active   yes         yes
+
+[root@host1 libvirt]# 
+....
+
+

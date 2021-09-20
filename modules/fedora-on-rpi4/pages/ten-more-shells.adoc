@@ -1,0 +1,245 @@
+= ten more shells 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 26-10-2020
+
+
+Shells have been around for decades, and they have multiplied.  
+Ancestors of the the shell program stretch all the way back to a world before Linux, before Unix and even before Multics, all the way to back to https://en.wikipedia.org/wiki/Run_commands[RUNCOM]. First, second and third places in the "incredibly old shell" competition go to sh, csh and ksh. 
+
+Over the years, many people have written many shells for many purposes. 
+But it isn't immediately apparent what's available or where to find them. 
+
+You can try looking around your Fedora system, but there's not much to see.
+The _/etc/passwd_ file lists a few login shells, like _/bin/bash_ for user accounts and _/sbin/nologin_ for service accounts. 
+The _/etc/shells_ file lists a few programs, like _/bin/sh_ and _/bin/tmux_.
+You can try searching with DNF, by running the command _sudo dnf search shell_. 
+It returns hundreds of lines, most of which aren't actually the shell programs.  
+
+
+== five interactive shells 
+
+Use  _dnf info_ to find out more about each one.
+
+* https://www.tcsh.org/[tcsh (Tenex C SHell)] was designed to be easy for C programmers - that's why there's a C in the name. 
+* http://www.kornshell.org/[ksh (Korn SHell)] was designed as a better sh. 
+* http://gondor.apana.org.au/~herbert/dash/[dash (Debian Almquist SHell)] beats bash in script-running race. It's based on another Bourne shell replacement, https://en.wikipedia.org/wiki/Almquist_shell[ash (Almquist shell)]. 
+* https://yash.osdn.jp/index.html.en[yash (Yet Another SHell)] is designed to run on https://en.wikipedia.org/wiki/POSIX#POSIX.1-2001_(with_two_TCs)[POSIX.1-2001] environments. It's got the prettiest syntax highlighting of the shells here.
+* https://busybox.net/[busybox] is a little different - it's a bundle of utilities, including a shell. It's all packed into one standalone executable file (no other library files are required). It's easy to run in a bare environment, like an embedded system or a container. Busybox includes _ash_.
+
+If you want to play with each one, run _dnf install tcsh ksh dash yash busybox_. 
+Installing these takes up about 5MB storage, which is no big deal. 
+
+Unfortunately, shells are not exactly what you'd call intuitive. 
+A new user, faced with a prompt, a flashing cursor, and nothing else, may enjoy the experience about as much as being slapped in the face. 
+Start small by starting and stopping shells. 
+
+The bash shell is already running. 
+Use _ps_ to find the process ID. 
+Use _pstree_ to draw a diagram of what's running. 
+
+[source,shell]
+---- 
+[nick@host1 ~]$ ps
+    PID TTY          TIME CMD
+   1486 pts/0    00:00:00 bash
+  32801 pts/0    00:00:00 ps
+[nick@host1 ~]$ 
+[nick@host1 ~]$ pstree 1486
+bash───pstree
+[nick@host1 ~]$ 
+----
+
+Start another shell, dash. 
+This one has a different way of dealing with the shell prompt. 
+ 
+[source,shell]
+---- 
+[nick@host1 ~]$ dash
+$ 
+----
+
+Start a few more shells. 
+These cause the prompt to change again. 
+
+[source,shell]
+---- 
+$ csh
+[nick@host1 ~]$ 
+[nick@host1 ~]$ ksh
+$ 
+$ yash
+Welcome to yash!
+
+You are seeing this message because a user-specific initialization script is
+not found at ~/.yashrc. The current session has been loaded with common
+settings that should be useful for many users. To suppress this message, copy
+a sample initialization script from /usr/share/yash/initialization/sample
+to ~/.yashrc and make any customization in it if you want. For bare default
+settings, put an empty file at ~/.yashrc. Without ~/.yashrc, you will see this
+message again next time you start yash.
+
+For more instructions, see the manual at <https://yash.osdn.jp/doc/>.
+
+nick@host1 ~ 4$ 
+nick@host1 ~ 4$ busybox ash
+~ $ 
+----
+
+That's a bunch of different shells running now.
+
+[source,shell]
+----
+~ $ pstree 1486
+bash───dash───csh───ksh───yash───busybox───pstree
+~ $ 
+----
+
+Stop the new shells. 
+All five shells understand the _exit_ command. 
+
+[source,shell]
+----
+~ $ exit
+nick@host1 ~ 4$ exit
+$ exit
+[nick@host1 ~]$ exit
+exit
+$ exit
+[nick@host1 ~]$ pstree 1486
+bash───pstree
+[nick@host1 ~]$ 
+----
+
+For the next challenge, try running the command _echo "hello world"_ in each of these shells. 
+For a bigger challenge, look for the differences between these shells.. 
+Some things, like cd, echo and ls, work the same in each shell. 
+Other things, like source, $HOME and variable assignment, are different. 
+
+
+== print "hello world" with five interactive programming shells 
+
+Many languages provide an interactive shell to try out simple commands. 
+These do pretty much everything the traditional shells do, although simple tasks like listing files is trickier with these programming shells. 
+
+These examples print a message using erlang, haskell, perl, python and tclsh.
+
+If you want to try these shells, install language files with the command 
+_dnf install erlang ghc perl python3 tcl_.
+Check your disk space first. 
+These take up hundreds of MB storage, *way* more space than the five shells above. 
+If you are comfortable with podman, keep your environment clean by installing these in separate containers. 
+
+
+
+If you want to create an interactive shell in your favorite programming language, start with some research into the https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop[REPL (Read-Eval-Print Loop)].
+
+https://www.tcl-lang.org/[TCL (Tool Control Language)]
+
+[source,shell]
+----
+[nick@host1 ~]$ tclsh
+% puts {hello world}
+hello world
+% exit
+[nick@host1 ~]$ 
+----
+
+https://www.perl.org/[Perl]
+
+[source,shell]
+----
+[nick@host1 ~]$ perl
+print "hello world\n"
+^D
+hello world
+[nick@host1 ~]$ 
+----
+
+https://www.python.org/[Python]. 
+For more Python shells, read the article https://fedoramagazine.org/enhance-python-interactive-shell/[Enhance your Python with an interactive shell].
+
+[source,shell]
+----
+[nick@host1 ~]$ python3
+Python 3.8.5 (default, Aug 12 2020, 00:00:00) 
+[GCC 10.2.1 20200723 (Red Hat 10.2.1-1)] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> print("hello world")
+hello world
+>>> quit()
+[nick@host1 ~]$ 
+----
+
+https://www.haskell.org/[Haskell]
+
+[source,shell]
+----
+[nick@host1 ~]$ ghci
+GHCi, version 8.6.5: http://www.haskell.org/ghc/  :? for help
+Prelude> putStrLn "hello world"
+hello world
+Prelude> :quit
+Leaving GHCi.
+[nick@host1 ~]$ 
+----
+
+httpshttps://www.nushell.sh/://www.erlang.org/[Erlang]
+
+[source,shell]
+----
+[nick@host1 ~]$ erl
+Erlang/OTP 22 [erts-10.7.2.4] [source] [64-bit] [smp:1:1] [ds:1:1:10] [async-threads:1] [hipe]
+
+Eshell V10.7.2.4  (abort with ^G)
+1> io:fwrite("hello world\n").
+hello world
+ok
+2> halt().
+[nick@host1 ~]$ 
+----
+
+
+=== more shells 
+
+There are many more shells out there in the Fedora repository.  
+Developers like to install zsh and https://fedoramagazine.org/tuning-your-bash-or-zsh-shell-in-workstation-and-silverblue/[customize it].
+Fish does its best to help the user. 
+Specialized shells like cephfs-shell, sqlsh and pdsh help with the hard jobs. 
+Rssh and scponly are security shells that restrict what users can do.
+Xonsh is written in Python, not C - the first challenge with xonsh is figuring out how to say xonsh. 
+
+[source,shell]
+----
+[nick@host1 ~]$ xonsh
+
+                    Welcome to the xonsh shell (0.9.17.dev2)                    
+
+   ~ Ever wonder why there isn't a Taco Shell? Because it is a corny idea. ~    
+
+--------------------------------------------------------------------------------
+xonfig tutorial    ->    Launch the tutorial in the browser
+xonfig web         ->    Run the configuration tool in the browser and claim your shell 
+(Note: Run the configurationn tool or create a ~/.xonshrc file to suppress the welcome screen)
+
+nick@host1 ~ $  
+----
+
+
+There are many more shells that are not in the Fedora repository. 
+If you're ready to put in some hacking effort, see if you can find a shell written in your favorite language. 
+https://www.nushell.sh/[Nu shell] is written in rust, not C.  
+https://github.com/michaelmacinnis/oh[Oh shell] is written in Go, and https://www.youtube.com/watch?v=v1m-WEZz46U[the author] created a page https://htmlpreview.github.io/?https://raw.githubusercontent.com/michaelmacinnis/oh/master/doc/comparison.html[Comparing oh to other Unix shells].
+
+
+== shell tips and tricks
+
+If you do regular Gnu/Linux work, it's worth putting effort into finding the shell that appeals to you.
+If you're getting started, go with https://fedoramagazine.org/fish-a-friendly-interactive-shell/[fish].
+Stick with it for a while, get over that non-intuitive learning curve, and get to grips with its quirks. 
+
+If you're expanding your bash knowledge, check out what can be done with https://fedoramagazine.org/customizing-bash/[bash dotfiles].
+
+If you want a fancy-looking working environment for bash or zsh, dress up the prompt with https://github.com/starship/starship[starship], or https://fedoramagazine.org/tuning-your-bash-or-zsh-shell-in-workstation-and-silverblue/[powerline and oh-my-zsh].
+
+

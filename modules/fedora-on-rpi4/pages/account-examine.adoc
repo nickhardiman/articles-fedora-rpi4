@@ -1,0 +1,211 @@
+= examine your user account
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 09-09-2021
+
+
+Every user of the system - whether that's a real person or an application - has an account. Account details are stored in /etc/passwd and a few other files. 
+Users belong to groups
+
+== id
+
+The `id` command gives a summary of your account. 
+It's a one-line summary in the format "(account user) (primary account group) (other account groups) (SELinux security configuration)".
+This user account was created during installation. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ id
+uid=1000(nick) gid=1000(nick) groups=1000(nick),10(wheel) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[nick@rpi4 ~]$ 
+----
+
+
+== UID  (User IDentifier) 
+
+Each account has a https://en.wikipedia.org/wiki/User_identifier[user identifier]. 
+Each user has both a number and a name. The OS works with numbers, and commands like `id`  display names. 
+
+[source,shell]
+----
+uid=1000(nick)
+----
+
+By default, the command `ls -l` display account names, not numbers.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -l .bashrc
+-rw-r--r--. 1 nick nick 376 Jul 27  2020 .bashrc
+[nick@rpi4 ~]$ 
+----
+
+But it can be told to show numbers instead. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -l -n .bashrc
+-rw-r--r--. 1 1000 1000 376 Jul 27  2020 .bashrc
+[nick@rpi4 ~]$ 
+----
+
+
+== GID (Group IDentifier)
+
+Each account has a https://en.wikipedia.org/wiki/Group_identifier[group identifier]. 
+
+The group usually has the same name and number as the user.  
+----
+uid=1000(nick) gid=1000(nick)
+----
+This is a https://en.wikipedia.org/wiki/Group_identifier#Personal_groups[personal group].
+The OS creates personal groups as a security measure, to make it a little harder to accidentally share files. 
+
+
+
+==  /etc/passwd 
+
+Account records are stored in the https://en.wikipedia.org/wiki/Passwd[passwd file], one per line. 
+
+The root account, for system administrators, has a UID of 0. 
+System accounts, for applications to use, have UIDs starting from 1. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ head -3 /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+[nick@rpi4 ~]$ 
+----
+
+User accounts, for real live people, have UIDs starting at 1000. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ grep nick /etc/passwd
+nick:x:1000:1000::/home/nick:/bin/bash
+[nick@rpi4 ~]$ 
+----
+
+These starting numbers are defined in /etc/login.defs.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ grep UID_MIN /etc/login.defs 
+UID_MIN                  1000
+SYS_UID_MIN               201
+SUB_UID_MIN		   100000
+[nick@rpi4 ~]$ 
+----
+
+ 
+== /etc/group
+
+Account groups are stored in here, one per line. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ head -3 /etc/group
+root:x:0:
+bin:x:1:
+daemon:x:2:
+[nick@rpi4 ~]$ 
+----
+
+Users that belong to the https://en.wikipedia.org/wiki/Wheel_(computing)[wheel] group get extra privileges. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ grep wheel /etc/group
+wheel:x:10:nick
+[nick@rpi4 ~]$ 
+----
+
+
+== /etc/shadow 
+
+Account passwords are stored in the https://en.wikipedia.org/wiki/Passwd#Shadow_file[shadow file]. 
+Since passwords are sensitive information, only root can view the file content. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -l /etc/shadow
+----------. 1 root root 1462 Sep  9 18:37 /etc/shadow
+[nick@rpi4 ~]$ 
+----
+
+Root's password is stored in the first line, in an encrypted field.
+The format is (name):(password):(more fields) 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo head -3 /etc/shadow
+[sudo] password for nick: 
+root:$6$Vo7/DGJHoZ4nlSeR$yEkVo7/DvzeFvNh4eDo8VkrJ.hyrdcTcLks40nrgDfUjfwMJCc4t.YNv5iW8sqNkcRjBOkfctKbnVo7/DdsIl.:18879:0:99999:7:::
+bin:*:18473:0:99999:7:::
+daemon:*:18473:0:99999:7:::
+[nick@rpi4 ~]$ 
+----
+
+
+== reference 
+
+password policy 
+
+https://docs.fedoraproject.org/en-US/fedora/rawhide/system-administrators-guide/basic-system-configuration/Managing_Users_and_Groups/
+https://docs.fedoraproject.org/en-US/Fedora/12/html/Deployment_Guide/s2-users-add.html
+
+
+Not the Fedora Account System 
+https://fedoramagazine.org/set-up-single-sign-on-for-fedora-project-services/
+https://fedoramagazine.org/getting-set-up-with-fedora-project-services/
+https://github.com/fedora-infra/fas
+
+
+
+
+== create a user account
+
+[source,shell]
+----
+$NAME=fatima
+useradd $NAME
+----
+
+Set a password. 
+
+[source,shell]
+----
+passwd --stdin $NAME
+----
+
+
+Give the account administrative access. 
+
+[source,shell]
+----
+usermod -a -G wheel $NAME
+----
+
+Create a few accounts. 
+Gvie them all the same password. 
+
+[source,shell]
+----
+cat names.txt 
+user1
+user2 
+user3
+
+for NAME in $(cat names.txt)
+do
+  useradd $NAME
+  echo 'Password;1' | passwd --stdin $NAME
+done 
+----
+
+== delete a user account 
+
+
+

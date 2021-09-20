@@ -1,0 +1,68 @@
+= examine the kernel
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 31-07-2021
+
+
+GRUB2 starts the kernel. 
+
+== files
+
+The /boot/ directory contains the current kernel and a few older ones, in case the new kernel has issues. 
+
+Each kernel version has a few files. 
+* https://en.wikipedia.org/wiki/Vmlinux[vmlinuz], the kernel.
+* https://en.wikipedia.org/wiki/Initial_ramdisk[initrd (initial ramdisk)]. This contains drivers and other files the kernel needs.
+* https://en.wikipedia.org/wiki/System.map[System.map], a look-up table that maps symbols to memory locations.
+* config, the configuration file used to build the kernel. 
+
+
+== release 
+
+The kernel release name is rather long. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ uname -r
+4.18.0-193.6.3.el8_2.x86_64
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ KERNEL_RELEASE=$(uname -r)
+[nick@guest1 ~]$ ls /boot/*$KERNEL_RELEASE*
+/boot/config-4.18.0-193.6.3.el8_2.x86_64              
+/boot/System.map-4.18.0-193.6.3.el8_2.x86_64
+/boot/initramfs-4.18.0-193.6.3.el8_2.x86_64.img       
+/boot/vmlinuz-4.18.0-193.6.3.el8_2.x86_64
+/boot/initramfs-4.18.0-193.6.3.el8_2.x86_64kdump.img
+[nick@guest1 ~]$ 
+[nick@guest1 ~]$ head /boot/config-$KERNEL_RELEASE
+#
+# Automatically generated file; DO NOT EDIT.
+# Linux/x86_64 4.18.0-193.6.3.el8_2.x86_64 Kernel Configuration
+#
+
+#
+# Compiler: gcc (GCC) 8.3.1 20191121 (Red Hat 8.3.1-5)
+#
+CONFIG_64BIT=y
+CONFIG_X86_64=y
+[nick@guest1 ~]$ 
+----
+
+== vmlinuz 
+
+GRUB configuration defines a default kernel to run, if the user doesn't choose during the start-up process.
+The default kernel is usually the latest one.
+The last entry in this list is the newest. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ ls -lart /boot/vmlinuz-*
+-rwxr-xr-x. 1 root root 8913760 Mar 27 14:48 /boot/vmlinuz-4.18.0-193.el8.x86_64
+-rwxr-xr-x. 1 root root 8913760 Apr 23 06:16 /boot/vmlinuz-0-rescue-92b1f5dc7a31458b86b8af1f768ef406
+-rwxr-xr-x. 1 root root 8917856 Jun  1 21:40 /boot/vmlinuz-4.18.0-193.6.3.el8_2.x86_64
+-rwxr-xr-x. 1 root root 8917856 Jul  4 09:50 /boot/vmlinuz-0-rescue-5b3bf4e5791e42a283a85f36070e5fcc
+-rwxr-xr-x. 1 root root 8917856 Jul 14 00:27 /boot/vmlinuz-4.18.0-193.13.2.el8_2.x86_64
+[nick@guest1 ~]$ 
+----
+
+

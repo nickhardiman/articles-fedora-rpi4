@@ -1,0 +1,69 @@
+= compare your login shell with a non-login shell 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 09-09-2021
+
+
+A Bash login shell is for use by a person. 
+A non-login shell is for use by a program. 
+
+You can find out who is logged in with the `who` command. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ who
+nick     pts/0        2021-09-09 07:45 (192.168.1.199)
+[nick@rpi4 ~]$ 
+----
+
+
+== login shell vs. non-login shell
+
+When you login, you get a login shell.
+The /etc/profile script runs and sets up all kinds of variables, defines shortcuts, runs programs and anything else that makes life easier for the command line user.
+
+When a script runs, it doesn't need all this extra help.
+If a bash shell runs a command and exits, it doesn't need to be a login shell.
+The non-login shell provides the essentials. 
+Bash non-login shells run only /etc/bashrc, not /etc/profile.
+
+One of the shell options describes whether the bash shell is a login shell. 
+
+Check you are using a login shell. 
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ shopt login_shell
+login_shell    	on
+[nick@rpi4 ~]$
+----
+
+Fire up a bash shell that only runs one command then exits. 
+The -c option tells bash to start a non-login shell.
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ bash -c 'shopt login_shell'
+login_shell    	off
+[nick@rpi4 ~]$ 
+----
+
+Another sign of a login shell - a peculiar one - is a hyphen added to the name.
+Check your login shell. 
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ echo $0
+-bash
+[nick@rpi4 ~]$ 
+----
+
+Repeat the non-login shell trick. 
+
+[source,shell]
+----  
+[nick@rpi4 ~]$ bash -c 'echo $0'
+bash
+[nick@rpi4 ~]$ 
+----
+

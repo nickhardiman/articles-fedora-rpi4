@@ -1,0 +1,143 @@
+= change the shell prompt
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 11-10-2021
+
+You can play with the prompt layout by changing the PS1 variable. 
+The variable contains odd sequences of characters that tell bash what to put where. 
+
+You can also change the color using ANSI escape codes. 
+These are more odd-looking character strings that the terminal interprets as special commands. 
+
+The `infocmp` command displays a big list of control sequences, but you won't find these in that list. 
+
+Git users often https://git-scm.com/book/en/v2/Appendix-A%3A-Git-in-Other-Environments-Git-in-Bash[customize the prompt] by running the _git-prompt.sh_ script.
+
+
+== examine the prompt 
+
+Ever wondered why the prompt looks like this? 
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ 
+----
+
+A special set of symbols define how the prompt looks. 
+A special bash variable named PS1 configures the prompt. 
+This isn\t the only PS variable - there are more, numbered from 0 to 4. 
+These are described in `man bash`.
+
+[source,shell]
+---- 
+[nick@rpi4 ~]$ echo $PS1
+[\u@\h \W]\$
+[nick@rpi4 ~]$ 
+----
+
+* \u - user name
+* @ - this doesn't get interpreted in any special way. 
+* \h - host name (not the domain)
+* \W - current directory (not the full path)
+
+== change the layout 
+
+To play around with the prompt layout, look at the man page (_man bash_) and search for _PROMPTING_. 
+It has a big list of backslash-escaped special characters, like the ones used here (\u, \h and \W) .
+
+Change the layout. This example uses the form $'string' to add the unicode star character (see QUOTING in `man bash`).
+
+[source,shell]
+----
+PS1=$'\u2605 \u \u2605 \W]\$ '
+----
+
+The result looks like this. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ PS1=$'\u2605 \u \u2605 \W]\$ '
+★ nick ★ ~]$ 
+----
+
+Undo your changes. 
+Set the PS1 environment variable back to what it was.
+
+[source,shell]
+----
+PS1='[\u@\h \W]\$ '
+----
+
+
+== change the color
+
+The system sets the terminal to put black text on a white background. 
+You can change text color with the printf command. 
+
+Change text color to red.
+
+[source,shell]
+----
+printf \\e[31m
+----
+
+Remove your change. 
+\e[0m is a sequence that tells bash to get rid of all the changes done so far.
+That double slash at the beginning stops bash getting confused  
+
+[source,shell]
+----
+printf \\e[0m
+----
+
+That number 31 in the middle is a color code. 
+The simplest set of colors are https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit[3 bit color] codes. 
+
+* 30 black
+* 31 red
+* 32 green
+* 33 yellow
+* 34 blue
+* 35 magenta
+* 36 cyan 
+* 37 white
+
+Background colors can be changed as well, using numbers 40 to 47.
+
+Xterm also understands https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit[8 bit] color codes, which can display 256 different colors. 
+Commands for changing text color start at `printf "\\e[38;5;0m"` (that number 0 sets the color) and end at `printf "\\e[38;5;255m"`.
+Background color codes are similar, from `printf "\\e[48;5;0m"` and end at `printf "\\e[48;5;255m"`.
+
+[source,shell]
+----
+printf "\\e[38;5;123m"
+----
+
+The PS1 prompt can use these colors too. 
+This string first sets the color to magenta, then displays a dollar, and finally sets the color to red.
+When the user types a command, the text is red. 
+When they press return, a magenta dollar prompt appears. 
+
+[source,shell]
+----
+PS1=$'\\[\e[35m\\] $ \\[\e[31m\\]'
+----
+
+This list describes the parts of that string and what they all mean.  
+
+* \\[ tells bash this is the start of a set of non-printing characters.
+* \e[35m is a terminal control sequence. 
+* \\] marks the end of the non-printing characters.
+* ' $ ' - In the middle are printable characters ' $ ' (a dollar character with a space on either side).
+* \\[ - This is the start of another pair of non-printing character markers \\[ \\].
+* \e[31m - In the middle is \e[31m, the color red. 
+
+Undo your changes. 
+Remove new colors.
+
+[source,shell]
+----
+printf \\e[0m
+----
+
+

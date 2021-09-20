@@ -1,0 +1,80 @@
+= look at firmware files
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+
+
+Once the system is up and running, you can see some firmware files. 
+
+
+== /boot/efi 
+
+The first partition contains all the files that make up the UEFI system.
+
+.UEFI partition
+[source,shell]
+----
+[nick@rpi4 ~]$ df -h /boot/efi
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2       599M  7.0M  592M   2% /boot/efi
+[nick@rpi4 ~]$ 
+----
+
+
+== /lib/firmware/
+
+More firmware may be required while the OS is running. 
+A device driver may request a firmware at any time. 
+This firmware is code that is uploaded to a device to make it work. 
+The code is stored in hundreds of files in the /lib/firmware/ directory. 
+
+Most of these files are not useful on the Raspberry Pi, except for Broadcom firmware. 
+The Broadcom brcmfmac driver (the driver for the wifi chip) requests firmware. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dmesg | grep brcmfmac
+[   14.374620] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   14.375456] usbcore: registered new interface driver brcmfmac
+[   17.913937] brcmfmac: brcmf_fw_alloc_request: using brcm/brcmfmac43455-sdio for chip BCM4345/6
+[   18.014931] brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4345/6 wl0: Sep 18 2020 02:27:58 version 7.45.221 (3a6d3a0 CY) FWID 01-bbd9282b
+[nick@rpi4 ~]$ 
+----
+
+== /sys/firmware/
+
+Linux has a special file system, sysfs. 
+Kernel objects appear as files in the /sys/ directory. 
+All the firmware objects are in the /sys/firmware directory.  
+
+/sys/firmware/devicetree/ holds https://en.wikipedia.org/wiki/Device_tree[device tree] files. It's empty here. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -a /sys/firmware/devicetree/
+.  ..
+[nick@rpi4 ~]$ 
+----
+
+/sys/firmware/dmi/ files are all part of a big https://en.wikipedia.org/wiki/Desktop_Management_Interface[DMI] table of device data.  
+The _dmidecode_ command displays this table in a readable format. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo dmidecode -s system-manufacturer
+Raspberry Pi Foundation
+[nick@rpi4 ~]$ 
+----
+
+/sys/firmware/efi/ holds EFI variables and values, such as whether this is a 32 bit or 64 bit UEFI system.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ cat /sys/firmware/efi/fw_platform_size
+64
+[nick@rpi4 ~]$ 
+----
+
+
+

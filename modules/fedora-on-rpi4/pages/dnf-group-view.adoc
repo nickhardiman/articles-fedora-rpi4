@@ -1,0 +1,142 @@
+= view DNF groups  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-09-2021
+
+A DNF group is a collection of RPM packages. 
+
+Some packages are useful to install together, even though they don't depend on each other to work. 
+A DNF group defines a useful collection of packages.
+
+A DNF group is not related to package dependencies. 
+Installing one RPM package often means installing more than one package - the one you want and other packages required to make it work. 
+
+
+== a DNF group 
+
+Fedora has dozens of DNF groups, to help with system administration, office work and container development. 
+The https://fedoraproject.org/wiki/Category:SIGs[Fedora SIGs (Special Interest Groups)] often produce their own groups, like the https://fedoraproject.org/wiki/SIGs/3DPrinting[3D Printing] group. 
+
+The DNF group "System Tools" lists packages for working with network connections, interfaces, storage and more. 
+
+Groups are listed under four headings. 
+
+* Available Environment Groups
+* Installed Environment Groups
+* Installed Groups
+* Available Groups
+
+
+== an environment group 
+
+An environment group is used to create a Fedora Spin.
+An environment group is created for use by the Anaconda installer rather than end-users, although an end-user can use use these groups. 
+An environment group contains many groups. 
+
+
+=== a Fedora Spin 
+
+A https://spins.fedoraproject.org/[Fedora spin] is a themed version of Fedora.
+That usually means Fedora combined with one desktop system. 
+There are many desktop spins, including the https://spins.fedoraproject.org/en/kde/[KDE Plasma spin], and https://spins.fedoraproject.org/en/kde/[Xfce spin].
+A spin can also be Fedora combined with productivity tools.
+https://labs.fedoraproject.org/[Fedora Labs] provide an https://labs.fedoraproject.org/en/astronomy/[Astronomy spin], a https://labs.fedoraproject.org/en/games/[Games spin], a https://labs.fedoraproject.org/en/scientific/[Scientific spin] and others. 
+
+== group commands 
+
+`dnf group (something)`, where something is info, install, list, remove, upgrade or mark. 
+Run `man dnf` and search for _Group Command_. 
+
+== list groups 
+
+List DNF groups. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group list
+Last metadata expiration check: 0:05:15 ago on Mon 13 Sep 2021 08:03:53 BST.
+Available Environment Groups:
+   Fedora Custom Operating System
+   Minimal Install
+...
+   System Tools
+   Text-based Internet
+   Window Managers
+[nick@rpi4 ~]$ 
+----
+
+== list packages in a group
+
+List packages in the DNF group "System Tools".
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group info "System Tools"
+Last metadata expiration check: 0:10:21 ago on Mon 13 Sep 2021 08:03:53 BST.
+Group: System Tools
+ Description: This group is a collection of various tools for the system, such as the client for connecting to SMB shares and tools to monitor network traffic.
+ Default Packages:
+   BackupPC
+   NetworkManager-l2tp
+   NetworkManager-libreswan
+...
+   xdelta
+   zisofs-tools
+   zsh
+ Optional Packages:
+   PackageKit-command-not-found
+   aide
+   aircrack-ng
+...
+   x3270-x11
+   xmobar
+   xsel
+   zidrav
+[nick@rpi4 ~]$ 
+----
+
+== view group ID
+
+Each group has a group ID. 
+See these with the -v option. 
+The "System Tools" group has group ID _system-tools_.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group list -v
+Loaded plugins: builddep, changelog, config-manager, copr, debug, debuginfo-install, download, generate_completion_cache, groups-manager, needs-restarting, playground, repoclosure, repodiff, repograph, repomanage, reposync
+DNF version: 4.8.0
+...
+updates-modular: using metadata from Wed 15 Sep 2021 19:41:08 BST.
+Last metadata expiration check: 0:26:05 ago on Thu 16 Sep 2021 09:54:26 BST.
+Available Environment Groups:
+   Fedora Custom Operating System (custom-environment)
+   Minimal Install (minimal-environment)
+   Fedora Workstation (workstation-product-environment)
+...
+   System Tools (system-tools)
+   Text-based Internet (text-internet)
+   Window Managers (window-managers)
+[nick@rpi4 ~]$ 
+----
+
+
+== view hidden groups 
+
+The group list includes the most useful groups, not all. 
+Dozens of groups are hidden, including the installed Gnome group. 
+View all 160 groups using the --hidden option. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group list --hidden
+...
+Installed Groups:
+   Core
+   GNOME
+...
+   Xfce Software Development
+   XMonad
+   XMonad for MATE
+[nick@rpi4 ~]$ 
+----

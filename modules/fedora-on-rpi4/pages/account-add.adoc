@@ -1,0 +1,118 @@
+= add user accounts
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 09-09-2021
+
+
+
+== create one user account
+
+Your account does not have permission to create more users. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ useradd adsf
+useradd: Permission denied.
+useradd: cannot lock /etc/passwd; try again later.
+[nick@rpi4 ~]$ 
+----
+
+Use the root account. 
+
+[source,shell]
+----
+sudo useradd fatima
+----
+
+Set a password. 
+
+[source,shell]
+----
+passwd --stdin $NAME
+----
+
+
+Give the account administrative access. 
+
+[source,shell]
+----
+usermod -a -G wheel fatima
+----
+
+== delete a user account 
+
+Check before.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ id user3
+uid=1003(user3) gid=1003(user3) groups=1003(user3)
+[nick@rpi4 ~]$ 
+----
+
+Delete account records and remove the home directory. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo userdel -r user3
+[nick@rpi4 ~]$ 
+----
+
+Check after. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ id user3
+id: ‘user3’: no such user
+[nick@rpi4 ~]$ 
+----
+
+
+== create many accounts
+
+Create a few accounts. 
+Give them all the same password. 
+
+Users to add 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ echo user1 > names.txt
+[nick@rpi4 ~]$ echo user2 >> names.txt
+[nick@rpi4 ~]$ echo user3 >> names.txt
+[nick@rpi4 ~]$ 
+[nick@rpi4 ~]$ cat names.txt 
+user1
+user2
+user3
+[nick@rpi4 ~]$ 
+----
+
+Commands
+
+[source,shell]
+----
+[nick@rpi4 ~]$ cat names-add.sh 
+for NAME in $(cat names.txt)
+do
+  useradd $NAME
+  echo 'Password;1' | passwd --stdin $NAME
+done
+[nick@rpi4 ~]$ 
+----
+
+Run. Only the root user can add accounts. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo bash names-add.sh
+Changing password for user user1.
+passwd: all authentication tokens updated successfully.
+Changing password for user user2.
+passwd: all authentication tokens updated successfully.
+Changing password for user user3.
+passwd: all authentication tokens updated successfully.
+[nick@rpi4 ~]$ 
+----
+
+

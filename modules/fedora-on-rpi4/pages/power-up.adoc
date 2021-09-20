@@ -1,0 +1,46 @@
+= power up and view boot screens
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+The stages of a normal computer start-up process look like this on the display.
+
+Power up (or power on, or boot up)
+
+Hardware initialization, nothing to see yet.
+
+image::boot-1.jpeg[boot1,width=600,title="boot 1"]
+
+The display's driver board is ready. 
+
+image::boot-2.jpeg[boot2,width=600,title="boot 2"]
+
+The Pi's firmware is working. 
+
+image::boot-3.jpeg[boot3,width=600,title="boot 3"]
+
+GRUB2 displays boot options. 
+
+image::boot-4.jpeg[boot4,width=600,title="boot 4"]
+
+The firmware displays a splash screen. 
+
+image::boot-5.jpeg[boot5,width=600,title="boot 5"]
+
+The OS displays another splash screen. 
+
+image::boot-6.jpeg[boot6,width=600,title="boot 6"]
+
+Systemd lists all the things it is doing. 
+
+image::boot-7.jpeg[boot7,width=600,title="boot 7"]
+
+The graphical login application waits for human interaction. 
+
+image::boot-8.jpeg[boot8,width=600,title="boot 8"]
+
+== oops! no USB drive!
+
+If the USB drive is missing, the firmware is clever enough to provide some troubleshooting information.
+
+image::boot-no-usb-drive.jpeg[boot-oops-1,width=600,title="boot without USB drive"]

@@ -1,0 +1,64 @@
+= log into the Bash shell 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 16-10-2020
+
+When you use the CLI of a Linux machine, the system gives you a shell. 
+It's one of the three big pieces of an OS - the kernel, the shell and all the utility programs.
+The _shell_ name comes from a nut or seed analogy - shell on the outside, kernel on the inside. 
+
+The shell is a pillar of developer and sysadmin worlds, up there with the toolchain, the source code repository and the IDE.  A shell is a command interpreter that waits for your commands, ready to run its https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop[REPL (Read-Eval-Print Loop)] until you stop the program. 
+
+
+== the command line 
+
+Ths interactive command line shell is nowhere near as friendly as a GUI. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ 
+----
+
+No-one is born knowing what '. ./.bashrc' means. 
+But there's no avoiding it - the shell has been around forever (in IT terms) and is everywhere. For instance, if the Linux startup process goes wrong, you may find yourself in the https://fedoramagazine.org/initramfs-dracut-and-the-dracut-emergency-shell/[dracut emergency shell].
+When you log into the system console, or SSH to a machine, or run tmux, you get your own copy of the _bash_ shell. 
+
+Plenty of Bash configuration has been done for you by resource files. 
+You've got plenty of environment variables (run _env_), shell options (run _shopt_), aliases (_alias_), a umask (_umask_) and a fancy prompt.
+
+
+
+== GNU Bash 
+
+The Bash shell has been around a long time and undergone some pretty major revisions. 
+After logging in, you find yourself using GNU Bash, version 5. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ bash --version
+GNU bash, version 5.0.17(1)-release (aarch64-redhat-linux-gnu)
+Copyright (C) 2019 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+
+This is free software; you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+[nick@rpi4 ~]$ 
+----
+
+
+== the Bash back story 
+
+In the 1980s, Unix systems included a shell written by Dr. Stephen Bourne, called the https://en.wikipedia.org/wiki/Bourne_shell[Bourne shell]. 
+When the GNU project created their shell, they based much of it on this https://en.wikipedia.org/wiki/Bourne_shell[Bourne shell] and called it the https://en.wikipedia.org/wiki/Bash_(Unix_shell)[Bourne again shell] (see what they did there?). The old Bourne shell executable was named _sh_. You can't get your hands on this old program - the Bourne shell isn't available for Fedora. 
+There is a file _/bin/sh_, but it's a symlink to _bash_. 
+
+The new _bash_ does most things that _sh_ did. 
+Dr. Bourne wrote an article for Byte magazine way back in 1983, called https://archive.org/stream/byte-magazine-1983-10/1983_10_BYTE_08-10_UNIX#page/n187/mode/2up[The Unix Shell], to explain how to use his shell. 
+The article contains many instantly recognizable commands. And - bonus - this article is sandwiched between stunning retro-ads for long-dead hardware and software - 64K RAM upgrade kit, anyone?  
+
+OS distributions that include GNU software often use bash as the default shell. That's true for Fedora, other Linux distributions, and even Apple OS X. Bash isn't the default everywhere - it's available for FreeBSD, but the default is _sh_. 
+
+Bash, like sh, is written in C. You can get the https://git.savannah.gnu.org/cgit/bash.git[source code] from https://savannah.gnu.org/[Savannah], Gnu's software site.
+
+
+

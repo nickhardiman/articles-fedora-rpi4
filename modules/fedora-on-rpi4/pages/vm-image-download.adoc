@@ -1,0 +1,106 @@
+= download a Fedora image file
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 21-11-2021
+
+
+Grab a copy of the Fedora Minimal image.
+This image is not an install ISO - the OS is already installed. 
+
+
+== download a ready-made file system 
+
+Fedora provides an https://alt.fedoraproject.org/alt/[alternate architecture] download to boot a virtual machine.
+Use a copy of the https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/[Fedora Minimal image] for ARM® aarch64 Architecture.
+
+
+* Use a web browser.
+* Look at the https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/[list of images].
+* Find the latest minimal file. It's named something like _Fedora-Minimal-33-1.3.aarch64.raw.xz_.
+* Copy the link. 
+
+Use a CLI to get the image. 
+
+* Use the root account. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+....
+
+* Change to libvirt's images directory. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd /var/lib/libvirt/images/
+[root@rpi4 images]# 
+----
+
+* Run a curl command. 
+
+[source,shell]
+----
+[root@rpi4 images]# FILE=https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz
+[root@rpi4 images]#
+[root@rpi4 images]# curl -i $FILE 
+----
+
+* Look at the HTTP headers. You don't get the file, you get a redirect to another service. The URL https://download.fedoraproject.org/pub/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz will return a 302 code and another location for the image file.
+The  _location:_ header shows another download location.  
+
+[source,shell]
+----
+[root@rpi4 images]# curl -i $FILE 
+HTTP/2 302 
+date: Sat, 21 Nov 2020 11:06:09 GMT
+server: Apache
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: same-origin
+location: http://mirrors.dotsrc.org/fedora-buffet/fedora-secondary/releases/33/Spins/aarch64/images/Fedora-Minimal-33-1.3.aarch64.raw.xz
+content-type: text/plain
+content-length: 0
+apptime: D=4037
+x-fedora-proxyserver: proxy36.fedoraproject.org
+x-fedora-requestid: X7j0obpARiOhchQcD-yVLQAKAgk
+
+[root@rpi4 images]# 
+----
+
+* Use curl to download the file. Tell curl to follow redirects like the one in these headers (that's what the --location option does here) and to save the file with the same name (--remote-name).
+
+[source,shell]
+----
+[root@rpi4 images]# curl --location --remote-name $FILE
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  876M  100  876M    0     0  7281k      0  0:02:03  0:02:03 --:--:-- 8863k
+[root@rpi4 images]# 
+----
+
+* Extract the image from the downloaded file. This uncompresses the file from less than a GB to 5GB. The process takes a minute -  write speed on a USB drive is not great. 
+
+[source,shell]
+----
+[root@rpi4 images]# unxz  Fedora-Minimal-33-1.3.aarch64.raw.xz 
+[root@rpi4 images]# 
+----
+
+*  Check SELinux. The SELinux file type is _virt_image_t_. That's fine. 
+
+[source,shell]
+----
+[root@rpi4 images]# getenforce
+Enforcing
+[root@rpi4 images]# 
+[root@rpi4 images]# ls -laZ
+total 2381720
+drwx--x--x.  2 root root system_u:object_r:virt_image_t:s0           4096 Nov 21 11:20 .
+drwxr-xr-x. 10 root root system_u:object_r:virt_var_lib_t:s0         4096 Nov 20 17:19 ..
+-rw-r--r--.  1 root root unconfined_u:object_r:virt_image_t:s0 5368709120 Nov 21 11:19 Fedora-Minimal-33-1.3.aarch64.raw
+[root@rpi4 images]# 
+----
+

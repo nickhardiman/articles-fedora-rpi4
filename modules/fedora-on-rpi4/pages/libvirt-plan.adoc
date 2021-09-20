@@ -1,0 +1,66 @@
+= plan the virtual network
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 20-02-2021
+
+https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-virtualization/
+
+== virtual networks and virtual machines 
+
+The home network and rpi4 are physical - you can touch the cables, hit the power switch, watch the blinking lights. 
+
+This site tells you how to set up a virtual network inside host1. 
+The virtual network is made up of bridges, machines, storage volumes and other resources.
+
+There are two virtual bridges, pubbr0 and privbr0.
+Pubbr0 (public bridge no.0) can be seen from the home network. 
+Privbr0 (private bridge no.0) can't be seen from the home network. 
+
+Machines host1 and guest1 are connected to pubbr0.  
+You can get to these machines from the workstation, to view web pages, send mail and so on. 
+IP addresses are assigned by the home network. 
+I have a home router provided by my ISP, which has a built-in DHCP server. 
+This DHCP server dishes out IPv4 addresses in the range 192.168.1.0/24.
+
+
+Two machines are only connected to privbr0 - guest2 and guest3. 
+These are protected.
+You can only SSH to these machines from host1 or guest1. 
+They can only get to the home network and Internet via guest1. 
+It's good for security, but bad for laziness because work is required to make these hidden machines useful. 
+The virtual machine guest1 is connected to both bridges pubbr0 and privbr0 - it acts as a gateway between the other guests and the outside world. 
+
+This virtual network is created using libvirt, NetworkManager, libguestfs and other software tools. 
+
+
+[source,shell]
+....
++-------------------------------------------+
+|                               pubbr0      |
+|                            192.168.1.0/24 |
+|  host1.lab.example.com               |    |
+|                  192.168.1.195 +-----+----+---(home network) 
+|                                      |    |
+|  +-----------------------------+     |    |
+|  | guest1.lab.example.com      |     |    |
+|  |              192.168.1.217  +-----+    |   
+|  | guest1.private.example.com  |          |
+|  |              192.168.152.11 +--+       |
+|  +-----------------------------+  |       |
+|                                   |       |   
+|  +-----------------------------+  |       |
+|  |                             |  |       |
+|  | guest2.private.example.com  |  |       |
+|  |             192.168.152.100 +--+       |
+|  +-----------------------------+  |       |
+|                                   |       |
+|  +-----------------------------+  |       |
+|  |                             |  |       |
+|  | guest3.private.example.com  |  |       |
+|  |             192.168.152.101 +--+       |
+|  +-----------------------------+  |       |
+|                                   |       |
+|                              privbr0      |
+|                          192.168.152.0/24 |
++-------------------------------------------+
+....
