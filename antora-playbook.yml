@@ -1,5 +1,5 @@
 site:
-  title: Nick's Home Lab, hackity hack
+  title: Nick's Home Lab, bzzz clunk
   url: https://fedora-on-rpi4.netlify.app
   start_page: articles:ROOT:index.adoc
   keys:
