@@ -20,7 +20,7 @@ image::usb-drive-os.jpeg[hardware,width=600,title="USB drive to hold the OS"]
 
 Insert the drive into your workstation. 
 
-image::usb-workstation.jpeg[hardware,width=600,title="USB drive in workstation"]
+image::usb-os-workstation.jpeg[hardware,width=600,title="USB drive in workstation"]
 
 
 Everything from here on down is 
@@ -184,3 +184,5 @@ The target drive is now ready. Remove it from the host computer and plug it into
 ====
 Be sure to leave the Raspberry Pi off for now. Attempting to boot with only UEFI and no installer or operating system may cause it to automatically adjust configuration and change default boot to PXE, which causes problems later.
 ====
+
+image::usb-os-rpi4.jpeg[hardware,width=600,title="USB drive in rpi4"]
