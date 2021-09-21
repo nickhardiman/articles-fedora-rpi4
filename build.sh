@@ -1,5 +1,10 @@
 #!/bin/bash
-# what are we working with?
+# My netlify config includes the command "bash -x ./build.sh"
+# Job may be done better using a TOML file like this. 
+# https://github.com/mark-plummer/antora/blob/master/netlify.toml
+#
+# What's in the container? What are we working with?
+# Replies appear in Netlify's deploy log.
 env | sort
 pwd
 ls -la

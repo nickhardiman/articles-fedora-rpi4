@@ -1,7 +1,11 @@
 site:
   title: Nick's Home Lab, bzzz clunk
   url: https://fedora-on-rpi4.netlify.app
-  start_page: articles:ROOT:index.adoc
+  # start_page default value is OK
+  # (https://docs.antora.org/antora/2.3/playbook/site-start-page/)
+  # no need to set this site key 
+  # (https://docs.antora.org/antora/2.3/playbook/configure-site/#site-key)
+  #start_page: fedora-on-rpi4:ROOT:index.adoc
   keys:
     google_analytics: 'G-7K2RCE6KXL'
 content:

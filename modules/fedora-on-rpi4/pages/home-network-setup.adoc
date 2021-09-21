@@ -60,7 +60,7 @@ The workstation's OS doesn't matter.
 As long as it can run an SSH client, it's good enough. 
 
 
-== a new Raspberry Pi 4 for your the home lab 
+== a new Raspberry Pi 4 for the home lab 
 
 I'm also assuming you have the resources to add a new machine to your home network. 
 As long as you can figure out how to plug the new Raspberry Pi into the home network, that's  fine. 
