@@ -1,4 +1,4 @@
-= articles
+= Fedora on a Raspberry Pi 4
 Nick Hardiman <nick@silvan.uk>
 :source-highlighter: highlight.js
 :revdate: 01-01-2021

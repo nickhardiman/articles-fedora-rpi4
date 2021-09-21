@@ -3,7 +3,7 @@
 # The value can contain letters, numbers, underscores (_), hyphens (-), and periods (.). 
 # The value cannot contain a space, a forward slash (/), or HTML special characters (&, <, or >). 
 # The value cannot be empty.
-name: articles
+name: fedora-on-rpi4
 
 # https://docs.antora.org/antora/2.3/component-name-and-version/#version-key
 # version:
