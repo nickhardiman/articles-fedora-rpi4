@@ -22,9 +22,22 @@ Insert the drive into your workstation.
 
 image::usb-os-workstation.jpeg[hardware,width=600,title="USB drive in workstation"]
 
+== download UEFI firmware
 
-Everything from here on down is 
-Robert's good work, not mine
+Download the latest copy to the workstation. 
+
+rpi4-uefi is a clever project. Check out the Windows 10 instructions at https://rpi4-uefi.dev/.
+
+View the https://github.com/pftf/RPi4/releases/[releases page].
+
+Pick the latest. 
+
+
+== Robert's good work 
+
+Everything from here on down is Robert's good work, not mine. 
+
+Visit the real thing. 
 https://fwmotion.com/blog/operating-systems/2020-09-04-installing-fedora-server-onto-pi4/
 
 == Prepare Target Drive

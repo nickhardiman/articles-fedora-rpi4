@@ -1,0 +1,13 @@
+= Fedora on a Raspberry Pi 4  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 05-01-2021
+
+
+I'm working on some pieces of writing.
+
+[NOTE]
+====
+These docs have nothing to do with any https://docs.fedoraproject.org/en-US/docs/[official Fedora docs].
+Fedora isn't even supported on the Raspberry Pi 4. 
+====

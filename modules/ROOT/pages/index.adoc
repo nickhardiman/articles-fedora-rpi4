@@ -3,7 +3,13 @@ Nick Hardiman <nick@silvan.uk>
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
-Play with toys 
+[NOTE]
+====
+These docs have nothing to do with any https://docs.fedoraproject.org/en-US/docs/[official Fedora docs].
+Fedora isn't even supported on the Raspberry Pi 4. 
+====
+
+Nick's home lab notes. Play with toys. 
 
 * hardware - https://www.raspberrypi.org/products/raspberry-pi-4-model-b/[Raspberry Pi 4 Model B 8GB]
 * firmware - https://github.com/pftf/RPi4[Raspberry Pi 4 UEFI Firmware Images]
