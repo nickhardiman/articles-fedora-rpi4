@@ -21,3 +21,4 @@ version: 'dev'
 nav:
 - modules/setup/nav.adoc 
 - modules/start-stop/nav.adoc 
+- modules/next/nav.adoc 
