@@ -19,6 +19,7 @@ version: 'dev'
 # nav:
 # Each value is a path to an individual navigation file, relative to the location of the antora.yml file.
 nav:
-- modules/setup/nav.adoc 
+- modules/set-up/nav.adoc 
 - modules/start-stop/nav.adoc 
+- modules/command-line/nav.adoc 
 - modules/next/nav.adoc 
