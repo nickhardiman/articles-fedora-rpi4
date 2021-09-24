@@ -1,0 +1,201 @@
+= copy UEFI to a USB drive   
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 28-10-2021
+
+One of the USB drives provides the OS storage. 
+The other one holds installer software. 
+
+image::usb-drives.jpeg[hardware,width=600,title="USB drives"]
+
+Prepare the OS drive by copying UEFI software onto it. 
+Use a Linux workstation to prepare the drive. 
+A VM running Fedora works fine. 
+Using a Macbook is tricky. 
+Windows, dunno.
+
+Use the unlabelled USB drive.
+
+image::usb-drive-os.jpeg[hardware,width=600,title="USB drive to hold the OS"]
+
+Insert the drive into your workstation. 
+
+image::usb-os-workstation.jpeg[hardware,width=600,title="USB drive in workstation"]
+
+== download UEFI firmware
+
+Download the latest copy to the workstation. 
+
+rpi4-uefi is a clever project. Check out the Windows 10 instructions at https://rpi4-uefi.dev/.
+
+View the https://github.com/pftf/RPi4/releases/[releases page].
+
+Pick the latest. 
+
+
+== Robert's good work 
+
+Everything from here on down is Robert's good work, not mine. 
+
+Visit the real thing. 
+https://fwmotion.com/blog/operating-systems/2020-09-04-installing-fedora-server-onto-pi4/
+
+== Prepare Target Drive
+
+Prior to installing Fedora Server onto the Raspberry Pi 4, the target drive needs to be set up with a new partition table. The only thing that will be installed by the host system onto the drive will be UEFI; installation of Fedora will happen once the drive is running with the Raspberry Pi 4.
+
+== Partition target drive
+
+Start by inserting the target drive into the host computer, ensuring any existing partitions are unmounted, and creating a new partition table.
+
+[WARNING]
+====
+In this example, the device `/dev/sdb` is used. The device may differ on your own system; be absolutely sure that it is correct before writing partition table modifications.
+====
+
+.Creating a new partition table on /dev/sdb
+[source,shell]
+----
+[robert@host ~]$ sudo fdisk /dev/sdb
+[sudo] password for robert:
+
+Welcome to fdisk (util-linux 2.35.2).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): o
+Created a new DOS disklabel with disk identifier 0x3b6d0995.
+----
+
+After creating the new partition table, create the first and only new partition. This partition will hold the UEFI system on a FAT32 filesystem. This partition can be pretty small; in the example, I am giving it 2 GiB so that I’ll have plenty of space for storing screenshots from UEFI.
+
+The minimum size will be close to 128 MiB. It needs to be large enough to hold the updated kernel packages in addition to the UEFI system.
+
+.Creating a partition for FAT32 data
+[source,shell]
+----
+Command (m for help): n
+Partition type
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended (container for logical partitions)
+Select (default p):
+
+Using default response p.
+Partition number (1-4, default 1):
+First sector (2048-120176639, default 2048):
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (2048-120176639, default 120176639): +2G
+
+Created a new partition 1 of type 'Linux' and of size 2 GiB.
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): c
+Changed type of partition 'Linux' to 'W95 FAT32 (LBA)'.
+----
+
+When happy with the new partition structure, write the new partition table to the target drive.
+
+[WARNING]
+====
+Again, be absolutely sure that the correct device has been specified when entering fdisk; otherwise, data loss on your host system may occur.
+====
+
+.Writing the new partition table to the disk
+[source,shell]
+----
+Command (m for help): w
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+----
+
+== Format partition for UEFI 
+
+Once the new partition table has been created, create a new FAT32 filesystem on the new partition.
+
+[WARNING]
+====
+The example here displays `/dev/sdb1`. As above, this device may differ on your own system. Be sure that this device is correct before running this command; otherwise, data loss may occur on your host system.
+====
+
+.Creating a new FAT32 filesystem
+[source,shell]
+----
+[robert@host ~]$ sudo mkfs.vfat -v -F 32 -n UEFI /dev/sdb1
+mkfs.fat 4.1 (2017-01-24)
+/dev/sdb1 has 64 heads and 32 sectors per track,
+hidden sectors 0x0800;
+logical sector size is 512,
+using 0xf8 media descriptor, with 4194304 sectors;
+drive number 0x80;
+filesystem has 2 32-bit FATs and 8 sectors per cluster.
+FAT size is 4088 sectors, and provides 523262 clusters.
+There are 32 reserved sectors.
+Volume ID is c11a68c3, volume label UEFI       .
+----
+
+== Unpack UEFI onto the drive 
+
+Before UEFI can be unpacked onto the new filesystem, the filesystem must be mounted.
+
+The mount point is arbitrary; feel free to adjust to one of your own liking
+
+As before, the example uses a device of /dev/sdb1. Make sure the command you use matches the device on your own system.
+
+.Mounting and changing directory into the new FAT32 filesystem
+[source,shell]
+----
+[robert@host ~]$ sudo mkdir /mnt/rpi-uefi
+[robert@host ~]$ sudo mount /dev/sdb1 /mnt/rpi-uefi
+[robert@host ~]$ cd /mnt/rpi-uefi
+----
+
+Now that the new filesystem is mounted, unpack Raspberry Pi 4 UEFI into it:
+
+.Unpacking UEFI into the new filesystem
+[source,shell]
+----
+[robert@host rpi-uefi]$ sudo unzip ~/Downloads/RPi4_UEFI_Firmware_v1.19.zip
+Archive:  /var/home/robert/Downloads/RPi4_UEFI_Firmware_v1.19.zip
+  inflating: RPI_EFI.fd
+  inflating: Readme.md
+  inflating: bcm2711-rpi-4-b.dtb
+  inflating: config.txt
+  inflating: fixup4.dat
+  inflating: overlays/miniuart-bt.dtbo
+  inflating: start4.elf
+----
+
+As a personal preference, I disable the rainbow splash screen that is displayed by the Raspberry Pi’s bootloader. With the latest Pi bootloader, some boot information is displayed first, followed by the UEFI splash screen. Inserting a rainbow square between those two screens seems redundant.
+
+This command is optional:
+
+.Disabling the Raspberry Pi’s rainbow splash screen
+[source,shell]
+----
+[robert@host rpi-uefi]$ echo "disable_splash=1" | sudo tee -a config.txt
+disable_splash=1
+----
+
+
+Now that UEFI is installed, unmount the target drive and clean up the directory that it was mounted on:
+
+.Unmount of target USB drive and clean up of host mount directory
+[source,shell]
+----
+[robert@host rpi-uefi]$ cd -
+/var/home/robert
+[robert@host ~]$ sudo umount /mnt/rpi-uefi/
+[robert@host ~]$ sudo rmdir /mnt/rpi-uefi/
+----
+
+
+The target drive is now ready. Remove it from the host computer and plug it into one of the unpowered Pi’s blue USB 3.0 ports.
+
+[NOTE]
+====
+Be sure to leave the Raspberry Pi off for now. Attempting to boot with only UEFI and no installer or operating system may cause it to automatically adjust configuration and change default boot to PXE, which causes problems later.
+====
+
+image::usb-os-rpi4.jpeg[hardware,width=600,title="USB drive in rpi4"]

@@ -1,0 +1,217 @@
+= article order
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+I'm in the process of finding out how well Fedora works on an RPi4. 
+It's not officially supported but it does work.
+Or at least, if you stand back and squint, it looks like it works. 
+
+
+== set up 
+
+. xref:home-network-setup.adoc[]
+. xref:hardware-buy.adoc[]
+. xref:hardware-examine.adoc[]
+. xref:hardware-connect.adoc[]
+. xref:drive-uefi.adoc[]
+. xref:drive-os-installer.adoc[]
+. xref:os-install.adoc[]
+
+=== system startup and shutdown 
+
+. xref:power-up.adoc[]
+. xref:shut-down.adoc[]
+. xref:boot-firmware.adoc[]
+. xref:boot-os.adoc[]
+
+== the command line
+
+. xref:shell-bash-login.adoc[]
+. xref:shell-bash-use.adoc[]
+. xref:shell-login.adoc[]
+. xref:shell-interactive.adoc[]
+. xref:account-examine.adoc[]
+. xref:account-add.adoc[]
+. xref:dnf-update.adoc[]
+. xref:dnf-group-view.adoc[]
+. xref:storage-examine.adoc[]
+. xref:net-examine.adoc[]
+. xref:ssh-use.adoc[]
+. xref:ssh-terminal.adoc[]
+. xref:shell-prompt-change.adoc[]
+. xref:editor-vi-use.adoc[]
+. xref:editor-vim-use.adoc[]
+
+== firmware and OS 
+
+. xref:firmware-examine.adoc[]
+. xref:os-examine.adoc[]
+. xref:firmware-grub2-examine.adoc[]
+. xref:os-kernel-examine.adoc[]
+
+=== virtual machine 
+
+. xref:libvirt-plan.adoc[]
+. xref:libvirt-install.adoc[]
+. xref:libvirt-virsh.adoc[]
+. xref:vm-image-download.adoc[]
+. xref:vm-does-it-work-create.adoc[]
+. xref:vm-does-it-work-delete.adoc[]
+. xref:libvirt-bridge-public-create.adoc[]
+. xref:libvirt-bridge-public-configure.adoc[]
+. xref:vm-guest1-create.adoc[]
+. xref:vm-guest2-create.adoc[]
+. xref:vm-resource-check.adoc[]
+
+=== next 
+
+. build your network
+. network-build
+. libvirt-dnsmasq
+. libvirt-second-network
+. libvirt-storage-pool
+. libvirt-storage-volume
+. libvirt-second-disk
+
+== more sysadmin 
+
+[start=20]
+. xref:log.adoc[]
+. xref:ten-more-shells.adoc[]
+. shell expansion  
+. file descriptor 
+. editor 
+. superuser 
+. xref:access-control.adoc[]
+. process   https://fedoramagazine.org/inspect-manage-processes-ps/
+. daemon 
+. time 
+. network 
+. host 
+. archive 
+. file copy 
+. rpm 
+. storage 
+
+
+=== virtual machine 
+
+[start=45]
+. xref:virtual-machines.adoc[]
+. network
+. build your network
+. network-build
+. xref:libvirt.adoc[]
+. xref:libvirt-virsh.adoc[]
+. xref:libvirt-virtual-machine.adoc[]
+. libvirt-dnsmasq
+. libvirt-second-network
+. libvirt-storage-pool
+. libvirt-storage-volume
+. libvirt-second-disk
+
+=== OS
+
+[start=56]
+. syspurpose
+. cockpit
+. auditd
+. chrony
+. chrony-service
+. dnf
+. dnf-module
+. journald
+. anaconda 
+. systemd 
+
+=== local storage
+
+[start=66]
+. luks
+. vdo
+. swap
+. partition 
+. mount 
+. swap
+. stratis 
+
+=== network 
+
+[start=73]
+. IPv6 
+. teamed interface 
+. bridge 
+. NAT
+. DNS 
+
+=== network storage 
+
+[start=78]
+. file network nfs service 
+. file network nfs client 
+. automount 
+. iSCSI remote block storage 
+
+=== cgroups
+
+[start=82]
+. cgroups
+. cgroup-apache
+. cgroup-cpu
+. cgroup-memory
+. cgroup-storage
+
+=== code
+
+[start=87]
+. git
+. git-hook
+. python
+. python3-virtualenv
+. regular expression 
+
+=== automation
+
+[start=92]
+. ansible-engine
+. ansible-guest-host
+. ansible-lint
+. ansible-molecule
+
+=== container
+
+[start=96]
+. container-tools
+. container-buildah
+. container-systemd
+. container-systemd
+
+=== storage 
+
+[start=100]
+. regular expression 
+. process schedule
+. process multitask
+
+=== security 
+
+[start=103]
+. MAC/SELinux
+. network firewall 
+. security kerberos 
+. file exclusive storage 
+. file shared storage 
+. TLS 
+
+=== application 
+
+[start=109]
+. DB mariadb 
+. web apache 
+. web CGI 
+
+=== stuff 
+
+. xref:grow-partition.adoc[]
+

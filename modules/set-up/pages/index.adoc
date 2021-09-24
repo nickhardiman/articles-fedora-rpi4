@@ -3,7 +3,6 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
-
 I'm in the process of finding out how well Fedora works on an RPi4. 
 It's not officially supported but it does work.
 Or at least, if you stand back and squint, it looks like it works. 
