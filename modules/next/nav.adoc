@@ -1,17 +1,3 @@
-* xref:index.adoc[]
-* set up
-** xref:home-network-setup.adoc[]
-** xref:hardware-buy.adoc[]
-** xref:hardware-examine.adoc[]
-** xref:hardware-connect.adoc[]
-** xref:drive-uefi.adoc[]
-** xref:drive-os-installer.adoc[]
-** xref:os-install.adoc[]
-* system startup and shutdown
-** xref:power-up.adoc[]
-** xref:shut-down.adoc[]
-** xref:boot-firmware.adoc[]
-** xref:boot-os.adoc[]
 * the command line
 ** xref:shell-bash-login.adoc[]
 ** xref:shell-bash-use.adoc[]
