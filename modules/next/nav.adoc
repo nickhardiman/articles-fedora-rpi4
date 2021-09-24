@@ -1,24 +1,4 @@
-* the command line
-** xref:shell-bash-login.adoc[]
-** xref:shell-bash-use.adoc[]
-** xref:shell-login.adoc[]
-** xref:shell-interactive.adoc[]
-** xref:account-examine.adoc[]
-** xref:account-add.adoc[]
-** xref:dnf-update.adoc[]
-** xref:dnf-group-view.adoc[]
-** xref:storage-examine.adoc[]
-** xref:net-examine.adoc[]
-** xref:ssh-use.adoc[]
-** xref:ssh-terminal.adoc[]
-** xref:shell-prompt-change.adoc[]
-** xref:editor-vi-use.adoc[]
-** xref:editor-vim-use.adoc[]
-* firmware and OS
-** xref:firmware-examine.adoc[]
-** xref:os-examine.adoc[]
-** xref:firmware-grub2-examine.adoc[]
-** xref:os-kernel-examine.adoc[]
+
 * virtual machine
 ** xref:libvirt-plan.adoc[]
 ** xref:libvirt-install.adoc[]

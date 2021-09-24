@@ -22,4 +22,5 @@ nav:
 - modules/set-up/nav.adoc 
 - modules/start-stop/nav.adoc 
 - modules/command-line/nav.adoc 
+- modules/firmware-os/nav.adoc 
 - modules/next/nav.adoc 

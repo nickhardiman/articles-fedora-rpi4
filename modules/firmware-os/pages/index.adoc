@@ -1,0 +1,10 @@
+= firmware and OS
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+
+. xref:firmware-examine.adoc[]
+. xref:os-examine.adoc[]
+. xref:firmware-grub2-examine.adoc[]
+. xref:os-kernel-examine.adoc[]
