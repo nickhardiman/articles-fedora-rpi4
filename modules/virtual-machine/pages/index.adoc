@@ -4,6 +4,21 @@ Nick Hardiman
 :revdate: 01-01-2021
 
  
+== architecture
+
+The virtual machine is built from virtual hardware. 
+There are a few popular machine architectures. 
+Fedora uses QEMU's upstream machine architectures, like "pc" for an Intel-based machine, "q35" for an older Intel machine (it's named after an https://en.wikipedia.org/wiki/List_of_Intel_chipsets#Core_2_chipsets[Intel chipset]), and "https://en.wikipedia.org/wiki/AArch64[aarch64]" for the Raspberry Pi and other 64-bit ARM machines.
+
+[source,shell]
+----
+[root@rpi4 ~]# virsh dumpxml guest1 | grep "type arch"
+    <type arch='aarch64' machine='virt-5.1'>hvm</type>
+[root@rpi4 ~]# 
+----
+
+
+== table of content
 
 . xref:libvirt-plan.adoc[]
 . xref:libvirt-install.adoc[]
