@@ -53,7 +53,7 @@ https://www.raspberrypi.org/documentation/computers/config_txt.html[config.txt].
 While the Pi is booting up, this config.txt file tells the running firmware where to find the next piece of firmware in the chain. 
 
 The config.txt file contains plenty of settings which can be customized. 
-This file has special screen settings added at the bottom.
+This file has special screen settings at the bottom, starting with `hdmi_`.
 These set an unusual  
 https://www.raspberrypi.org/documentation/computers/config_txt.html#hdmi-mode[HDMI mode] to make the small screen work. 
 
