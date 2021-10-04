@@ -3,21 +3,149 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
+Once the system is up and running, you can have a look at some firmware files. 
+
+The first part of the Raspberry Pi's firmware is on the board itself, stored in a chip. 
+This built-in firmware on the Pi looks for a file named config.txt. 
 
 
-Once the system is up and running, you can see some firmware files. 
+== /dev/sda1, firmware files
 
+The first partition is /dev/sda1. 
+This is not mounted on the root file system.
 
-== /boot/efi 
+.mounted partitions
+[source,shell]
+----
+[nick@rpi4 ~]$ mount | grep /dev/sd
+/dev/sda3 on /boot type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+/dev/sda2 on /boot/efi type vfat (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=ascii,shortname=winnt,errors=remount-ro)
+[nick@rpi4 ~]$ 
+----
 
-The first partition contains all the files that make up the UEFI system.
+Mount the first partition. 
+
+.mount the first partition
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo mount /dev/sda1 /mnt
+[nick@rpi4 ~]$ 
+----
+
+View its files.
+Some of these files are described on the Raspberry Pi documentation site, in the 
+https://www.raspberrypi.org/documentation/computers/configuration.html#boot-folder-contents[Boot Folder Contents] and https://www.raspberrypi.org/documentation/computers/configuration.html#part3[Using Device Trees] sections.
+
+.files on the first partition
+[source,shell]
+----
+[nick@rpi4 ~]$ ls /mnt
+bcm2711-rpi-400.dtb  bcm2711-rpi-cm4.dtb  fixup4.dat  Readme.md   start4.elf
+bcm2711-rpi-4-b.dtb  config.txt           overlays    RPI_EFI.fd
+[nick@rpi4 ~]$ 
+----
+
+=== config.txt 
+
+The Raspberry Pi has a configuration file named 
+https://www.raspberrypi.org/documentation/computers/config_txt.html[config.txt].
+
+While the Pi is booting up, this config.txt file tells the running firmware where to find the next piece of firmware in the chain. 
+
+The config.txt file contains plenty of settings which can be customized. 
+This file has special screen settings added at the bottom.
+These set an unusual  
+https://www.raspberrypi.org/documentation/computers/config_txt.html#hdmi-mode[HDMI mode] to make the small screen work. 
 
 .UEFI partition
+[source,shell]
+----
+[nick@rpi4 ~]$ cat  /mnt/config.txt
+arm_64bit=1
+enable_uart=1
+uart_2ndstage=1
+enable_gic=1
+armstub=RPI_EFI.fd
+disable_commandline_tags=1
+disable_overscan=1
+device_tree_address=0x1f0000
+device_tree_end=0x200000
+dtoverlay=miniuart-bt
+
+#
+max_usb_current=1
+hdmi_group=2
+hdmi_mode=1
+hdmi_mode=87
+hdmi_cvt 1024 600 60 6 0 0 0
+
+[nick@rpi4 ~]$ 
+----
+
+This use of config.txt is unique to the Raspberry Pi. 
+You won't find anything similar on a PC. 
+
+The next firmware file is RPI_EFI.fd. This is binary code.
+
+.UEFI partition
+[source,shell]
+----
+[nick@rpi4 ~]$ file /mnt/RPI_EFI.fd
+/mnt/RPI_EFI.fd: data
+[nick@rpi4 ~]$ 
+----
+
+.unmount the first partition
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo umount /dev/sda1
+[sudo] password for nick: 
+[nick@rpi4 ~]$ 
+----
+
+
+
+== /dev/sda2, /boot/efi 
+
+The second partition contains all the files that make up the UEFI system.
+
+.the /boot/efi directory
 [source,shell]
 ----
 [nick@rpi4 ~]$ df -h /boot/efi
 Filesystem      Size  Used Avail Use% Mounted on
 /dev/sda2       599M  7.0M  592M   2% /boot/efi
+[nick@rpi4 ~]$ 
+----
+
+== /dev/sda3, /boot
+
+The third partition contains files for the final part of firmware's work, and kernel files for starting the OS.  
+
+.the /boot directory
+[source,shell]
+----
+[nick@rpi4 ~]$ ls /boot
+config-5.11.13-200.fc33.aarch64
+config-5.13.14-100.fc33.aarch64
+config-5.8.15-301.fc33.aarch64
+dtb-5.11.13-200.fc33.aarch64
+dtb-5.13.14-100.fc33.aarch64
+dtb-5.8.15-301.fc33.aarch64
+efi
+grub2
+initramfs-0-rescue-a572dc91bc4f44be9a0f397cbd23394e.img
+initramfs-5.11.13-200.fc33.aarch64.img
+initramfs-5.13.14-100.fc33.aarch64.img
+initramfs-5.8.15-301.fc33.aarch64.img
+loader
+System.map-5.11.13-200.fc33.aarch64
+System.map-5.13.14-100.fc33.aarch64
+System.map-5.8.15-301.fc33.aarch64
+vmlinuz-0-rescue-a572dc91bc4f44be9a0f397cbd23394e
+vmlinuz-5.11.13-200.fc33.aarch64
+vmlinuz-5.13.14-100.fc33.aarch64
+vmlinuz-5.8.15-301.fc33.aarch64
 [nick@rpi4 ~]$ 
 ----
 
