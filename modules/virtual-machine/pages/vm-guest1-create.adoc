@@ -168,9 +168,10 @@ enp1s0           UP             192.168.1.173/24 2a00:23a8:4b47:fc00:5054:ff:fe3
 ....
 
 Disconnect.
+
 Logging out takes you to the login prompt. 
 You are still connected to the console. 
-Use the escape key combination kbd:[Ctrl + ++]++ ].
+Disconnect from the console with the control and right square bracket keys kbd:[Ctrl + ++]++ ].
 
 [source,shell]
 ....
