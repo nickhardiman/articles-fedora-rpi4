@@ -170,7 +170,7 @@ enp1s0           UP             192.168.1.173/24 2a00:23a8:4b47:fc00:5054:ff:fe3
 Disconnect.
 Logging out takes you to the login prompt. 
 You are still connected to the console. 
-Use the escape character ^] (Ctrl + ]).
+Use the escape key combination kbd:[Ctrl + ++]++ ].
 
 [source,shell]
 ....
