@@ -4,6 +4,7 @@
 # The value cannot contain a space, a forward slash (/), or HTML special characters (&, <, or >). 
 # The value cannot be empty.
 name: fedora-on-rpi4
+title: Fedora on a Raspberry Pi 4
 
 # https://docs.antora.org/antora/2.3/component-name-and-version/#version-key
 # version:
@@ -14,6 +15,7 @@ name: fedora-on-rpi4
 # The value cannot be empty.
 # To ensure portability between host platforms, letters used in the version value should be lowercase.
 version: 'dev'
+start_page: ROOT:index.adoc
 
 # https://docs.antora.org/antora/2.3/component-navigation/#nav-key
 # nav:
