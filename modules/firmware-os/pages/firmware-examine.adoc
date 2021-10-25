@@ -109,6 +109,8 @@ The next firmware file is RPI_EFI.fd. This is binary code.
 
 The second partition contains all the files that make up the UEFI system.
 
+Is this the ESP (EFI System Partition)?
+
 .the /boot/efi directory
 [source,shell]
 ----
