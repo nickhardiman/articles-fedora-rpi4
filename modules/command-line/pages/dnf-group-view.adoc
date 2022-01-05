@@ -29,9 +29,32 @@ Groups are listed under four headings.
 
 == an environment group 
 
-An environment group is used to create a Fedora Spin.
-An environment group is created for use by the Anaconda installer rather than end-users, although an end-user can use use these groups. 
+An environment group is everything required to create a customized environment, such as a Fedora Spin.
+The Anaconda installer uses environment groups when building a new system.
 An environment group contains many groups. 
+
+An environment group contains groups. 
+
+[source,shell]
+....
+[nick@host1 roles]$ dnf group info 'Virtualization Host'
+...
+Environment Group: Virtualization Host
+ Description: Minimal virtualization host.
+ Mandatory Groups:
+   Base
+   Core
+   Standard
+   Virtualization Hypervisor
+   Virtualization Tools
+ Optional Groups:
+   Debugging Tools
+   Network File System Client
+   Remote Management for Linux
+   Virtualization Platform
+[nick@host1 roles]$ 
+....
+
 
 
 === a Fedora Spin 
@@ -65,6 +88,9 @@ Available Environment Groups:
 [nick@rpi4 ~]$ 
 ----
 
+
+
+
 == list packages in a group
 
 List packages in the DNF group "System Tools".
@@ -95,11 +121,24 @@ Group: System Tools
 [nick@rpi4 ~]$ 
 ----
 
-== view group ID
+
+== lists groups and their IDs 
+
 
 Each group has a group ID. 
-See these with the -v option. 
-The "System Tools" group has group ID _system-tools_.
+The group name and ID are similar. 
+The "Minimal Install" group has ID _minimal-environment_.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group list --ids
+...
+   Minimal Install (minimal-environment)
+...
+[nick@rpi4 ~]$ 
+----
+
+These IDs are also shown with the -v option. 
 
 [source,shell]
 ----
@@ -117,6 +156,18 @@ Available Environment Groups:
    System Tools (system-tools)
    Text-based Internet (text-internet)
    Window Managers (window-managers)
+[nick@rpi4 ~]$ 
+----
+
+
+== install packages in a group using the ID
+
+???
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo dnf install "@system-tools"
+...
 [nick@rpi4 ~]$ 
 ----
 
