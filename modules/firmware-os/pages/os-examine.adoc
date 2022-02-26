@@ -9,7 +9,7 @@ So what exactly is an OS?
 
 == what is an OS 
 
-image::firefox-atandt-archives-unix.jpeg.jpeg[website,width=300,float="right",title="AT&T Archives, The UNIX System: Making Computers Easier to Use"]
+image::firefox-atandt-archives-unix.jpeg[website,width=300,float="right",title="AT&T Archives, The UNIX System: Making Computers Easier to Use"]
 
 It's easier to define what an OS is by going back to the era before Linux, and get a definition from the people who created UNIX. 
 If you watch this https://techchannel.att.com/showpage/ATT-Archives[AT&T Archives]  video
