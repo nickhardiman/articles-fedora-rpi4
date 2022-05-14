@@ -13,59 +13,59 @@ I'm writing about my experiments here.
 
 == set up 
 
-. xref:home-network-setup.adoc[]
-. xref:hardware-buy.adoc[]
-. xref:hardware-examine.adoc[]
-. xref:hardware-connect.adoc[]
-. xref:drive-uefi.adoc[]
-. xref:drive-os-installer.adoc[]
-. xref:os-install.adoc[]
+. home-network-setup.adoc
+. hardware-buy.adoc
+. hardware-examine.adoc
+. hardware-connect.adoc
+. drive-uefi.adoc
+. drive-os-installer.adoc
+. os-install.adoc
 
 === system startup and shutdown 
 
-. xref:power-up.adoc[]
-. xref:shut-down.adoc[]
-. xref:boot-firmware.adoc[]
-. xref:boot-os.adoc[]
+. power-up.adoc
+. shut-down.adoc
+. boot-firmware.adoc
+. boot-os.adoc
 
 == the command line
 
-. xref:shell-bash-login.adoc[]
-. xref:shell-bash-use.adoc[]
-. xref:shell-login.adoc[]
-. xref:shell-interactive.adoc[]
-. xref:account-examine.adoc[]
-. xref:account-add.adoc[]
-. xref:dnf-update.adoc[]
-. xref:dnf-group-view.adoc[]
-. xref:storage-examine.adoc[]
-. xref:net-examine.adoc[]
-. xref:ssh-use.adoc[]
-. xref:ssh-terminal.adoc[]
-. xref:shell-prompt-change.adoc[]
-. xref:editor-vi-use.adoc[]
-. xref:editor-vim-use.adoc[]
+. shell-bash-login.adoc
+. shell-bash-use.adoc
+. shell-login.adoc
+. shell-interactive.adoc
+. account-examine.adoc
+. account-add.adoc
+. dnf-update.adoc
+. dnf-group-view.adoc
+. storage-examine.adoc
+. net-examine.adoc
+. ssh-use.adoc
+. ssh-terminal.adoc
+. shell-prompt-change.adoc
+. editor-vi-use.adoc
+. editor-vim-use.adoc
 
 == firmware and OS 
 
-. xref:firmware-examine.adoc[]
-. xref:os-examine.adoc[]
-. xref:firmware-grub2-examine.adoc[]
-. xref:os-kernel-examine.adoc[]
+. firmware-examine.adoc
+. os-examine.adoc
+. firmware-grub2-examine.adoc
+. os-kernel-examine.adoc
 
 === virtual machine 
 
-. xref:libvirt-plan.adoc[]
-. xref:libvirt-install.adoc[]
-. xref:libvirt-virsh.adoc[]
-. xref:vm-image-download.adoc[]
-. xref:vm-does-it-work-create.adoc[]
-. xref:vm-does-it-work-delete.adoc[]
-. xref:libvirt-bridge-public-create.adoc[]
-. xref:libvirt-bridge-public-configure.adoc[]
-. xref:vm-guest1-create.adoc[]
-. xref:vm-guest2-create.adoc[]
-. xref:vm-resource-check.adoc[]
+. libvirt-plan.adoc
+. libvirt-install.adoc
+. libvirt-virsh.adoc
+. vm-image-download.adoc
+. vm-does-it-work-create.adoc
+. vm-does-it-work-delete.adoc
+. libvirt-bridge-public-create.adoc
+. libvirt-bridge-public-configure.adoc
+. vm-guest1-create.adoc
+. vm-guest2-create.adoc
+. vm-resource-check.adoc
 
 === next 
 
@@ -80,13 +80,13 @@ I'm writing about my experiments here.
 == more sysadmin 
 
 [start=20]
-. xref:log.adoc[]
-. xref:ten-more-shells.adoc[]
+. log.adoc
+. ten-more-shells.adoc
 . shell expansion  
 . file descriptor 
 . editor 
 . superuser 
-. xref:access-control.adoc[]
+. access-control.adoc
 . process   https://fedoramagazine.org/inspect-manage-processes-ps/
 . daemon 
 . time 
@@ -101,13 +101,13 @@ I'm writing about my experiments here.
 === virtual machine 
 
 [start=45]
-. xref:virtual-machines.adoc[]
+. virtual-machines.adoc
 . network
 . build your network
 . network-build
-. xref:libvirt.adoc[]
-. xref:libvirt-virsh.adoc[]
-. xref:libvirt-virtual-machine.adoc[]
+. libvirt.adoc
+. libvirt-virsh.adoc
+. libvirt-virtual-machine.adoc
 . libvirt-dnsmasq
 . libvirt-second-network
 . libvirt-storage-pool
@@ -216,5 +216,5 @@ I'm writing about my experiments here.
 
 === stuff 
 
-. xref:grow-partition.adoc[]
+. grow-partition.adoc
 

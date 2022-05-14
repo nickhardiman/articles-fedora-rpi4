@@ -3,6 +3,5 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
-I'm in the process of experimenting with Fedora on an RPi4 in my home lab. 
-I'm writing about my experiments here. 
+I'm in the process of experimenting.
 
