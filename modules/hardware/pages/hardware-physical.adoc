@@ -1,0 +1,13 @@
+= physical hardware
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+network, ethernet cables, switch, ISP router, wifi
+workstation
+host, RPi4, server
+KVM, headless
+storage, USB drive, microSD
+
+
+???

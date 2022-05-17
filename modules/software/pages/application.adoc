@@ -1,0 +1,27 @@
+= application
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 14-02-2022
+
+The top layer of the technical stack is the business end of computers. It's the layer where work is done for users, rather than work to make the computer go.  
+
+Most of the work of the lower layers is hidden from applications. An editor needs to know how to ask the OS to store a file, but it doesn't need to know how that file is split into blocks on a storage volume. 
+
+== abstraction layers
+
+Abstraction is one of the four ways of computational thinking (the other three are pattern recognition, decomposition and algorithms). The layer below offers a bunch of shiny features to the layer above, so it can get stuff done. The layer below hides all the ugly work required to get stuff done. If you buy a tin of baked beans, you don't have to worry about how the beans ended up in there - most of the details are abstracted away. If you program an application, there's a lot of abstraction there too.  
+
+
+== binary incompatibility
+
+An application can't run on any computer running the same OS. A binary executable can't be shifted from an X86-64 computer to an AARCH64 computer. Those two CPUs talk different hardware languages, and the OS doesn't hide those differences. The OS does filter out some firmware and hardware details to make the application programmer's job easier, but does not hide everything.
+
+This binary incompatibility problem has been biting application programmers forever. Solutions are all complicated.  
+* emulate one type of hardware while running on another (like qemu and bochs)
+* add a new runtime environment and run your code in that (like JVM and MoarVM)
+* add an entire virtual machine, install an OS and run your code in that (like KVM and VMware)
+* abandon the binary distribution idea and make users compilee everything from source code
+
+== this application layer is not the famous network application layer
+
+This application layer is a little different from the top layer of the OSI model (layer 7) and the top layer of the TCP/IP model (layer 4). These are networking models that separate the different types of communication needed in a network. The top layers of these models describe the protocols and interfaces required for applications to communicate. A web server needs to know how to talk HTTP, but it doesn't need to know how to split an HTTP conversation into packets and send them across the network. 

@@ -1,0 +1,25 @@
+= virtualization
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+Many virtual machines and virtual networks can be emulated in the software of one physical machine. 
+
+There are many ways of virtualizing a machine. It may be small customized machine for running one type of program. It may be a full-blown PC emulator, with all its devices. Or it may be a small piece of user space, cut off from the rest by the kernel.  
+
+== virtualization 
+
+Virtualizing something is the act of creating a digital copy of it. We've got digital recordings that copied analog recordings, accounting software that copied accountants, and AI that copied decision-making. Some of theses things are useful, lik virtualized mail, and some are pointless, like a virtualized pizza. 
+
+In the IT world, th word _virtualization_ has come to mean the virtualizing of one thing: the computer itself. A server, the heavy-duty PC of the computer world, is expensive and slow to maintain. A department request for a new physical server may take months to complete while the procurement paperwork, delivery, rack installation and OS install churned through the organization. 
+
+virtualization brought mainframe benefits to PCs. Mainframes have had the ability of providing small virtual machines to customers forever. When virtualization came along, that department gained the ability to build its own virtual server in minutes. The virtual server had nowhere near the resources of the physical server - one CPU, not 24, 30GB of storage, not 3TB, 1GB of memory, not 256GB. That was plenty for the department software, so the  department people were happy. The server people were happy, too. They could dish out a dozen more of these virtual machines before the physical machine ran out of space. 
+
+PC manufacturers were happy, too. They had been locked in a competition to build bigger and better every year, and virtualization was a good justification to keep pushing for bigger and better. 
+
+== a hypervisor and virtual machines
+
+== a container 
+
+From the user's point of view, working on the command line looks pretty much the same on every Fedora machine. 
+

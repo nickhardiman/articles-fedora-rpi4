@@ -1,0 +1,63 @@
+= network
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+
+You bring the network. 
+This is probaby a home network with at least two boxes attached to it.
+
+
+
+== the home network 
+
+You bring the network. 
+This is probaby a home network with at least two boxes attached to it.
+
+.home network with workstation  
+....
+        +----------------------+
+        |                      | 
+.-------+-------.      .-------+-------.
+|               |      |               |
+|  workstation  |      |  router       |
+|               |      |               |  
+.---------------.      .---------------.
+....
+
+* the ISP's router, your gateway to the Internet
+* your workstation
+
+=== workstation 
+
+The workstation is whatever you work on - it might be a laptop running OS X or a gaming desktop running Windows.
+
+=== router
+
+The box the ISP gave you. 
+
+=== other devices 
+
+* smart devices. There are probably a whole load of smart devices on this home network, from phone to TV. 
+* Network switch 
+* WiFi access point. This is probably built into your router. 
+* ethernet cables. 
+
+
+== a new Raspberry Pi 4 for the home lab 
+
+You probably have the resources to add a new machine to your home network. 
+As long as you can figure out how to plug the new Raspberry Pi into the home network, that's  fine. 
+A network switch near the new machine makes this easier.
+
+.home network with new Raspberry Pi  
+....
+        +----------------------+----------------------+
+        |                      |                      |
+.-------+-------.      .-------+-------.      .-------+-------.
+|               |      |               |      |               |
+|  Raspberry Pi |      |  workstation  |      | router        |---------> Internet  
+|               |      |               |      |               |  
+.---------------.      .---------------.      .---------------.
+....
+

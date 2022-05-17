@@ -1,0 +1,40 @@
+= workstation
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+
+The workstation is whatever you work on - it might be a laptop running OS X or a gaming desktop running Windows.
+
+== types 
+
+* laptop 
+* gaming PC 
+* office PC
+* the workstation that is part server
+
+== devices 
+
+A workstation is a collection of devices. 
+
+* storage. SATA drive, SSD, USB
+* compute. chipset, motherboard, CPU, southbridge
+* network. A connection to your ISP modem. Possibly an ethernet
+* human/computer interaction devices. 
+* keyboard. So many variations. Split, ergonomic, backlit, RGB, mechanical, waterproof. How many keys? TKL, 104 key, 60%. And keyboard layouts - QWERTY, AZERTY, Dvorzak, Cirrilic?
+* video monitor. RGB, LED, OLED, e-ink. Resolutions VGA, HD, 4k
+* mouse. ball, trackpad, 
+
+The keyboard, video monitor and mouse hardware combination is so common it used to be abbreviated to KVM, until Kernel-based Virtual Machines came along and stole the acronym. 
+
+Trackpad, tablet, VR goggles 
+
+== cables 
+
+Your workstation is connected to the outside world with one or more cables. A lapto 
+
+* ethernet cable
+* video cable. Maybe HDMI, or DisplayPort
+* USB cable
+* power cable
+

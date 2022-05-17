@@ -1,0 +1,24 @@
+= software layers
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+
+== classic layers
+
+* hardware 
+* firmware 
+* OS 
+* applications
+
+
+== extra layers
+
+* hardware 
+* firmware 
+* OS 
+* hypervisor 
+* virtual machines
+* containers
+* applications
+

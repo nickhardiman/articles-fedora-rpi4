@@ -1,0 +1,27 @@
+= kernel
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 14-02-2022
+
+
+The firmware loads low-level device management software, then  BIOS starts GRUB, then GRUB starts the kernel.
+
+
+== kernel 
+
+
+Each kernel version has a few files. 
+* https://en.wikipedia.org/wiki/Vmlinux[vmlinuz], the kernel.
+* https://en.wikipedia.org/wiki/Initial_ramdisk[initrd (initial ramdisk)]. This contains drivers and other files the kernel needs.
+* https://en.wikipedia.org/wiki/System.map[System.map], a look-up table that maps symbols to memory locations.
+* config, the configuration file used to build the kernel. 
+
+The kernel release name is rather long, like this. 4.18.0-193.6.3.el8_2.x86_64
+
+== user space 
+
+== kernel space 
+
+== files 
+
+The /boot/ directory contains kernel files. 

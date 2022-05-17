@@ -1,0 +1,5 @@
+* xref:index.adoc[]
+** xref:hardware-physical.adoc[]
+*** xref:hardware-network.adoc[]
+*** xref:hardware-workstation.adoc[]
+*** xref:hardware-rpi4.adoc[]

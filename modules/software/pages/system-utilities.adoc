@@ -1,0 +1,21 @@
+= system utilities
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 14-02-2022
+
+system utilities
+
+
+== we're all the same, except we're not 
+
+There aren't really any big differences between types of software. They are written and tested in the same way, stored in the same place and run by the same hardware. 
+
+There are a thousand little differences. Communities built up around software are pretty tribal. Choice of computer language shows your tribe. System programmers usually write in C or Rust, games engine programmers write in C++, schools teach Python, universities teach Java. 
+
+
+== system software and application software
+
+If a sysadmin uses it, it's a system utility. Except they use a lot of the business applications, too. And a sysadmin may never touch a system development tool like GCC.
+
+The only difference between system software and application software is what the primary purpose is. If the main thing the software does is maintain the machine, then it's system software. If the main thing is to help users, it's application software. 
+

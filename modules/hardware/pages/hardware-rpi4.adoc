@@ -1,0 +1,73 @@
+= Raspberry Pi 4
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+
+
+Have a look at all the things - the chips, cables, power supply and the rest. 
+
+== The Raspberry Pi 
+
+The Raspberry Pi is packed with hardware. "Hardware" in computer terms covers pretty much everything you can see, including the PCB (Printed Circuit Board), ICs (Integrated Circuits) in the middle and connectors around the edges. 
+
+image::raspberry-pi-4-top.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB top"]
+
+Each piece of hardware is an engineering marvel, from the copper foil tracks to the surface-mount resistors. 
+Comparing a Raspberry Pi to a server board may feel like comparing a rock to a rail gun, but that misses the nerdy engineering beauty hidden in the small details. 
+
+image::raspberry-pi-4-bottom.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB bottom"]
+
+== chips 
+
+The board is choc full of chips. 
+
+If you're wondering where the ARM CPU is, take a look at the light silver square - the one with a few other lines of text starting with "BROADCOM®" printed on top. 
+If you can't see it, https://www.electronics-lab.com/project/raspberry-pi-4-look-hood-make/[electronics lab] has much better photos.
+That covers the Broadcom BCM2711 SoC (System on Chip), which is packed with ARM cores, device controllers, GPU (Graphics Processing Unit) and other silicon machines.
+
+See the black chip with https://www.via-labs.com/product_show.php?id=48[VLI VL805] written on it?
+That bridges the gap between the the PCI Express device on the SoC and the USB connectors. 
+
+And there's more.
+
+* https://www.maxlinear.com/product/power-management/universal-pmics/universal-pmics/mxl7704[MXL7704] - PMIC [Power Management Integrated Circuit]  
+* https://www.dialog-semiconductor.com/products/power-management/pmics/da9121[da9121]  - another PMIC 
+* https://www.broadcom.com/products/ethernet-connectivity/phy-and-poe/copper/gigabit/bcm54213pe[BCM54213PE] - ethernet
+* OAA47 D9ZCL - 8GB memory 
+* https://www.cypress.com/documentation/product-overviews/cyw43455-wiced-ieee-80211ac-wifi-bluetooth-41-connectivity-solution[Cypress CYW43455] - Wifi and bluetooth. This is hidden under the shiny silver RF shield. 
+
+
+== connectors 
+
+There's nothing like standardization to make life simpler. 
+And this is nothing like standardization. 
+Instead of having USB C sockets for connecting everything from power to video, there are sockets of many shapes and sizes. 
+
+image::connectors-1.jpeg[hardware,width=600,title="connector plugs"]
+
+sockets 
+
+. USB-C for power 
+. https://en.wikipedia.org/wiki/HDMI#Connectors[HDMI] micro, Type D, for video 
+. another HDMI 
+. 3.5mm audio jack 
+. https://en.wikipedia.org/wiki/USB#USB_2.0[USB 2], Type-A 
+. https://en.wikipedia.org/wiki/USB_3.0[USB 3] (SuperSpeed), Type-A
+. ethernet
+
+image::connectors-2.jpeg[hardware,width=600,title="connector sockets"]
+
+
+== power supply 
+
+
+== KVM or headless 
+
+
+== storage 
+
+* USB drive
+* micro-SD card
+
+
