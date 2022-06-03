@@ -4,4 +4,4 @@ Nick Hardiman
 :revdate: 24-10-2020
 
 
-https://nickhardiman.netlify.app/articles/dev/red-hat-developer-subscription/boot-stages.html
+TBD

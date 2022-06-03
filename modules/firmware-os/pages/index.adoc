@@ -3,6 +3,18 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
+The RPi4 has its own firmware program, stored in flash.
+This built-in firmware runs when the board is powered up. 
+The onboard firmware is the first in a chain of firmware programs that run. 
+The firmware in flash is supplied by the Raspberry Pi foundation.
+This firmware is not touched by Fedora. 
+
+The next program in the chain is stored in a file named config.txt on the removable storage. 
+Removable storage is usually an SD card, but here we use a USB drive. 
+The config.txt program starts UEFI firmware, then UEFI starts GRUB.
+
+GRUB is the last of the firmware programs. Grub runs the kernel, which is the first of the OS programs. 
+
 
 . xref:firmware-examine.adoc[]
 . xref:os-examine.adoc[]
