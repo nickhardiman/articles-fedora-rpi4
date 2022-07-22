@@ -34,6 +34,13 @@ That double slash at the beginning stops bash getting confused
 printf \\e[0m
 ----
 
+The first part is \e, which is C-style shorthand for the 
+https://en.wikipedia.org/wiki/Escape_character[escape character].
+Escape is one of the 
+https://en.wikipedia.org/wiki/ASCII#Control_code_chart[control codes defined in ASCII], and tells a system to treat what comes next in a special way.
+Using \c is one of the ways to type escape, along with some other variations like typing the octal number \033. 
+ 
+
 That number 31 in the middle is a color code. 
 The simplest set of colors are https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit[3 bit color] codes. 
 
@@ -45,6 +52,17 @@ The simplest set of colors are https://en.wikipedia.org/wiki/ANSI_escape_code#3-
 * 35 magenta
 * 36 cyan 
 * 37 white
+
+Print the word green in the color green.
+
+
+[source,shell]
+----
+green="\033[32m"
+reset="\033[0m"
+printf "$green I am green. $reset"
+----
+
 
 Background colors can be changed as well, using numbers 40 to 47.
 
