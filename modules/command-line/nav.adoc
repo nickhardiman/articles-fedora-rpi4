@@ -11,6 +11,7 @@
 ** xref:net-examine.adoc[]
 ** xref:ssh-use.adoc[]
 ** xref:ssh-terminal.adoc[]
-** xref:shell-prompt-change.adoc[]
+** xref:shell-prompt-layout.adoc[]
+** xref:shell-prompt-color.adoc[]
 ** xref:editor-vi-use.adoc[]
 ** xref:editor-vim-use.adoc[]
