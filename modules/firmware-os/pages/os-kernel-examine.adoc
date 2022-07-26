@@ -11,6 +11,7 @@ GRUB2 starts the kernel.
 The /boot/ directory contains the current kernel and a few older ones, in case the new kernel has issues. 
 
 Each kernel version has a few files. 
+
 * https://en.wikipedia.org/wiki/Vmlinux[vmlinuz], the kernel.
 * https://en.wikipedia.org/wiki/Initial_ramdisk[initrd (initial ramdisk)]. This contains drivers and other files the kernel needs.
 * https://en.wikipedia.org/wiki/System.map[System.map], a look-up table that maps symbols to memory locations.

@@ -65,12 +65,15 @@ Number  Start  End     Size    File system     Flags
 
 == configuration files 
 
+[source,shell]
+----
 [nick@rpi4 ~]$ sudo ls /etc/grub.d/
 00_header	      10_reset_boot_success  20_ppc_terminfo   41_custom
 01_users	      12_menu_auto_hide      30_os-prober      README
 08_fallback_counting  14_menu_show_once      30_uefi-firmware
 10_linux	      20_linux_xen	     40_custom
 [nick@rpi4 ~]$ 
+----
 
 === the /boot/grub2 directory
 
