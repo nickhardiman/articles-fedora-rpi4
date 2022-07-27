@@ -177,6 +177,10 @@ The _TriggeredBy_ section of the status display lists sockets.
 A socket is an address where requests are delivered.
 Systemd manages these sockets and starts libvirtd when requests arrive. 
 
+Check the status before. 
+
+[source,shell]
+----
 [nick@rpi4 ~]$ systemctl status --no-pager -l libvirtd
 ● libvirtd.service - Virtualization daemon
      Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
@@ -184,10 +188,13 @@ Systemd manages these sockets and starts libvirtd when requests arrive.
 TriggeredBy: ● libvirtd-admin.socket
              ● libvirtd-ro.socket
              ● libvirtd.socket
+----
 
 
 You can start the libvirt daemon.
 The libvirt daemon runs for couple minutes then stops. 
+
+Start the unit. 
 
 [source,shell]
 ----
@@ -195,7 +202,8 @@ The libvirt daemon runs for couple minutes then stops.
 [nick@rpi4 ~]$ 
 ----
 
-Check the status, 
+Check the status after. 
+
 [source,shell]
 ----
 [nick@rpi4 ~]$ systemctl status libvirtd
@@ -203,7 +211,7 @@ Check the status,
      Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor >
      Active: active (running) since Mon 2021-09-13 13:58:04 BST; 2s ago
 ...
-[nick@rpi4 ~]$ 
+[nick@rpi4 ~]$ # wait two minutes
 [nick@rpi4 ~]$ systemctl status --no-pager -l libvirtd
 ● libvirtd.service - Virtualization daemon
      Loaded: loaded (/usr/lib/systemd/system/libvirtd.service; enabled; vendor preset: enabled)
