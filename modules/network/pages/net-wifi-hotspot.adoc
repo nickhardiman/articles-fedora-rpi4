@@ -348,7 +348,10 @@ Here are a couple recommendations:
 
 The bad news is, there are no troubleshooting tips here. There are so many things that can go wrong, there’s no way of covering them.
 
-Troubleshooting a network stack is tricky. If one component goes wrong, it may all go wrong. And making changes like reloading firewall rules can upset services like NetworkManager and sshd. You know you’re in the weeds when you find yourself running nftables commands like nft list ruleset and firewalld commands like firewall-cmd ‐‐set-log-denied=all.
+Troubleshooting a network stack is tricky. If one component goes wrong, it may all go wrong. And making changes like reloading firewall rules can upset services like NetworkManager and sshd. You know you’re in the weeds when you find yourself running 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/getting-started-with-nftables_configuring-and-managing-networking[nftables commands] like _nft list ruleset_ and 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/using-and-configuring-firewalld_configuring-and-managing-networking[firewalld commands] 
+like _firewall-cmd ‐‐set-log-denied=all_.
 
 == Play with your new platform
 
