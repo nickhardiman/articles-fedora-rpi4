@@ -27,6 +27,31 @@ Play with toys.
 * OS - https://fedoraproject.org/wiki/Architectures/ARM[Fedora ARM]
 
 
+== Fedora Magazine 
+
+A few more articles here. 
+https://fedoramagazine.org/author/nickhardiman/
+
+Create a wifi hotspot with Raspberry Pi 3 and Fedora
+https://fedoramagazine.org/create-a-wifi-hotspot-with-raspberry-pi-3-and-fedora/
+August 12, 2020
+
+install Fedora on a Raspberry Pi 3
+https://fedoramagazine.org/install-fedora-on-a-raspberry-pi/
+August 7, 2020
+
+
+Fedora Silverblue, an introduction for developers
+https://fedoramagazine.org/fedora-silverblue-brings-future-tech-to-the-desktop/
+May 20, 2020
+
+
+The pieces of Fedora Silverblue
+https://fedoramagazine.org/pieces-of-fedora-silverblue/
+May 15, 2020
+
+
+
 == more article ideas
 
 

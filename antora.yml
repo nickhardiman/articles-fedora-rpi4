@@ -28,4 +28,5 @@ nav:
 - modules/command-line/nav.adoc 
 - modules/firmware-os/nav.adoc 
 - modules/virtual-machine/nav.adoc 
+- modules/network/nav.adoc 
 - modules/next/nav.adoc 

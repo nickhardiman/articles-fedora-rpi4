@@ -8,7 +8,6 @@
 ** xref:dnf-update.adoc[]
 ** xref:dnf-group-view.adoc[]
 ** xref:storage-examine.adoc[]
-** xref:net-examine.adoc[]
 ** xref:ssh-use.adoc[]
 ** xref:ssh-terminal.adoc[]
 ** xref:shell-prompt-layout.adoc[]
