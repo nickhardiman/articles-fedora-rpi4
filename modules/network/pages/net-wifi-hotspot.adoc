@@ -46,7 +46,6 @@ Netowrk bridging is another way of extending a network, but it’s not how this 
 https://fedoramagazine.org/create-a-wifi-hotspot-with-raspberry-pi-3-and-fedora/#:~:text=beginner%E2%80%99s%20guide%20to%20network%20troubleshooting%20in%20Linux[beginner’s guide to network troubleshooting in Linux]. 
 Here’s the short answer.
 
-
 * layer 3, network ← Yes, our routed AP is here.
 * layer 2, data link ← No, it’s not a bridged AP.
 * layer 1, physical ← Radio transmission is covered here.
@@ -220,8 +219,6 @@ Jun 10 18:08:05 raspi dnsmasq-dhcp[713]: DHCPACK(wlan0) 10.42.0.125 94:b0:1f:2e:
 
 == Examine the firewall
 
-[source,shell]
-----
 A new security zone named _nm-shared_ has appeared. This is stopping some wifi access.
 
 [source,shell]
