@@ -73,7 +73,7 @@ has some great photos.
 
 Kernel software provides the plumbing. There’s no need to work on these directly – it’s all good to go in the Fedora distribution.
 
-*https://wireless.wiki.kernel.org/en/users/drivers/brcm80211[Broadcom driver modules] talk to the hardware. List these with the command _lsmod | grep brcm_.
+* https://wireless.wiki.kernel.org/en/users/drivers/brcm80211[Broadcom driver modules] talk to the hardware. List these with the command _lsmod | grep brcm_.
 * A TCP/IP stack handles protocols.
 * The https://www.netfilter.org/[netfilter framework] filters packets.
 * A network system ties these all together.
@@ -124,13 +124,15 @@ nmcli con add \
   con-name 'raspi hotspot' \
   autoconnect yes \
   ssid 'raspi wifi'
-The following commands complete several more steps:
 ----
 
-Create a new connection.
-List the connections.
-Take another look at the network-scripts folder. NetworkManager added a config file.
-List available APs to connect to.
+The following commands complete several more steps:
+
+* Create a new connection.
+* List the connections.
+* Take another look at the network-scripts folder. NetworkManager added a config file.
+* List available APs to connect to.
+
 This requires running several commands as root 
 https://fedoramagazine.org/howto-use-sudo/[using sudo]:
 
@@ -170,7 +172,7 @@ https://en.wikipedia.org/wiki/IEEE_802.11#802.11b[802.11b] and
 https://en.wikipedia.org/wiki/IEEE_802.11#802.11g[802.11g]. 
 Basically it configures the radio to use the 2.4GHz frequency band, not the 5GHz band. *ipv4.method shared* means this connection will be shared with others.
 
-*Change the connection to a hotspot by changing the mode to ap.
+* Change the connection to a hotspot by changing the mode to ap.
 
 [source,shell]
 ----
