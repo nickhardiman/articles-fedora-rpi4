@@ -17,6 +17,7 @@ Abstraction is one of the four ways of computational thinking (the other three a
 An application can't run on any computer running the same OS. A binary executable can't be shifted from an X86-64 computer to an AARCH64 computer. Those two CPUs talk different hardware languages, and the OS doesn't hide those differences. The OS does filter out some firmware and hardware details to make the application programmer's job easier, but does not hide everything.
 
 This binary incompatibility problem has been biting application programmers forever. Solutions are all complicated.  
+
 * emulate one type of hardware while running on another (like qemu and bochs)
 * add a new runtime environment and run your code in that (like JVM and MoarVM)
 * add an entire virtual machine, install an OS and run your code in that (like KVM and VMware)
