@@ -1,0 +1,60 @@
+= copy the OS installer to a USB drive   
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 28-10-2021
+
+One of the USB drives provides the OS storage. 
+The other one holds installer software. 
+All the installer software is in an ISO file. 
+An ISO file is a copy of a file system from an optical disk, like a DVD.
+If you're wondering where the name came from, ISO is an abbreviation of https://en.wikipedia.org/wiki/ISO_9660[ISO 9660], which is an abbreviation of International Standards Organization file system standard number 9660.
+
+image::usb-drive-iso.jpeg[hardware,width=600,title="USB drive to hold the ISO installer"]
+
+Prepare the installer drive by copying the installer DVD file to it. 
+First, download this DVD file from Fedora's web site. 
+
+Use a linux workstation to copy the ISO to the USB drive. 
+It's a simple copy using the `dd` command. 
+The MacBook OS has the dd command too, although some options are different. 
+
+In my example setup, the two USB drives look exactly the same. 
+I labelled one "Fedora ISO" by cutting out a tag and tying it to the installer USB drive. 
+
+
+== download Fedora Server
+
+* Open Fedora's https://alt.fedoraproject.org/alt/[alternate architecture images] page. This page lists files for ARM aarch64, IBM Power and IBM s390x architectures. 
+* Find the Fedora Server DVD download link (not the netinstall or raw image) in the ARM aarch64 section. 
+* Download the latest server image. It's about 3GB and named something like _Fedora-Server-dvd-aarch64-34-1.2.iso_. 
+
+
+
+Everything from here on down is 
+Robert's good work, not mine
+https://fwmotion.com/blog/operating-systems/2020-09-04-installing-fedora-server-onto-pi4/
+
+== Prepare Installer Drive 
+
+Now plug the installer drive into the host computer. As with the target drive, ensure that any existing partitions are unmounted before continuing.
+
+To set up the installer, do a direct write from ISO to drive.
+
+[WARNING]
+====
+As with partitioning the target drive, this example command will copy directly to `/dev/sdb`. This command must be updated to reflect your system layout and to point to the correct drive; otherwise, data loss may occur on the host computer.
+====
+
+.Copying Fedora 32 Server installer to installer USB drive
+[source,shell]
+----
+[robert@host ~]$ sudo dd of=/dev/sdb if=~/Downloads/Fedora-Server-dvd-aarch64-32-1.6.iso bs=4M conv=nocreat,notrunc status=progress
+1962934272 bytes (2.0 GB, 1.8 GiB) copied, 15 s, 131 MB/s
+472+1 records in
+472+1 records out
+1981200384 bytes (2.0 GB, 1.8 GiB) copied, 52.3175 s, 37.9 MB/s
+----
+
+Once the write has completed, remove the drive from the host computer and plug it into the second blue USB 3.0 port of the unpowered Raspberry Pi 4.
+
+

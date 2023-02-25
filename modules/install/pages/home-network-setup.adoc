@@ -1,0 +1,91 @@
+= set up the home network
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 10-09-2021
+
+Three types of resource are required for these exercises. 
+
+* storage 
+* compute 
+* network 
+
+A USB drive will provide the storage. This is where all the software is stored (except for a little firmware stored on the Pi). 
+
+The Raspberry Pi 4 will provide the compute. 
+This is the number-crunching power provided by the CPU and all the other chips.
+
+The network is the connection to the outside world. 
+The data network allows machines to talk to each other at home and out in the Internet. 
+There's another network too - the power network brings electricity from the national grid. 
+But this is page is all about the data network.
+
+
+== the home network 
+
+You bring the network. 
+This is probaby a home network with at least two boxes attached to it.
+
+* the ISP's router, your gateway to the Internet
+* your workstation
+
+There are probably also a whole load of smart devices on this home network, from phone to TV. 
+Let's ignore those.
+
+.home network with workstation  
+....
+        +----------------------+
+        |                      | 
+.-------+-------.      .-------+-------.
+|               |      |               |
+|  workstation  |      |  router       |
+|               |      |               |  
+.---------------.      .---------------.
+....
+
+Every machine has an address. 
+The router gives every machine an IP address on the network. 
+The IP address looks something like _192.2.3.4_ or _10.2.3.4_.
+
+The network connection from router to workstation might be an ethernet cable or WIFI. 
+
+A home network should be kept private, with no access from the Internet. 
+Getting to the Internet is pretty handy, but unwanted visitors from the Internet are not welcome. 
+
+
+== the workstation 
+
+The workstation is whatever you work on - it might be a laptop running OS X or a gaming desktop running Windows.
+
+The workstation's OS doesn't matter. 
+As long as it can run an SSH client, it's good enough. 
+
+
+== a new Raspberry Pi 4 for the home lab 
+
+I'm also assuming you have the resources to add a new machine to your home network. 
+As long as you can figure out how to plug the new Raspberry Pi into the home network, that's  fine. 
+A network switch near the new machine makes this easier.
+
+.home network with new Raspberry Pi  
+....
+        +----------------------+----------------------+
+        |                      |                      |
+.-------+-------.      .-------+-------.      .-------+-------.
+|               |      |               |      |               |
+|  Raspberry Pi |      |  workstation  |      | router        |---------> Internet  
+|               |      |               |      |               |  
+.---------------.      .---------------.      .---------------.
+....
+
+
+== rpi4.lab.example.com
+
+The new machine will be called _rpi4.lab.example.com_.
+
+This machine gets the full FQDN of host1.lab.example.com. 
+Example.com is an https://www.iana.org/domains/reserved[IANA-managed reserved domain] - it can't be used on the Internet.
+
+
+
+
+

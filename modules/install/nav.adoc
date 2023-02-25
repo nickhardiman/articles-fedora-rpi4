@@ -1,0 +1,8 @@
+* xref:index.adoc[]
+** xref:home-network-setup.adoc[]
+** xref:hardware-buy.adoc[]
+** xref:hardware-examine.adoc[]
+** xref:hardware-connect.adoc[]
+** xref:drive-uefi.adoc[]
+** xref:drive-os-installer.adoc[]
+** xref:os-install.adoc[]
