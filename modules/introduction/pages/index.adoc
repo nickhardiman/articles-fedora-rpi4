@@ -1,0 +1,21 @@
+= introduction
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+The plan 
+
+* Obtain Raspberry Pi 4 parts.
+* Set up a new Pi workstation on the home network. This provides a base hardware layer to build on. 
+* Install software. Build up software layers on the hardware layer. 
+
+
+This guide uses a https://www.raspberrypi.com/products/raspberry-pi-4-model-b/[Raspberry Pi 4 Model B 8GB]. 
+It's the only Pi board that all the software layers will fit on. 
+
+
+
+[NOTE]
+====
+February 2023: Unfortunately, a https://www.raspberrypi.com/products/raspberry-pi-4-model-b/[Raspberry Pi 4 Model B 8GB] board is very hard to get hold of. 
+====

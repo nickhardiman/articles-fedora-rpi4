@@ -1,0 +1,112 @@
+= hardware and software layers
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+image::machine-layers.png[hardware,width=600,title="machine layers"]
+
+
+A computer can be split into these three layers. 
+This is a simple model of a computer. 
+
+* software
+* firmware
+* hardware 
+
+This guide packs a lot of smaller layers into that software layer. 
+This is the kind of layering you may find in a large enterprise server. 
+
+* application
+* container
+* OS 
+* virtual firmware
+* virtual hardware 
+* hypervisor application
+* OS 
+* firmware
+* hardware 
+
+== first, split the software layer in two. 
+
+The software layer can be split into two - OS and application. 
+The layer of applications is built on three lower layers. 
+
+Domestic computers and small server computers often stick to these four layers. 
+
+* application
+* OS 
+* firmware
+* hardware 
+
+When servers got bigger and more powerful, some resources weren't getting used. 
+The computers got too big for the applications. 
+
+
+== virtually duplicate layers with a hypervisor
+
+A hypervisor can split one large physical machine into many smaller virtual machines. 
+A hypervisor is an application that manages virtual machines. 
+It emulates computer hardware. 
+
+A hypervisor virtually creates new computers in the software layer.
+A real computer is called a physical machine and a computer emulated in software is called a _virtual machine_. 
+The _virtual_ in virtual machine means each new computer is virtually the same as a physical computer, but not exactly the same.
+An operating system and applications can be installed on a virtual computer in the same way they get installed on a physical computer. 
+
+* application 
+* OS 
+* virtual firmware
+* virtual hardware 
+* hypervisor application
+* OS 
+* firmware
+* hardware 
+
+Managing virtual machines takes a lot of work. 
+There is more than one way to manage virtualization. 
+
+== virtualization with a container
+
+A kernel can create containers (virtual spaces) for applications to run in. 
+These can be smaller and faster than virtual machines. 
+
+A container is difficult to configure, and many containers are difficult to manage. 
+The hard work is done by a container orchestration application. 
+
+* application
+* container
+* OS 
+* firmware
+* hardware 
+
+== layers in an enterprise server
+
+Containers work with both physical machines and virtual machines. 
+An application running on a large server can be on top of many layers. 
+
+* application
+* container
+* OS 
+* virtual firmware
+* virtual hardware 
+* hypervisor application
+* OS 
+* firmware
+* hardware 
+
+== inside the OS layer 
+
+
+An OS is made of three main components. 
+These are not layers. 
+
+* kernel
+* command interpreter
+* system utilities
+
+
+
+
+
+
+
