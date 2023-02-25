@@ -10,11 +10,26 @@ Don't use an SD card. Software will be stored on the flash storage drive, not an
 Plug the keyboard and mouse into the black USB 2 sockets.
 In the example setup, the mouse is plugged into a socket on the keyboard, and the keyboard plugs into the RPi. 
 
-Plug the flash storage drive into a blue USB 3 port. 
-
 Connect the HDMI monitor to the first HDMI socket. 
 The example setup also has a USB connection between one of the RPi's black USB 2 sockets and the monitor. This provides power. 
 
 Connect the ethernet socket to the home network. 
+A network switch near the new machine makes this easier.
+
+.home network with new Raspberry Pi  
+....
+        +----------------------+----------------------+
+        |                      |                      |
+.-------+-------.      .-------+-------.      .-------+-------.
+|               |      |               |      |               |
+|  Raspberry Pi |      |  workstation  |      | router        |-------> Internet  
+|               |      |               |      |               |  
+.---------------.      .---------------.      .---------------.
+....
 
 Plug in the power adapter. Don't turn it on - there is no OS to run yet. 
+
+Don't plug in the USB drives yet. 
+They come later.  
+
+image::usb-drives.jpeg[hardware,width=600,title="USB drives"]

@@ -1,4 +1,4 @@
-= a complete Pi workstation  
+= get a Pi and accessories  
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
@@ -9,22 +9,10 @@ Nick Hardiman
 
 You need an RPi4 - yep, so far so obvious. Don't get the 1, 2 or 4GB versions, nor the Compute Module 4. 
 
-You probably have the resources to add a new machine to your home network. 
-As long as you can figure out how to plug the new Raspberry Pi into the home network, that's  fine. 
-A network switch near the new machine makes this easier.
 
-.home network with new Raspberry Pi  
-....
-        +----------------------+----------------------+
-        |                      |                      |
-.-------+-------.      .-------+-------.      .-------+-------.
-|               |      |               |      |               |
-|  Raspberry Pi |      |  workstation  |      | router        |-------> Internet  
-|               |      |               |      |               |  
-.---------------.      .---------------.      .---------------.
-....
 
-== a Pi workstation for getting started 
+
+== components for a Pi workstation 
 
 
 You don't need optional Pi equipment like a fan, heatsink, or HAT. You do need a fair amount of other hardware, including these.

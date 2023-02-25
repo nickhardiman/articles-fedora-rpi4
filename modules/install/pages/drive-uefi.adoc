@@ -1,10 +1,16 @@
-= copy UEFI to a USB drive   
+= prepare the USB target drive   
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 28-10-2021
 
-One of the USB drives provides the OS storage. 
-The other one holds installer software. 
+The OS install procedure uses two USB drives. 
+
+* target drive
+* installer drive
+
+One of the drives provides the OS storage. This is the target drive and will stay in the PI. 
+The other one holds installer software. This is the installer drive and is only used for the initial install. 
+
 
 image::usb-drives.jpeg[hardware,width=600,title="USB drives"]
 

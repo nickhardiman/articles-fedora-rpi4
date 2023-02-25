@@ -19,7 +19,7 @@ These layers match what you'd find in a large enterprise server.
 * host hardware 
 
 This layer model is useful for work described here. But a model that is as simple as this is not an accurate representation of reality. 
-Some software uses firmware interfaces to access hardware, but some doesn't. 
+For instance, the OS may use a firmware interface to access hardware, or may go direct and skip the firmware layer.  
 
 == abstraction layers
 

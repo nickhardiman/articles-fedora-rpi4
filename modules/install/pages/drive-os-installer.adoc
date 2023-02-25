@@ -1,10 +1,16 @@
-= copy the OS installer to a USB drive   
+= prepare the USB installer drive   
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 28-10-2021
 
-One of the USB drives provides the OS storage. 
-The other one holds installer software. 
+The OS install procedure uses two USB drives. 
+
+* target drive
+* installer drive
+
+One of the drives provides the OS storage. This is the target drive and will stay in the PI. 
+The other one holds installer software. This is the installer drive and is only used for the initial install. 
+
 All the installer software is in an ISO file. 
 An ISO file is a copy of a file system from an optical disk, like a DVD.
 If you're wondering where the name came from, ISO is an abbreviation of https://en.wikipedia.org/wiki/ISO_9660[ISO 9660], which is an abbreviation of International Standards Organization file system standard number 9660.
@@ -14,13 +20,15 @@ image::usb-drive-iso.jpeg[hardware,width=600,title="USB drive to hold the ISO in
 Prepare the installer drive by copying the installer DVD file to it. 
 First, download this DVD file from Fedora's web site. 
 
-Use a linux workstation to copy the ISO to the USB drive. 
-It's a simple copy using the `dd` command. 
-The MacBook OS has the dd command too, although some options are different. 
+Use your workstation to copy the ISO to the USB drive. 
+If you are using Linux, then it's a simple copy using the `dd` command. 
+The MacBook OS has the dd command too, although some options are different.
+If you are using Windows, you need an app to do the copying.  
+
+== label the installer drive
 
 In my example setup, the two USB drives look exactly the same. 
 I labelled one "Fedora ISO" by cutting out a tag and tying it to the installer USB drive. 
-
 
 == download Fedora Server
 
