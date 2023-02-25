@@ -1,4 +1,7 @@
-== shut down 
+= shut down 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
 
 Shut down (or power down, or power off) the Pi.
 
