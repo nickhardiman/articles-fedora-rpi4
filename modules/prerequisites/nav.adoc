@@ -1,0 +1,6 @@
+* xref:index.adoc[]
+** xref:home-network.adoc[]
+** xref:workstation.adoc[]
+** xref:raspberry-pi-4.adoc[]
+** xref:pi-workstation.adoc[]
+** xref:jargon.adoc[]

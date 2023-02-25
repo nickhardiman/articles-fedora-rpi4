@@ -1,0 +1,11 @@
+= what you need
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+
+
+* network, ethernet cables, switch, ISP router, wifi
+* workstation
+* RPi4, storage, USB drive, microSD, keyboard, video, mouse
+

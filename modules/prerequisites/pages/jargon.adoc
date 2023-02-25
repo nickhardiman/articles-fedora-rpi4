@@ -1,0 +1,32 @@
+= jargon
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+* physical
+* virtual
+* on-premise 
+* off-premise
+* in the cloud
+* hybrid
+
+== physical 
+
+* network, ethernet cables, switch, ISP router, wifi
+* workstation
+* host, RPi4, server
+* KVM, headless
+* storage, USB drive, microSD
+
+== virtual
+
+== on-premise 
+
+== off-premise
+
+== in the cloud
+
+* AWS, GCP and Azure
+* other cloud infrastructure providers
+
+== hybrid

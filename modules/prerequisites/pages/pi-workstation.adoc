@@ -1,0 +1,49 @@
+= a complete Pi workstation  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 24-10-2020
+
+
+== find the cash
+
+Buying computer hardware is expensive, even at this home-hobbyist level. In fact, the first barrier to getting started with a Raspberry Pi 4 is the cash barrier. Working with the US dollar, de-facto currency of the world, expect to lay out a few hundred bucks. 
+
+== what to buy
+
+image::hardware-1.jpeg[hardware,width=600,title="hardware"]
+
+You need an RPi4 - yep, so far so obvious. Don't get the 1, 2 or 4GB versions, nor the Compute Module 4. You don't need optional Pi equipment like a fan, heatsink, or HAT. You do need a fair amount of other hardware, including these.
+
+* *home network*. Perhaps this is your ISP modem.
+* *cables*. The Pi is connected to the outsde world with an ethernet cable, an HDMI cable, a USB cable and a power cable. 
+* *keyboard*, *video monitor* and *mouse*. This hardware combination is so common it used to be abbreviated to KVM, until Kernel-based Virtual Machines came along and stole the acronym. 
+
+Much of this hardware, like the monitor and keyboard, is only required to get started. 
+When everything is set up, you can connect from another computer over the network to the Raspberry Pi and do everything you need on the CLI (Command Line Interface).
+
+== a working combination 
+
+Hardware in the picture is screwed to a frame and put in a cardboard box. 
+These are DIY products. 
+
+image::hardware-2.jpeg[hardware,width=600,title="hardware items"]
+
+.hardware shopping list 
+[cols="1,3,3,5"]
+|===
+| # | item | price | description
+
+| 1 | https://www.raspberrypi.org/products/raspberry-pi-4-model-b/[Raspberry Pi 4 model B 8GB] | £75 from PiHut | Don't get the 1, 2 or 4GB versions, nor the Compute Module 4.
+| 2 | https://en.wikipedia.org/wiki/Computer_monitor[video monitor] | £50 from ebay | This unbranded Chinese import (a 7 inch 1024x600 https://en.wikipedia.org/wiki/Thin-film-transistor_liquid-crystal_display[TFT LCD] screen and driver board) runs on USB power. Any HDMI monitor, such as a modern TV, is OK. 
+| 3 | https://en.wikipedia.org/wiki/HDMI[HDMI cable]  | https://www.amazon.co.uk/[£10 from Amazon] | This short cable has a micro-HDMI plug on the Pi end, and mini-HDMI plug on the other.
+| 4 | https://en.wikipedia.org/wiki/USB_hardware#Power[USB power adapter] | https://www.apple.com/uk/shop/product/MGMY3B/A/apple-5w-usb-power-adapter-folding-pins[£30 from Apple] | This UK power adapter has folding pins.  Anything that delivers 5 volts and 3 amps through a https://en.wikipedia.org/wiki/USB-C[USB-C] plug is OK. The https://thepihut.com/products/raspberry-pi-psu-uk[official power supply] is much cheaper.
+| 5 | https://en.wikipedia.org/wiki/USB_hardware[USB cable] | £8 from Amazon | This connects the Pi's https://en.wikipedia.org/wiki/USB_hardware#Connectors[USB Type-A] socket to the monitor's Micro-B socket and provides power. 
+| 6 | https://en.wikipedia.org/wiki/USB_flash_drive[USB flash drive] containing the OS | https://www.amazon.co.uk/gp/product/B077VXV323/ref=ppx_yo_dt_b_asin_title_o06_s00[£7 from Amazon] | The Fedora OS is stored on this https://shop.westerndigital.com/en-gb/products/usb-flash-drives/sandisk-ultra-fit-usb-3-1[SanDisk Ultra Fit USB 3.1 flash drive].
+| 7 | https://en.wikipedia.org/wiki/Ethernet_over_twisted_pair[ethernet cable] | https://www.screwfix.com/c/electrical-lighting/cable/cat8960001?cablecode=cat_5e[£6 from Screwfix] | This cat5e cable connects the home network to the Raspberry Pi.
+| 8 | https://en.wikipedia.org/wiki/USB_flash_drive[USB flash drive] containing the install ISO | https://www.amazon.co.uk/gp/product/B077VXV323/ref=ppx_yo_dt_b_asin_title_o06_s00[£7 from Amazon]  | The installer ISO is stored on this second SanDisk drive.
+| 9 | https://en.wikipedia.org/wiki/Computer_keyboard[keyboard] | https://cpc.farnell.com/raspberry-pi/rpi-keyb-uk-red-white/raspberry-pi-keyboard-red-white/dp/SC15141[£16 from Farnell] | Any keyboard that has a https://en.wikipedia.org/wiki/USB#Connectors[USB Type-A plug] will do. Some reduced keyboards are missing useful keys such as #, / and [esc].
+| 10 | https://en.wikipedia.org/wiki/Computer_mouse[mouse] | https://cpc.farnell.com/raspberry-pi/rpi-mouse-red-white/raspberry-pi-mouse-red-white/dp/SC15139[£8 from Farnell] | Any mouse that has a USB A plug will do. 
+
+|===
+
+

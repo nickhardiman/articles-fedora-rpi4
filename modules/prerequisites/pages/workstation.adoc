@@ -1,0 +1,67 @@
+= your workstation
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 13-02-2022
+
+Your workstation may be a new Mac running MacOS, an old Chromebook running ChromeOS, or a recycled PC running a Linux distribution. 
+It doesn't really matter because all these operating systems have the tools you need to follow this guide. 
+
+.home network  
+....
+        +----------------------+----------------------+
+        |                      |                      |
+.-------+-------.      .-------+-------.      .-------+-------.
+|               |      |               |      |               |
+|  Raspberry Pi |      |  workstation  |      | router        |-------> Internet  
+|               |      |               |      |               |  
+.---------------.      .---------------.      .---------------.
+....
+
+== types 
+
+* laptop 
+* gaming PC 
+* office PC
+* the workstation that is part server
+
+== hardware 
+
+=== devices 
+
+A workstation is a collection of devices. 
+
+* storage. SATA drive, SSD, USB
+* compute. chipset, motherboard, CPU, southbridge
+* network. A connection to your ISP modem. Possibly an ethernet
+* human/computer interaction devices. 
+* keyboard. So many variations. Split, ergonomic, backlit, RGB, mechanical, waterproof. How many keys? TKL, 104 key, 60%. And keyboard layouts - QWERTY, AZERTY, Dvorzak, Cirrilic?
+* video monitor. RGB, LED, OLED, e-ink. Resolutions VGA, HD, 4k
+* mouse. ball, trackpad, 
+
+The keyboard, video monitor and mouse hardware combination is so common it used to be abbreviated to KVM, until Kernel-based Virtual Machines came along and stole the acronym. 
+
+Trackpad, tablet, VR goggles 
+
+=== cables 
+
+Your workstation is connected to the outside world with one or more cables. 
+
+* ethernet cable
+* video cable. Maybe HDMI, or DisplayPort
+* USB cable
+* power cable
+
+The network connection from router to workstation might be an ethernet cable or WIFI. 
+
+ 
+
+== software 
+
+=== OS 
+
+The workstation probably runs Microsoft Windows, which has been the https://en.wikipedia.org/wiki/Usage_share_of_operating_systems[most common desktop OS] for a very long time. 
+
+Every machine has an address. 
+The router gives every machine an IP address on the network. 
+The IP address looks something like _192.2.3.4_ or _10.2.3.4_.
+
