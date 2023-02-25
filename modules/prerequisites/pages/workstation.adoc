@@ -8,13 +8,13 @@ It doesn't really matter because all these operating systems have the tools you 
 
 .home network  
 ....
-        +----------------------+----------------------+
-        |                      |                      |
-.-------+-------.      .-------+-------.      .-------+-------.
-|               |      |               |      |               |
-|  Raspberry Pi |      |  workstation  |      | router        |-------> Internet  
-|               |      |               |      |               |  
-.---------------.      .---------------.      .---------------.
+        +----------------------+
+        |                      | 
+.-------+-------.      .-------+-------.
+|               |      |               |
+|  workstation  |      |  router       |-------> Internet  
+|               |      |               |  
+.---------------.      .---------------.
 ....
 
 == types 

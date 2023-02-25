@@ -9,10 +9,14 @@ Nick Hardiman
 https://en.wikipedia.org/wiki/Firmware[Firmware] does all the work between power-on and OS starting.  
 When you boot up a computer, obscure messages start to appear to the screen after a few seconds. These are messages from the UEFI application.
 
-* application
-* OS 
-* firmware  <-- here
-* hardware 
+* guest application 
+* guest container
+* guest OS 
+* guest hardware 
+* host hypervisor
+* host OS 
+* host firmware   <-- here
+* host hardware 
 
 == firmware 1 
 

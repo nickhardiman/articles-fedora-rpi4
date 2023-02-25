@@ -7,14 +7,16 @@ The top layer of the technical stack is the business end of computers. It's the 
 
 Most of the work of the lower layers is hidden from applications. An editor needs to know how to ask the OS to store a file, but it doesn't need to know how that file is split into blocks on a storage volume. 
 
-* application     <-- here
-* OS
-* firmware
-* hardware
+* guest application  <-- here
+* guest container
+* guest OS 
+* guest hardware 
+* host hypervisor <-- the hypervisor is also an application
+* host OS 
+* host firmware
+* host hardware 
 
-== abstraction layers
 
-Abstraction is one of the four ways of computational thinking (the other three are pattern recognition, decomposition and algorithms). The layer below offers a bunch of shiny features to the layer above, so it can get stuff done. The layer below hides all the ugly work required to get stuff done. If you buy a tin of baked beans, you don't have to worry about how the beans ended up in there - most of the details are abstracted away. If you program an application, there's a lot of abstraction there too.  
 
 
 == binary incompatibility
@@ -31,3 +33,20 @@ This binary incompatibility problem has been biting application programmers fore
 == this application layer is not the famous network application layer
 
 This application layer is a little different from the top layer of the OSI model (layer 7) and the top layer of the TCP/IP model (layer 4). These are networking models that separate the different types of communication needed in a network. The top layers of these models describe the protocols and interfaces required for applications to communicate. A web server needs to know how to talk HTTP, but it doesn't need to know how to split an HTTP conversation into packets and send them across the network. 
+
+=== TCP/IP layers 
+
+* 4. Application 
+* 3. Transport 
+* 2. Internet
+* 1. Link 
+
+=== OSI model layers
+
+* 7. Application
+* 6. Presentation
+* 5. Session
+* 4. Transport
+* 3. Network
+* 2. Data Link
+* 1. Physical

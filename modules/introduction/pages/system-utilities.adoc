@@ -5,6 +5,14 @@ Nick Hardiman
 
 system utilities
 
+* guest application 
+* guest container
+* guest OS   <-- here
+* guest hardware 
+* host hypervisor
+* host OS   <-- and here
+* host firmware
+* host hardware 
 
 == we're all the same, except we're not 
 

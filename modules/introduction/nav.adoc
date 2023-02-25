@@ -7,4 +7,4 @@
 *** xref:command-interpreter.adoc[]
 *** xref:system-utilities.adoc[]
 ** xref:application.adoc[]
-** xref:virtualization.adoc[] 
+** xref:hypervisor.adoc[] 

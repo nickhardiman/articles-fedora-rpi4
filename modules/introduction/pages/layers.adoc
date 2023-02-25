@@ -5,44 +5,58 @@ Nick Hardiman
 
 image::machine-layers.png[hardware,width=600,title="machine layers"]
 
+This guide packs a lot of software  onto a Raspberry Pi. 
+This is a set of abstraction layers for keeping track of the work. 
+These layers match what you'd find in a large enterprise server. 
 
-A computer can be split into these three layers. 
-This is a simple model of a computer. 
+* guest application 
+* guest container
+* guest OS 
+* guest hardware 
+* host hypervisor
+* host OS 
+* host firmware
+* host hardware 
+
+This layer model is useful for work described here. But a model that is as simple as this is not an accurate representation of reality. 
+Some software uses firmware interfaces to access hardware, but some doesn't. 
+
+== abstraction layers
+
+Abstraction is one of the four ways of computational thinking (the other three are pattern recognition, decomposition and algorithms). The layer below offers a bunch of shiny features to the layer above, so it can get stuff done. The layer below hides all the ugly work required to get stuff done. If you buy a tin of baked beans, you don't have to worry about how the beans ended up in there - most of the details are abstracted away. If you program an application, there's a lot of abstraction there too.  
+
+== start with two layers
+
+Everything that makes up a computer can be split into things you can touch and things you can't. 
+
+* software
+* hardware 
+
+This isn't some industry formal standard. 
+It's a simple model of a computer, to make the work easier to understand. 
+A developer who works on device drivers might start with a simple model like this.  
 
 * software
 * firmware
 * hardware 
 
-This guide packs a lot of smaller layers into that software layer. 
-This is the kind of layering you may find in a large enterprise server. 
-
-* application
-* container
-* OS 
-* virtual firmware
-* virtual hardware 
-* hypervisor application
-* OS 
-* firmware
-* hardware 
-
-== first, split the software layer in two. 
+== split the software layer in two
 
 The software layer can be split into two - OS and application. 
 The layer of applications is built on three lower layers. 
 
-Domestic computers and small server computers often stick to these four layers. 
+Domestic computers and small server computers often stick to these  layers. 
 
 * application
 * OS 
-* firmware
+* firmware 
 * hardware 
 
 When servers got bigger and more powerful, some resources weren't getting used. 
 The computers got too big for the applications. 
 
 
-== virtually duplicate layers with a hypervisor
+== add a virtualization layer with a hypervisor
 
 A hypervisor can split one large physical machine into many smaller virtual machines. 
 A hypervisor is an application that manages virtual machines. 
@@ -53,14 +67,24 @@ A real computer is called a physical machine and a computer emulated in software
 The _virtual_ in virtual machine means each new computer is virtually the same as a physical computer, but not exactly the same.
 An operating system and applications can be installed on a virtual computer in the same way they get installed on a physical computer. 
 
-* application 
-* OS 
-* virtual firmware
-* virtual hardware 
-* hypervisor application
-* OS 
-* firmware
-* hardware 
+* virtual machine 
+* physical machine
+
+There are also the synonyms host and guest.
+
+* guest machine 
+* host machine
+
+So the full set of layers now looks like this. 
+(There is no virtual firmware. Firmware is a hardware/software interface thing.) 
+
+* guest application 
+* guest OS 
+* guest hardware 
+* host hypervisor
+* host OS 
+* host firmware
+* host hardware 
 
 Managing virtual machines takes a lot of work. 
 There is more than one way to manage virtualization. 
@@ -82,17 +106,16 @@ The hard work is done by a container orchestration application.
 == layers in an enterprise server
 
 Containers work with both physical machines and virtual machines. 
-An application running on a large server can be on top of many layers. 
+An application running on a large server can be on top of all these layers. 
 
-* application
-* container
-* OS 
-* virtual firmware
-* virtual hardware 
-* hypervisor application
-* OS 
-* firmware
-* hardware 
+* guest application 
+* guest container
+* guest OS 
+* guest hardware 
+* host hypervisor
+* host OS 
+* host firmware
+* host hardware 
 
 == inside the OS layer 
 

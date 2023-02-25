@@ -5,7 +5,11 @@ Nick Hardiman
 
 command-line interpreter
 
-* application
-* OS    <-- here
-* firmware
-* hardware
+* guest application 
+* guest container
+* guest OS  <-- here
+* guest hardware 
+* host hypervisor
+* host OS  <-- and here
+* host firmware
+* host hardware 
