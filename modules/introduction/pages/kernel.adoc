@@ -6,10 +6,14 @@ Nick Hardiman
 
 The firmware loads low-level device management software, then  BIOS starts GRUB, then GRUB starts the kernel.
 
-* application
-* OS    <-- here
-* firmware
-* hardware
+* guest application 
+* guest container
+* guest OS   <-- here
+* guest hardware 
+* host hypervisor
+* host OS   <-- and here
+* host firmware
+* host hardware 
 
 == kernel 
 

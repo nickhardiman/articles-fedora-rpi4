@@ -5,10 +5,14 @@ Nick Hardiman
 
 Board, cables, power supply and the rest. 
 
-* application
-* OS 
-* firmware
-* hardware   <-- here
+* guest application 
+* guest container
+* guest OS 
+* guest hardware 
+* host hypervisor
+* host OS 
+* host firmware
+* host hardware   <-- here
 
 == The Raspberry Pi 
 

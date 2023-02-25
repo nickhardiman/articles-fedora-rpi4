@@ -5,6 +5,14 @@ Nick Hardiman
 
 Use the commands _nmcli connection show_, _nmcli device status_ and _ip addr show_ to see how the network is configured. 
 
+* guest application 
+* guest container
+* guest OS 
+* guest hardware 
+* host hypervisor
+* host OS  <-- commands run here, and lower layers do the work
+* host firmware
+* host hardware 
 
 == nmcli
 
