@@ -3,7 +3,12 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
-* duplicate of hardware-buy.adoc
+
+== find the cash
+
+Buying computer hardware is expensive, even at this home-hobbyist level. In fact, the first barrier to getting started with a Raspberry Pi 4 is the cash barrier. Working with the US dollar, de-facto currency of the world, expect to lay out a few hundred bucks. 
+
+== what to buy
 
 image::hardware-1.jpeg[hardware,width=600,title="hardware"]
 
