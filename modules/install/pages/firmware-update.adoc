@@ -1,0 +1,93 @@
+= update firmware   
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 28-02-2023
+
+Use raspbian.
+
+== check before 
+
+[source,shell]
+----
+pi@raspberrypi:~ $ uname -a
+Linux raspberrypi 5.10.103-v7+ #1529 SMP Tue Mar 8 12:21:37 GMT 2022 armv7l GNU/Linux
+pi@raspberrypi:~ $ 
+----
+
+== update kernel and firmware 
+
+.rpi-update
+[source,shell]
+----
+pi@raspberrypi:~ $ sudo rpi-update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS and Dom
+ *** Performing self-update
+ *** Relaunching after update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS and Dom
+FW_REV:155d2c06760b856b693a99e9a44c9461d63ac0ca
+ *** We're running for the first time
+ *** Backing up files (this will take a few minutes)
+ *** Remove old firmware backup
+ *** Backing up firmware
+ *** Remove old modules backup
+ *** Backing up modules 5.10.103-v7+
+WANT_32BIT:1 WANT_64BIT:1 WANT_PI4:1
+#############################################################
+WARNING: This update bumps to rpi-6.1.y linux tree
+See: https://forums.raspberrypi.com/viewtopic.php?t=344246
+
+'rpi-update' should only be used if there is a specific
+reason to do so - for example, a request by a Raspberry Pi
+engineer or if you want to help the testing effort
+and are comfortable with restoring if there are regressions.
+
+DO NOT use 'rpi-update' as part of a regular update process.
+##############################################################
+Would you like to proceed? (y/N)
+
+ *** Downloading specific firmware revision (this will take a few minutes)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  115M  100  115M    0     0  2187k      0  0:00:54  0:00:54 --:--:-- 1625k
+ *** Updating firmware
+ *** Updating kernel modules
+ *** depmod 6.1.13+
+ *** depmod 6.1.13-v8+
+ *** depmod 6.1.13-v7+
+ *** depmod 6.1.13-v7l+
+ *** Updating VideoCore libraries
+ *** Using HardFP libraries
+ *** Updating SDK
+ *** Running ldconfig
+ *** Storing current firmware revision
+ *** Deleting downloaded files
+ *** Syncing changes to disk
+ *** If no errors appeared, your firmware was successfully updated to 155d2c06760b856b693a99e9a44c9461d63ac0ca
+ *** A reboot is needed to activate the new firmware
+pi@raspberrypi:~ $ 
+----
+
+[source,shell]
+----
+sudo reboot
+----
+
+== check after 
+
+[source,shell]
+----
+pi@raspberrypi:~ $ uname -a
+Linux raspberrypi 6.1.13-v7+ #1632 SMP Thu Feb 23 12:19:08 GMT 2023 armv7l GNU/Linux
+pi@raspberrypi:~ $ 
+----
+
+[source,shell]
+----
+pi@raspberrypi:~ $ vcgencmd vcos version
+Feb 22 2023 10:48:01
+Copyright (c) 2011 Broadcom
+version 74a4b109e7f5be465332a1f102649d34f8498d05 (clean)
+host buildbot
+pi@raspberrypi:~ $ 
+----

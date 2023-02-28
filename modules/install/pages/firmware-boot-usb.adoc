@@ -1,0 +1,41 @@
+= firmware config for USB boot
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 28-02-2023
+
+Use raspbian.
+
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot
+The Raspberry Pi 3B+ supports USB mass storage boot out of the box.
+
+== view the bootmode register
+
+Raspberry Pi 3 (BCM2835) this is set in the OTP (One-Time Programmable)
+
+Raspberry Pi 4 (BCM2711) this is set in 
+
+https://www.raspberrypi.com/documentation/computers/os.html#otp_dump
+
+Displays about 60 lines. 
+
+[source,shell]
+----
+pi@raspberrypi:~ $ vcgencmd otp_dump
+08:00000000
+09:00000000
+10:00000000
+...
+17:3020000a
+...
+64:00000000
+65:00000000
+66:02009eaa
+pi@raspberrypi:~ $ 
+----
+
+
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#otp-registers
+
+17 — bootmode register
+
+Bit 28: enables USB device booting

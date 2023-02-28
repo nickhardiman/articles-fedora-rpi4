@@ -3,6 +3,7 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 28-10-2021
 
+The most complicated way to get up and running with Fedora.
 The OS install procedure uses two USB drives. 
 
 * target drive
