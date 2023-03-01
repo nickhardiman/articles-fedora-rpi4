@@ -3,12 +3,28 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 28-02-2023
 
-Use raspbian.
+A USB drive transfers data faster than an SD card. 
+And faster is better. 
+One drawback is a USB drive uses more power.
+With an Rpi 3 and its USB 2 sockets, you may not notice any speed improvement over a good SD card. 
+With an Rpi 4 and its USB 3 sockets, a USB drive is noticeably faster. 
+
+
+Change an 
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#otp-registers[OTP register]. 
+Flip one bit in the bootmode register from 0 to 1.
+
+This is done by adding a line of config to a file and rebooting. 
+Raspberry Pi utilities make the changes. 
+
 
 https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot
 The Raspberry Pi 3B+ supports USB mass storage boot out of the box.
 
+
 == view the bootmode register
+
+Use raspbian.
 
 Raspberry Pi 3 (BCM2835) this is set in the OTP (One-Time Programmable)
 
@@ -17,6 +33,65 @@ Raspberry Pi 4 (BCM2711) this is set in
 https://www.raspberrypi.com/documentation/computers/os.html#otp_dump
 
 Displays about 60 lines. 
+
+
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#otp-registers
+
+17 — bootmode register
+
+Bit 28: enables USB device booting
+
+
+[source,shell]
+----
+pi@raspberrypi:~ $ vcgencmd otp_dump
+08:00000000
+09:00000000
+10:00000000
+...
+17:1020000a
+...
+64:00000000
+65:00000000
+66:00000000
+pi@raspberrypi:~ $ 
+----
+
+
+== bit 29 in the bootmode register
+
+Bit 29 in the bootmode register 
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#otp-registers[enables USB host booting (ethernet and mass storage)].
+
+1020000a is a hexadecimal number. 
+Convert that to bits and you get this. 
+This string of ones and zeros gives an idea of what is happening in the transistors of the register. 
+[source,shell]
+----
+00010000001000000000000000001010
+----
+
+After changing bit 29 (third one from the left) the register will look like this. 
+[source,shell]
+----
+00110000001000000000000000001010
+----
+
+
+== enable USB host boot mode
+
+echo program_usb_boot_mode=1 | sudo tee -a /boot/config.txt
+
+sync 
+
+reboot
+
+
+
+== check after
+
+View 17 — bootmode register
+
 
 [source,shell]
 ----
@@ -33,9 +108,3 @@ pi@raspberrypi:~ $ vcgencmd otp_dump
 pi@raspberrypi:~ $ 
 ----
 
-
-https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#otp-registers
-
-17 — bootmode register
-
-Bit 28: enables USB device booting

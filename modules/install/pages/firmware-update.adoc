@@ -68,6 +68,21 @@ Would you like to proceed? (y/N)
 pi@raspberrypi:~ $ 
 ----
 
+second run 
+
+[source,shell]
+----
+pi@raspberrypi:~ $ sudo rpi-update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS and Dom
+ *** Performing self-update
+ *** Relaunching after update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS and Dom
+FW_REV:155d2c06760b856b693a99e9a44c9461d63ac0ca
+ *** Your firmware is already up to date (delete /boot/.firmware_revision to force an update anyway)
+pi@raspberrypi:~ $ 
+----
+
+
 [source,shell]
 ----
 sudo reboot
@@ -81,6 +96,8 @@ pi@raspberrypi:~ $ uname -a
 Linux raspberrypi 6.1.13-v7+ #1632 SMP Thu Feb 23 12:19:08 GMT 2023 armv7l GNU/Linux
 pi@raspberrypi:~ $ 
 ----
+
+on the SD card 
 
 [source,shell]
 ----
