@@ -4,6 +4,17 @@ Nick Hardiman
 :revdate: 28-10-2021
 
 The most complicated way to get up and running with Fedora.
+
+Simple install. You get what you're given (U-Boot firmware, no desktop, etc.)
+
+* xref:drive-raw-image.adoc[]
+
+Complex install with choices (Tiano Core firmware, full installer, etc.)
+
+* xref:drive-uefi.adoc[]
+* xref:drive-os-installer.adoc[]
+* xref:os-install.adoc[]
+
 The OS install procedure uses two USB drives. 
 
 * target drive

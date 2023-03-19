@@ -4,8 +4,21 @@ Nick Hardiman
 :revdate: 28-02-2023
 
 The easiest way to get up and running with Fedora. 
+
+Simple install. You get what you're given (U-Boot firmware, no desktop, etc.)
+
+* xref:drive-raw-image.adoc[]
+
+Complex install with choices (Tiano Core firmware, full installer, etc.)
+
+* xref:drive-uefi.adoc[]
+* xref:drive-os-installer.adoc[]
+* xref:os-install.adoc[]
+
+
 Fedora Server includes about 1GB of swap, a simple LVM configuration and 1000 packages. 
 Fedora Server does not include a graphical desktop. 
+
 
 == get the ISO file
 

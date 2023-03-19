@@ -4,7 +4,22 @@ Nick Hardiman
 :revdate: 24-09-2021
 
 
-. xref:power-up.adoc[]
-. xref:shut-down.adoc[]
-. xref:boot-firmware.adoc[]
-. xref:boot-os.adoc[]
+== the boot process 
+
+When the Raspberry Pi powers up, a chain of firmware programs run before Linux starts. 
+
+hardware 
+
+. power on 
+
+firmware 
+
+. boot ROM, on the SoC
+. bootloader, in EEPROM on the SoC
+. start4x.elf, in the first partition
+. UEFI
+. GRUB2
+
+software 
+
+. Linux

@@ -3,34 +3,11 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
+* xref:introduction:firmware.adoc[]
+
 
 https://en.wikipedia.org/wiki/Firmware[Firmware] does all the work between power-on and OS starting.  
 When you boot up a computer, obscure messages start to appear to the screen after a few seconds. These are messages from the UEFI application.
-
-image::datamation-67-cover.png[magazine,height=200,float="right",title="Datamation 67 cover"]
-
-Firmware is software that controls hardware. 
-If you want to know who's responsible for the "firmware" name and if he had a sense of humor, check out Ascher Opler's article in http://bitsavers.org/magazines/Datamation/196701.pdf[Datamation magazine, volume 13 number 1]. This magazine came out half a century ago, has groovy modern art on the cover and plenty of great hardware photos inside.  
-
-The boot process is a chain of software. 
-The Raspberry Pi bootloader starts the https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface[UEFI] system, and the UEFI bootloader starts the kernel. 
-
-The GNU project maintain their own boot loader, https://en.wikipedia.org/wiki/GNU_GRUB#Version_2_(GRUB_2)[GRUB2]. 
-The GRUB2 bootloader is the Fedora UEFI application.
-
-
-== firmware 
-
-Firmware has to get everything started. For instance, to boot up the OS, the firmware must first find the storage, finds the OS kernel on that storage, figure out how to use the memory, copy the kernel into that memory, and point the CPU at the first instruction in that kernel.
-After that point, the kernel is up and running, and the OS can take over. 
-
-Firmware is tied to the computer it runs on. 
-It has to understand how to work with the many devices that make up a computer, and different types of computer have different collections of devices.
-Even two closely related computers like the Raspberry Pi 3 and the Raspberry Pi 4 are different.
-If you look at these two side by side, you can see the chips are different and the layout has changed. 
-The way devices are connected on the Raspberry Pi has changed, too. 
-Ethernet used to be connected to USB, and now it has its own controller. 
-And USB now has its own PCIe controller on the SoC. 
 
 
 

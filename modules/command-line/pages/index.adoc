@@ -5,3 +5,5 @@ Nick Hardiman
 
 The command line
 
+* xref:introduction:command-interpreter.adoc[]
+* xref:introduction:system-utilities.adoc[]
