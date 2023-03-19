@@ -3,6 +3,11 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 13-02-2022
 
+https://commons.wikimedia.org/wiki/File:Schenker_VIA14_Laptop_asv2021-01.jpg
+
+image::Schenker_VIA14_Laptop_asv2021-01.jpeg[prerequisites,width=600,title="workstation"]
+
+
 Your workstation may be a new Mac running MacOS, an old Chromebook running ChromeOS, or a recycled PC running a Linux distribution. 
 It doesn't really matter because all these operating systems have the tools you need to follow this guide. 
 

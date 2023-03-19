@@ -3,15 +3,19 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
+https://commons.wikimedia.org/wiki/File:VMM-Type2.JPG
+
+image::VMM-Type2.jpeg[hypervisor,title="hypervisor layers"]
+
 Many virtual machines and virtual networks can be emulated in the software of one physical machine. 
 
 There are many ways of virtualizing a machine. It may be small customized machine for running one type of program. It may be a full-blown PC emulator, with all its devices. Or it may be a small piece of user space, cut off from the rest by the kernel.  
-
+ß
 * guest application 
 * guest container
 * guest OS 
 * guest hardware 
-* host hypervisor  <-- here
+* host hypervisor  <- here
 * host OS 
 * host firmware
 * host hardware 

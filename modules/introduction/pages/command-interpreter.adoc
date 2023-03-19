@@ -7,9 +7,13 @@ command-line interpreter
 
 * guest application 
 * guest container
-* guest OS  <-- here
+* guest OS  <- here
 * guest hardware 
 * host hypervisor
-* host OS  <-- and here
+* host OS  <- and here
 * host firmware
 * host hardware 
+
+AT&T Archives video "The UNIX System: Making Computers Easier to Use", Dennis Ritchie 
+
+The shell, which is the name we give to the command interpreter, looks after the communication between the user and the system itself. 

@@ -8,10 +8,10 @@ The firmware loads low-level device management software, then  BIOS starts GRUB,
 
 * guest application 
 * guest container
-* guest OS   <-- here
+* guest OS   <- here
 * guest hardware 
 * host hypervisor
-* host OS   <-- and here
+* host OS   <- and here
 * host firmware
 * host hardware 
 

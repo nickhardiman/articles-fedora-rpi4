@@ -7,12 +7,16 @@ system utilities
 
 * guest application 
 * guest container
-* guest OS   <-- here
+* guest OS   <- here
 * guest hardware 
 * host hypervisor
-* host OS   <-- and here
+* host OS   <- and here
 * host firmware
 * host hardware 
+
+AT&T Archives video "The UNIX System: Making Computers Easier to Use", Dennis Ritchie 
+
+The third part, which is actually the largest, is the various utility programs which perform specific tasks like editing a file or sorting a bunch of numbers or making a plot. In other words, all the other programs that are not provided directly as part of the operating system kernel".
 
 == we're all the same, except we're not 
 

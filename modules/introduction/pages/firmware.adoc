@@ -15,7 +15,7 @@ When you boot up a computer, obscure messages start to appear to the screen afte
 * guest hardware 
 * host hypervisor
 * host OS 
-* host firmware   <-- here
+* host firmware   <- here
 * host hardware 
 
 == firmware 1 

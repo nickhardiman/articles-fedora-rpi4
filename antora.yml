@@ -1,7 +1,8 @@
 # https://docs.antora.org/antora/2.3/component-name-and-version/#name-key
 # name: 
 # The value can contain letters, numbers, underscores (_), hyphens (-), and periods (.). 
-# The value cannot contain a space, a forward slash (/), or HTML special characters (&, <, or >). 
+# The value cannot contain a space, a forward slash (/), or 
+# HTML special characters (&, <, or >). 
 # The value cannot be empty.
 name: fedora-on-rpi4
 title: Fedora on a Raspberry Pi 4
@@ -11,15 +12,18 @@ title: Fedora on a Raspberry Pi 4
 # named identifier (eg. master, jesse, edge) or semantic identifier (eg. 1.5, 8)
 # Values that start with a number should be enclosed in a set of single quote marks (').
 # The value can contain letters, numbers, periods (.), underscores (_), and hyphens (-). 
-# The value cannot contain a space, a forward slash (/), or HTML special characters (&, <, or >). 
+# The value cannot contain a space, a forward slash (/), or 
+# HTML special characters (&, <, or >). 
 # The value cannot be empty.
-# To ensure portability between host platforms, letters used in the version value should be lowercase.
+# To ensure portability between host platforms, letters used in the 
+# version value should be lowercase.
 version: 'dev'
 start_page: ROOT:index.adoc
 
 # https://docs.antora.org/antora/2.3/component-navigation/#nav-key
 # nav:
-# Each value is a path to an individual navigation file, relative to the location of the antora.yml file.
+# Each value is a path to an individual navigation file, 
+# relative to the location of the antora.yml file.
 nav:
 - modules/introduction/nav.adoc 
 - modules/prerequisites/nav.adoc 

@@ -12,7 +12,7 @@ Board, cables, power supply and the rest.
 * host hypervisor
 * host OS 
 * host firmware
-* host hardware   <-- here
+* host hardware   <- here
 
 == The Raspberry Pi 
 
