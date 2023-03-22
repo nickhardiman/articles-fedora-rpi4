@@ -3,7 +3,17 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
-* duplicate of hardware-buy.adoc
+xref:introduction:layers.adoc[]
+
+* guest application 
+* guest container
+* guest OS  
+* guest hardware
+* host hypervisor
+* host OS   
+* host firmware
+* host hardware   <- here
+
 
 == a new Raspberry Pi 4 for the home lab 
 

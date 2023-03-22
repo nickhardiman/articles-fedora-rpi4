@@ -4,6 +4,12 @@ Nick Hardiman
 :revdate: 01-01-2021
 
 
+!!! I'm using firmware in a new and possibly misleading way here, as all software that runs before the OS runs. 
+That's the view of a mobile phone user - it's the software you don't care about.  
+The traditional view does not label everything between hardware and software as firmware. 
+Software embedded in a piece of hardware is firmware. 
+A CPU doesn't run it, it's hard to update, and invisible to users. 
+Then there's the middle ground view that says UEFI is firmware, bootloader is not. 
 
 
 https://en.wikipedia.org/wiki/Firmware[Firmware] does all the work between power-on and OS starting.  
@@ -23,7 +29,7 @@ When you boot up a computer, obscure messages start to appear to the screen afte
 image::datamation-67-cover.png[magazine,height=200,float="right",title="Datamation 67 cover"]
 
 Firmware is software that controls hardware. 
-If you want to know who's responsible for the "firmware" name and if he had a sense of humor, check out Ascher Opler's article in http://bitsavers.org/magazines/Datamation/196701.pdf[Datamation magazine, volume 13 number 1]. This magazine came out half a century ago, has groovy modern art on the cover and plenty of great hardware photos inside.  
+If you want to know who's responsible for the "firmware" name and if he had a sense of humor, check out Ascher Opler's article "Fourth-Generation Software" in http://bitsavers.org/magazines/Datamation/196701.pdf[Datamation magazine, volume 13 number 1]. This magazine came out half a century ago, has groovy modern art on the cover,   great hardware photos inside, and fascinating facts from the sizzling sixties. 
 
 The boot process is a chain of software. 
 The Raspberry Pi bootloader starts the https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface[UEFI] system, and the UEFI bootloader starts the kernel. 

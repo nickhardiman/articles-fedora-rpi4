@@ -5,21 +5,24 @@ Nick Hardiman
 
 A USB drive transfers data faster than an SD card. 
 And faster is better. 
+
 One drawback is a USB drive uses more power.
+Another drawback is the speed of older USB standards. 
 With an Rpi 3 and its USB 2 sockets, you may not notice any speed improvement over a good SD card. 
 With an Rpi 4 and its USB 3 sockets, a USB drive is noticeably faster. 
 
+== USB boot and the bootmode register
 
+https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot
+The Raspberry Pi 3B+ supports USB mass storage boot out of the box.
+
+Older Raspberry Pis may need a config change - changing an option in a register. 
 Change an 
 https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#otp-registers[OTP register]. 
 Flip one bit in the bootmode register from 0 to 1.
 
 This is done by adding a line of config to a file and rebooting. 
 Raspberry Pi utilities make the changes. 
-
-
-https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#usb-mass-storage-boot
-The Raspberry Pi 3B+ supports USB mass storage boot out of the box.
 
 
 == view the bootmode register

@@ -3,6 +3,17 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 28-02-2023
 
+xref:introduction:layers.adoc[]
+
+* guest application 
+* guest container
+* guest OS  
+* guest hardware
+* host hypervisor
+* host OS   
+* host firmware   <- here
+* host hardware
+
 Use raspbian.
 
 == check before 
