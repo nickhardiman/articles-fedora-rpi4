@@ -1,4 +1,5 @@
 * xref:index.adoc[]
+** xref:diagram.adoc[]
 ** xref:layers.adoc[]
 ** xref:hardware.adoc[]
 ** xref:firmware.adoc[]

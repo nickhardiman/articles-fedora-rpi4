@@ -1,0 +1,62 @@
+= hardware and software diagram
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2021
+
+
+
+image::machine-layers.png[hardware,width=600,title="machine layers"]
+
+
+== a summary diagram 
+
+There is no good way of illustrating the many parts of hardware and software in a computer using a diagram. Electricians have wiring diagrams, which can be used for the electronics
+
+== inside or on top
+
+Software runs inside hardware, not on top of it. And some software runs inside other software, like applications in an operating system. That concept doesn't make for a good diagram, and it confuses people learning software. 
+
+
+== analogies from other industries 
+
+Two areas are a source of analogies to help explain what is going on in a computer. 
+
+* a car analogy
+* an office block analogy
+
+A car is a complex man-made machine and so is a computer, so that's a good start for explaining a computer layout. There are other similarities: a large industry produces cars, and the same is true for computers. 
+
+
+A building is created ground-up. The foundation is laid, some floors are stacked on top of this, and on top of the whole structure is a roof. 
+A  analogy works 
+
+
+== block diagram 
+
+A block diagram is about relationships. 
+
+https://en.wikipedia.org/wiki/Block_diagram
+
+If you imagine an electric car as a block diagram, it looks nothing like a car. 
+It does give a simple picture of what is inside the car. 
+https://www.youtube.com/watch?v=OhmxUVTf6gI
+
+
+Hardware is developed as discrete components, then collected onto a board and attached by wires. 
+Translating this layout into a block diagram works well. It doesn't describe very much, but it is a good starting point. 
+
+https://commons.wikimedia.org/wiki/File:Von_Neumann_Architecture.svg
+
+
+https://commons.wikimedia.org/wiki/File:Von_Neumann_Architecture.svg
+
+Block diagrams are also used for software. 
+A software block diagram doesn't work so well because the idea of what a component is in software is a mess, and the relationships betweeen components is also a mess. 
+Software largely exists in the land of people's imagination, and it can get as messy as people can imagine. 
+Software components are only discrete if programmers try hard to make them that way. 
+
+https://commons.wikimedia.org/wiki/File:Windows_2000_architecture.png
+
+There are some clear boundaries in the land of software, such as between software components built by different manufacturers, between virtual machines, and between business applications.
+
+

@@ -26,6 +26,8 @@ These eight layers match what you'd find in a large enterprise server.
 This layer model is useful for work described here. But a model that is as simple as this is not an accurate representation of reality. 
 For instance, the OS may use a firmware interface to access hardware, or may go direct and skip the firmware layer.  
 
+
+
 == abstraction layers
 
 Abstraction is one of the four ways of computational thinking (the other three are pattern recognition, decomposition and algorithms). The layer below offers a bunch of shiny features to the layer above, so it can get stuff done. The layer below hides all the ugly work required to get stuff done. If you buy a tin of baked beans, you don't have to worry about how the beans ended up in there - most of the details are abstracted away. If you program an application, there's a lot of abstraction there too.  
