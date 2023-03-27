@@ -5,7 +5,7 @@ Nick Hardiman
 
 
 
-image::machine-layers.png[hardware,width=600,title="machine layers"]
+image::hardware-software-1.png[hardware,width=600,title="machine layers"]
 
 
 == a summary diagram 
@@ -41,6 +41,7 @@ If you imagine an electric car as a block diagram, it looks nothing like a car.
 It does give a simple picture of what is inside the car. 
 https://www.youtube.com/watch?v=OhmxUVTf6gI
 
+== hardware block diagram
 
 Hardware is developed as discrete components, then collected onto a board and attached by wires. 
 Translating this layout into a block diagram works well. It doesn't describe very much, but it is a good starting point. 
@@ -48,15 +49,28 @@ Translating this layout into a block diagram works well. It doesn't describe ver
 https://commons.wikimedia.org/wiki/File:Von_Neumann_Architecture.svg
 
 
-https://commons.wikimedia.org/wiki/File:Von_Neumann_Architecture.svg
+== software block diagram 
 
 Block diagrams are also used for software. 
-A software block diagram doesn't work so well because the idea of what a component is in software is a mess, and the relationships betweeen components is also a mess. 
+There are some clear boundaries in the land of software, such as between software components built by different manufacturers, between virtual machines, and between business applications.
+But mapping business requirements onto software leads to complicated programs, which don't easily translate to block diagrams. 
+This diagram shows part of Ansible Automation Platform. 
+It's a great help to people who already understand the concepts.
+It's a hindrance for everyone else. 
+
+image::AAP-data-model-and-access-control.png[hardware,width=600,title="AAP data model and access conrol"]
+
+The relationships betweeen components is also a mess. 
 Software largely exists in the land of people's imagination, and it can get as messy as people can imagine. 
+
 Software components are only discrete if programmers try hard to make them that way. 
+
+image::machine-layers.png[hardware,width=600,title="machine layers"]
+
 
 https://commons.wikimedia.org/wiki/File:Windows_2000_architecture.png
 
-There are some clear boundaries in the land of software, such as between software components built by different manufacturers, between virtual machines, and between business applications.
+
+
 
 

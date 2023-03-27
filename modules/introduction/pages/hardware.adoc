@@ -20,24 +20,25 @@ xref:introduction:layers.adoc[]
 
 image::raspberry-pi-4-top.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB top"]
 
+diagram 
+
+image::hardware-software-1.png[hardware,width=600,title="machine layers"]
 
 
-== CPU, bus and device
+== device
 
 There are three core types of hardware:  CPU, memory and I/O devices.
-These are connected with https://en.wikipedia.org/wiki/Bus_(computing)[busses]. 
-Memory is connected with a internal high-speed system bus, and I/O devices are connected with an external low-speed USB (Universal Serial Bus). 
+The CPU and memory are devices with specific jobs to do. 
+There are many kinds of I/O device, from dead media like a parallel printer to UART for serial communication. 
 
-Device controllers manage devices like ethernet, storage, video and audio. 
-
-image::cpu-bus-and-devices.png[hardware,title="CPU, bus and device controllers"]
-
-A hierarchy of USB devices
-
-image::usb-devices.png[hardware,title="USB devices"]
+A connection is made with a 
+https://en.wikipedia.org/wiki/Bus_(computing)[bus] and a device controller. 
+A bus is the wires that connect two things together, plus a management unit that makes it work. 
+A device controller is a chip that knows how to translate between bus and device. 
 
 
-rpi3, not 4
+image::cpu-bus-and-devices-1.png[hardware,title="CPU and device controllers"]
+
 
 [source,shell]
 ----
@@ -78,4 +79,24 @@ H/W path            Device       Class          Description
 /3/1/3              mmc1:0001:3  communication  43430
 [root@epi3 ~]# 
 ----
+
+
+== bus 
+
+Memory is connected with a internal high-speed system bus, and I/O devices are connected with an external low-speed USB (Universal Serial Bus). 
+
+Device controllers manage devices like ethernet, storage, video and audio. 
+
+image::cpu-bus-and-devices-2.png[hardware,title="CPU, busses and device controllers"]
+
+
+== USB (Universal Serial Bus)
+
+A hierarchy of USB devices
+
+image::usb-devices.png[hardware,title="USB devices"]
+
+
+rpi3, not 4
+
 
