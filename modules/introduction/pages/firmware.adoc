@@ -11,6 +11,8 @@ Software embedded in a piece of hardware is firmware.
 A CPU doesn't run it, it's hard to update, and invisible to users. 
 Then there's the middle ground view that says UEFI is firmware, bootloader is not. 
 
+image::hardware-software-3.png[hardware,width=600,title="machine layers"]
+
 
 https://en.wikipedia.org/wiki/Firmware[Firmware] does all the work between power-on and OS starting.  
 When you boot up a computer, obscure messages start to appear to the screen after a few seconds. These are messages from the UEFI application.

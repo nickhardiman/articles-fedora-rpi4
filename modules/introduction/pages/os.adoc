@@ -3,6 +3,8 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 14-02-2022
 
+image::hardware-software-4.png[hardware,width=600,title="machine layers"]
+
 There are so many things included in RHEL 8, you could say it isn't just an OS - it's an OS plus many applications to make the user's life easier. 
 Or you could say that RHEL 8 is a platform to build on, and the platform is the OS. 
 So what exactly is an OS? 

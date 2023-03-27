@@ -22,7 +22,7 @@ image::raspberry-pi-4-top.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 
 
 diagram 
 
-image::hardware-software-1.png[hardware,width=600,title="machine layers"]
+image::hardware-software-2.png[hardware,width=600,title="machine layers"]
 
 
 == device
@@ -81,11 +81,12 @@ H/W path            Device       Class          Description
 ----
 
 
-== bus 
+== device controllers and busses
 
+A computer system has more than one type of bus. 
 Memory is connected with a internal high-speed system bus, and I/O devices are connected with an external low-speed USB (Universal Serial Bus). 
-
-Device controllers manage devices like ethernet, storage, video and audio. 
+A 
+https://en.wikipedia.org/wiki/Controller_(computing)[device controller] manage devices like ethernet, storage, video and audio. 
 
 image::cpu-bus-and-devices-2.png[hardware,title="CPU, busses and device controllers"]
 
