@@ -9,7 +9,12 @@ image::machine-layers.png[hardware,width=600,title="machine layers"]
 
 This guide packs a lot of software  onto a Raspberry Pi. 
 This is a set of abstraction layers for keeping track of the work. 
+
+This page describes a list of things. 
+Each thing is a layer built on top of the the one underneath. 
+It's based on a building trade analogy, described in this page. 
 These eight layers match what you'd find in a large enterprise server. 
+
 
 . virtual machine
 .. guest application 
@@ -23,6 +28,8 @@ These eight layers match what you'd find in a large enterprise server.
 .. host firmware and bootloader
 .. host hardware and network 
 
+
+
 This layer model is useful for work described here. But a model that is as simple as this is not an accurate representation of reality. 
 For instance, the OS may use a firmware interface to access hardware, or may go direct and skip the firmware layer.  
 
@@ -35,6 +42,19 @@ Abstraction is one of the four ways of computational thinking (the other three a
 === start with two layers
 
 Everything that makes up a computer can be split into things you can touch and things you can't. 
+
+There are a couple analogies you can use for this split. 
+
+One analogy says software runs inside hardware. This is fairly accurate - the hardware contains a lot of electric circuits, and the software is electricity in those circuits (don't mention magnetism, that makes things messy).
+
+image::hardware-software-5.png[hardware,title="software inside hardware"]
+
+Another analogy compares a computer to the building trade. 
+First you build the foundation (hardware), then you build the useful stuff on top (software). This has the advantage that it's useful to explain the idea of abstraction. The disadvantage of this analogy is it falls apart when you get into the details.
+
+image::hardware-software-56.png[hardware,title="software built on hardware"]
+
+
 
 * software
 * hardware 
@@ -146,11 +166,42 @@ An application running on a large server can be on top of all these layers.
 * host firmware
 * host hardware 
 
+Rearranging that list to split the physical and virtual layers looks like this. 
+
+. virtual machine
+.. guest application 
+.. guest container
+.. guest OS 
+.. guest bootloader 
+.. guest hardware and network
+. physical machine
+.. host hypervisor
+.. host OS 
+.. host firmware and bootloader
+.. host hardware and network 
+
+Enterprise servers don't all have these eight layers. 
+FOr instance, a server may have containers but no guest VMs. 
 Virtual machines are not required for containers. 
 Containers work with both physical machines and virtual machines. 
 
 
 
+== you are here <-
+
+Some pages include this list, along with a kind of "you are here" pointer, like this.
+
+. virtual machine
+.. guest application 
+.. guest container
+.. guest OS 
+.. guest bootloader 
+.. guest hardware and network
+. physical machine
+.. host hypervisor
+.. host OS 
+.. host firmware and bootloader <- here
+.. host hardware and network 
 
 
 

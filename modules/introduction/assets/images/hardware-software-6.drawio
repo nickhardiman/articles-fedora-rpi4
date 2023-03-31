@@ -1,0 +1,22 @@
+<mxfile host="app.diagrams.net" modified="2023-03-31T06:48:04.504Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36" etag="6axr-DF9nfucm2SZqPG6" version="21.1.2" type="device">
+  <diagram name="Page-1" id="efTwnop7Ne9enfRfdK1m">
+    <mxGraphModel dx="3141" dy="1030" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="UL2u7bCAYi0LC3vgKyyO-1" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=15;imageHeight=24;" vertex="1" parent="1">
+          <mxGeometry x="-2440" y="200" width="480" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UL2u7bCAYi0LC3vgKyyO-2" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=15;fillColor=#E8E8E8;" vertex="1" parent="1">
+          <mxGeometry x="-2440" y="120" width="480" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UL2u7bCAYi0LC3vgKyyO-8" value="software" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2430" y="120" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="UL2u7bCAYi0LC3vgKyyO-9" value="hardware" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-2430" y="200" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
