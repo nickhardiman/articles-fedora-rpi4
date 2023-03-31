@@ -52,7 +52,7 @@ image::hardware-software-5.png[hardware,title="software inside hardware"]
 Another analogy compares a computer to the building trade. 
 First you build the foundation (hardware), then you build the useful stuff on top (software). This has the advantage that it's useful to explain the idea of abstraction. The disadvantage of this analogy is it falls apart when you get into the details.
 
-image::hardware-software-56.png[hardware,title="software built on hardware"]
+image::hardware-software-6.png[hardware,title="software built on hardware"]
 
 
 
