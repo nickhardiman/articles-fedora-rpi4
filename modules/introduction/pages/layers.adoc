@@ -4,8 +4,8 @@ Nick Hardiman
 :revdate: 01-01-2021
 
 
+image::hardware-software-8.png[hardware,title="a computer as layers"]
 
-image::machine-layers.png[hardware,width=600,title="machine layers"]
 
 This guide packs a lot of software  onto a Raspberry Pi. 
 This is a set of abstraction layers for keeping track of the work. 
@@ -63,6 +63,8 @@ This isn't some industry formal standard.
 It's a simple model of a computer, to make the work easier to understand. 
 
 === then three layers
+
+image::machine-layers.png[hardware,width=600,title="machine layers"]
 
 A sysadmin may think of machines as having three layers, like this. 
 The sysadmin's work connects the physical things in the data center to the applications that provide business value. 
@@ -166,6 +168,8 @@ An application running on a large server can be on top of all these layers.
 * host firmware
 * host hardware 
 
+=== ... or is it nine? 
+
 Rearranging that list to split the physical and virtual layers looks like this. 
 
 . virtual machine
@@ -179,6 +183,8 @@ Rearranging that list to split the physical and virtual layers looks like this.
 .. host OS 
 .. host firmware and bootloader
 .. host hardware and network 
+
+=== ... or not? 
 
 Enterprise servers don't all have these eight layers. 
 FOr instance, a server may have containers but no guest VMs. 
