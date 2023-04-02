@@ -1,30 +1,40 @@
-= a hardware and software diagram
+= a top-down approach
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
 
 
-image::hardware-software-1.png[hardware,width=600,title="machine layers"]
+A https://en.wikipedia.org/wiki/Top-down_and_bottom-up_design[top-down] approach to  learning about the computer. 
+Start with a simple diagram to illustrate hardware and software. 
+Add details later. 
 
+Understanding hardware is a problem. 
+Hardware is a complicated collection of devices.
+How do you summarize the devices and how they are related? 
+Looking at the board doesn't help. 
+Many of the devices are too small to see or hidden in chips. 
+
+Understanding software is a problem. 
+You can't see any software. Or touch or taste or sense it in any way. 
+How do you learn about what's there if you have no idea it's there? 
+
+Illustrating the relationship between hardware components and software components is a problem. 
 There is no good way of illustrating the many parts of hardware and software in a computer using a diagram. 
-Here's one attempt. 
 
 == the importance of illustration
 
-You can't see software. Or touch or taste or sense it in any way. 
-How do you learn about what's there if you have no idea it's there? 
-Start learning with a simple picture and add details over time.  
-
 Software runs inside hardware, not on top of it. 
 And some software runs inside other software, like applications in an operating system. 
-Kind of. It's all pretty complicated and hard to  boil down into a simple diagram. 
+Kind of. It's complicated. And hard to  boil down into a simple diagram. 
 
+One of the few options available is to create a topology diagram to show how devices are connected. 
+A topology diagram is good for illustrating a computer network. 
+Topology is an idea copied from https://en.wikipedia.org/wiki/Topology_(electrical_circuits)[electronic engineers], and they copied it from mathematicians. 
 
-== inside or on top
-
-
-That concept doesn't make for a good diagram, and it confuses people learning software. 
+Or a https://en.wikipedia.org/wiki/Block_diagram[block diagram]. 
+A block diagram is good for giving a basic idea of what components are and how they are related. 
+Block diagrams are an idea copied from electrical engineers. 
 
 
 == analogies from other industries 
@@ -74,13 +84,5 @@ The relationships betweeen components is also a mess.
 Software largely exists in the land of people's imagination, and it can get as messy as people can imagine. 
 
 Software components are only discrete if programmers try hard to make them that way. 
-
-image::machine-layers.png[hardware,width=600,title="machine layers"]
-
-
-https://commons.wikimedia.org/wiki/File:Windows_2000_architecture.png
-
-
-
 
 

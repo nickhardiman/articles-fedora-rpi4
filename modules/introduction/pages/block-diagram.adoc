@@ -1,0 +1,47 @@
+= a block diagram
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-04-2023
+
+image::hardware-software-9.png[hardware,title="a hardware and software diagram"]
+
+
+== hardware and software
+
+Everything that makes up a computer can be split into things you can touch and things you can't. 
+
+Here's an analogy you can use for this split. 
+Software runs inside hardware. 
+This is fairly accurate - the hardware contains a lot of electric circuits, and the software is electricity in those circuits (don't mention magnetism, that makes things messy).
+
+image::hardware-software-5.png[hardware,title="software inside hardware"]
+
+== firmware and OS
+
+image::hardware-software-11.png[hardware,title="firmware and OS"]
+
+== applications 
+
+image::hardware-software-12.png[hardware,title="firmware and OS"]
+
+== kernel space and user space
+
+image::hardware-software-9.png[hardware,title="kernel space and user space"]
+
+== kernel space and user space
+
+image::hardware-software-9.png[hardware,title="kernel space and user space"]
+
+== virtual machines
+
+image::hardware-software-7.png[hardware,title="kernel space and user space"]
+
+A virtual machine is a copy of a physical machine. 
+Despite being entirely software, it acts like a physical machine. 
+
+The block diagram shows three VMs located entirely in user space. 
+That's a simplification of where the software is. 
+A collections of applications, code libraries and kernel devices make virtual machines work.
+Some of this software runs in user space, and some in kernel space.
+For a more accurate description, read 
+https://www.redhat.com/en/blog/all-you-need-know-about-kvm-userspace[All you need to know about KVM userspace].

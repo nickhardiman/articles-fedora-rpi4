@@ -41,20 +41,12 @@ Abstraction is one of the four ways of computational thinking (the other three a
 
 === start with two layers
 
+image::layers-hardware-software-6.png[hardware,title="software built on hardware"]
+
 Everything that makes up a computer can be split into things you can touch and things you can't. 
 
-There are a couple analogies you can use for this split. 
-
-One analogy says software runs inside hardware. This is fairly accurate - the hardware contains a lot of electric circuits, and the software is electricity in those circuits (don't mention magnetism, that makes things messy).
-
-image::hardware-software-5.png[hardware,title="software inside hardware"]
-
-Another analogy compares a computer to the building trade. 
+This analogy compares a computer to the building trade. 
 First you build the foundation (hardware), then you build the useful stuff on top (software). This has the advantage that it's useful to explain the idea of abstraction. The disadvantage of this analogy is it falls apart when you get into the details.
-
-image::hardware-software-6.png[hardware,title="software built on hardware"]
-
-
 
 * software
 * hardware 
@@ -64,7 +56,7 @@ It's a simple model of a computer, to make the work easier to understand.
 
 === then three layers
 
-image::machine-layers.png[hardware,width=600,title="machine layers"]
+image::layers-hardware-software-10.png[hardware,title="three layers"]
 
 A sysadmin may think of machines as having three layers, like this. 
 The sysadmin's work connects the physical things in the data center to the applications that provide business value. 
@@ -89,6 +81,8 @@ A developer who works on device drivers might prefer a model like this, showing 
 
 
 === split the software layer in two
+
+image::hardware-software-6.png[hardware,title="software built on hardware"]
 
 The software layer can be split into two - OS and application. 
 The layer of applications is built on three lower layers. 

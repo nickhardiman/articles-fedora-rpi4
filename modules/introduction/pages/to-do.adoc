@@ -1,0 +1,15 @@
+= to-do list
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-04-2023
+
+== what will be covered
+
+* Explain the big picture.
+* Obtain Raspberry Pi 4 parts.
+* Set up a new Pi workstation on the home network. This provides a base hardware layer to build on. 
+* Install software. Build up software layers on the hardware layer. 
+* Build virtual machines.
+* Put applications in containers.
+
+== what won't be covered

@@ -6,9 +6,9 @@ Nick Hardiman
 xref:introduction:layers.adoc[]
 
 * guest application 
-* guest container
+* guest container  <- here
 * guest OS  
-* guest hardware  <- here
+* guest hardware
 * host hypervisor
 * host OS   
 * host firmware
