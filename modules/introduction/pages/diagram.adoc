@@ -1,4 +1,4 @@
-= hardware and software diagram
+= a hardware and software diagram
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
@@ -7,14 +7,24 @@ Nick Hardiman
 
 image::hardware-software-1.png[hardware,width=600,title="machine layers"]
 
+There is no good way of illustrating the many parts of hardware and software in a computer using a diagram. 
+Here's one attempt. 
 
-== a summary diagram 
+== the importance of illustration
 
-There is no good way of illustrating the many parts of hardware and software in a computer using a diagram. Electricians have wiring diagrams, which can be used for the electronics
+You can't see software. Or touch or taste or sense it in any way. 
+How do you learn about what's there if you have no idea it's there? 
+Start learning with a simple picture and add details over time.  
+
+Software runs inside hardware, not on top of it. 
+And some software runs inside other software, like applications in an operating system. 
+Kind of. It's all pretty complicated and hard to  boil down into a simple diagram. 
+
 
 == inside or on top
 
-Software runs inside hardware, not on top of it. And some software runs inside other software, like applications in an operating system. That concept doesn't make for a good diagram, and it confuses people learning software. 
+
+That concept doesn't make for a good diagram, and it confuses people learning software. 
 
 
 == analogies from other industries 

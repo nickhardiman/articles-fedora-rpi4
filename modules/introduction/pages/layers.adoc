@@ -1,10 +1,10 @@
-= hardware and software layers
+= a layered diagram
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
 
-image::hardware-software-8.png[hardware,title="a computer as layers"]
+image::layers-hardware-software-8.png[hardware,title="a computer as layers"]
 
 
 This guide packs a lot of software  onto a Raspberry Pi. 
