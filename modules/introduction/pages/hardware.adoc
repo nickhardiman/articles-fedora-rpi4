@@ -5,7 +5,7 @@ Nick Hardiman
 
 Board, cables, power supply and the rest. 
 
-xref:introduction:layers.adoc[]
+xref:introduction:layer-diagram.adoc[]
 
 * guest application 
 * guest container
