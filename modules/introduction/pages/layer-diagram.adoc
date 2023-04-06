@@ -73,16 +73,18 @@ These are components that work together, rather than layers that hide complexity
 * system utilities
 
 This layered view isn't the only way to view the system, and it does not work for everyone. 
-A developer who works on device drivers might prefer a model like this, showing firmware is the crucial interface between hardware and software. 
+A firmware developer who works on devices might prefer a model like this, showing firmware is the crucial interface between hardware and software. 
+Firmware gets a CPU ready to work. 
+Software is a CPU's work.
 
 * software
 * firmware
 * hardware 
 
 
-=== split the software layer in two
+=== split the software layer into application, OS and firmware 
 
-image::layers-hardware-software-6.png[hardware,title="software built on hardware"]
+image::layers-hardware-software-15.png[hardware,title="more software layers"]
 
 The software layer can be split into two - OS and application. 
 The layer of applications is built on three lower layers. 
