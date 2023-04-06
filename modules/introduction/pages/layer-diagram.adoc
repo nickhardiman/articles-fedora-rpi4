@@ -82,7 +82,7 @@ A developer who works on device drivers might prefer a model like this, showing 
 
 === split the software layer in two
 
-image::hardware-software-6.png[hardware,title="software built on hardware"]
+image::layers-hardware-software-6.png[hardware,title="software built on hardware"]
 
 The software layer can be split into two - OS and application. 
 The layer of applications is built on three lower layers. 
@@ -183,6 +183,9 @@ Rearranging that list to split the physical and virtual layers looks like this.
 Enterprise servers don't all have these eight layers. 
 FOr instance, a server may have containers but no guest VMs. 
 Virtual machines are not required for containers. 
+
+image::layers-hardware-software-13.png[hardware,title="software built on hardware"]
+
 Containers work with both physical machines and virtual machines. 
 
 

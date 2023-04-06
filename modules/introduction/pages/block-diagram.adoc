@@ -32,7 +32,7 @@ image::hardware-software-9.png[hardware,title="kernel space and user space"]
 
 image::hardware-software-9.png[hardware,title="kernel space and user space"]
 
-== virtual machines
+== virtual machine
 
 image::hardware-software-7.png[hardware,title="kernel space and user space"]
 
@@ -45,3 +45,18 @@ A collections of applications, code libraries and kernel devices make virtual ma
 Some of this software runs in user space, and some in kernel space.
 For a more accurate description, read 
 https://www.redhat.com/en/blog/all-you-need-know-about-kvm-userspace[All you need to know about KVM userspace].
+
+== container
+
+A container is a small piece of user space. 
+An application inside a container's small piece of user space can't use the resources in the main user space. 
+
+A server may have containers but no guest VMs. 
+Virtual machines are not required for containers. 
+
+image::layers-hardware-software-13.png[hardware,title="containers in user space"]
+
+Containers work with both physical machines and virtual machines. 
+Each one has a user space.
+
+image::layers-hardware-software-14.png[hardware,title="containers in a VM's user space"]
