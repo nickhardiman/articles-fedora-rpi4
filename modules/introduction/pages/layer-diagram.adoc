@@ -184,7 +184,11 @@ Enterprise servers don't all have these eight layers.
 FOr instance, a server may have containers but no guest VMs. 
 Virtual machines are not required for containers. 
 
-image::layers-hardware-software-13.png[hardware,title="software built on hardware"]
+. physical machine
+.. host container
+.. host OS 
+.. host firmware and bootloader
+.. host hardware and network 
 
 Containers work with both physical machines and virtual machines. 
 

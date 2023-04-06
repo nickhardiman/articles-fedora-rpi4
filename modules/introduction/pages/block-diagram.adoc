@@ -54,9 +54,9 @@ An application inside a container's small piece of user space can't use the reso
 A server may have containers but no guest VMs. 
 Virtual machines are not required for containers. 
 
-image::layers-hardware-software-13.png[hardware,title="containers in user space"]
+image::hardware-software-13.png[hardware,title="containers in user space"]
 
 Containers work with both physical machines and virtual machines. 
 Each one has a user space.
 
-image::layers-hardware-software-14.png[hardware,title="containers in a VM's user space"]
+image::hardware-software-14.png[hardware,title="containers in a VM's user space"]
