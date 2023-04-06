@@ -4,7 +4,7 @@ Nick Hardiman
 :revdate: 24-10-2020
 
 
-xref:introduction:layers.adoc[]
+xref:introduction:layer-diagram.adoc[]
 
 * guest application 
 * guest container
