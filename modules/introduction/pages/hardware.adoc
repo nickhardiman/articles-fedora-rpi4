@@ -5,7 +5,7 @@ Nick Hardiman
 
 Board, cables, power supply and the rest. 
 
-xref:introduction:layer-diagram.adoc[]
+xref:introduction:layer-diagram.adoc[layers]
 
 * guest application 
 * guest container
@@ -16,20 +16,20 @@ xref:introduction:layer-diagram.adoc[]
 * host firmware
 * host hardware   <- here
 
-== The Raspberry Pi 
+== Raspberry Pi 4 Model B
 
 image::raspberry-pi-4-top.jpeg[hardware,width=600,title="Raspberry Pi 4 model B 8GB top"]
 
-diagram 
-
-image::hardware-software-2.png[hardware,width=600,title="machine layers"]
-
-
 == device
 
-There are three core types of hardware:  CPU, memory and I/O devices.
-The CPU and memory are devices with specific jobs to do. 
-There are many kinds of I/O device, from dead media like a parallel printer to UART for serial communication. 
+image::hardware-software-2.png[hardware,width=600,title="devices"]
+
+There are many little hardware devices on this board.
+Three main classes of device do work, store code and get things in and out of the machine: CPU, memory and I/O.
+Each class contains many devices. 
+A CPU contains devices that handle time, maths, registers and more.  
+Memory devices get data in and out of the CPU.
+I/O devices connect all kinds of things to the memory and CPU, from dead media like a parallel printer to UART for serial communication. 
 
 A connection is made with a 
 https://en.wikipedia.org/wiki/Bus_(computing)[bus] and a device controller. 
