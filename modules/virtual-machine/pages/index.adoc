@@ -3,7 +3,7 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
-xref:introduction:layer-diagram.adoc[]
+xref:introduction:layer-diagram.adoc[layers]
 
 * guest application 
 * guest container
@@ -14,7 +14,11 @@ xref:introduction:layer-diagram.adoc[]
 * host firmware
 * host hardware 
 
-== architecture
+== host hypervisor 
+
+Already included? 
+
+== guest hardware
 
 The virtual machine is built from virtual hardware. 
 There are a few popular machine architectures. 

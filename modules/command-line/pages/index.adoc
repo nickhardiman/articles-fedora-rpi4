@@ -3,7 +3,13 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-09-2021
 
-The command line
+xref:introduction:layer-diagram.adoc[layers]
 
-* xref:introduction:command-interpreter.adoc[]
-* xref:introduction:system-utilities.adoc[]
+* guest application 
+* guest container
+* guest OS  
+* guest hardware
+* host hypervisor
+* host OS      <- here
+* host firmware
+* host hardware

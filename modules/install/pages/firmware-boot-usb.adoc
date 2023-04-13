@@ -74,11 +74,39 @@ This string of ones and zeros gives an idea of what is happening in the transist
 00010000001000000000000000001010
 ----
 
-After changing bit 29 (third one from the left) the register will look like this. 
+=== little endian 
+
+The numbering of bit positions starts on the right. 
+This is called a https://en.wikipedia.org/wiki/Endianness[Little Endian] system. 
+Numbering in the other direction is Big Endian. Neither system changes the hexadecimal equivalent, and is usually completely hidden from view. 
+Long ago, hardware builders came up with systems like this to make their computers go faster, causing much confusion for everyone else. 
+----
+ 0  0  0  1 ... 1 0 1 0
+31 30 29 28 ... 3 2 1 0
+----
+
+
+=== hexadecimal
+
+There are sixteen hexadecimal characters, from 0 (binary 0000) to F (1111).
+These turn a 32 bit number into a 8 character number. 
+Each character is equal to four bits.  
+
+[source,shell]
+----
+0001 0000 0010 0000 0000 0000 0000 1010
+   1    0    2    0    0    0    0    a
+----
+
+
+=== bit 29
+
+After changing bit 29 (third one from the left) the register  looks like this. 
 [source,shell]
 ----
 00110000001000000000000000001010
 ----
+The hexadecimal equivalent is nearly the same, except the hex character 1 on the left (binary 0001) is now a 3 (0011).
 
 
 == enable USB host boot mode

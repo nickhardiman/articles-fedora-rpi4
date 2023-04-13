@@ -3,7 +3,7 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
 
-xref:introduction:layer-diagram.adoc[]
+xref:introduction:layer-diagram.adoc[layers]
 
 * guest application 
 * guest container
