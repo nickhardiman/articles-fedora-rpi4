@@ -27,33 +27,56 @@ Complex install with choices (Tiano Core firmware, full installer, etc.)
 * xref:os-install.adoc[]
 
 
-insert USB drive
+== power up 
 
-== first boot
+Insert both USB drives. 
 
-turn on Pi
+Plug in
 
-Answer text-based anaconda questions. 
+Turn on.
 
-DNF 3 is too big for a 1GB Raspberry Pi. 
-Install microdnf. 
+== the console 
 
-[source,shell]
-----
-sudo -i
-dnf install microdnf
-----
+The keyboard, mouse and display screen attached to the Pi form the console. 
+This is a special administration terminal.
+The console name is a leftover from long ago, when a computer console was like a table console: a small table with a workstation on it. 
+Now, a console is a text-based terminal that gets special treatment by the OS. 
+Fedora also comes with a web-based console named Cockpit. 
 
-Update hundreds of packages.
-
-[source,shell]
-----
-microdnf update
-----
-
-Turn off.
+A succession of screens show U-Boot, GRUB, OS, then the Anaconda interactive text mode menu.
 
 [source,shell]
 ----
-systemctl poweroff
+Booting Fedora Linux (6.0.7-301.fc37.aarch64) 37 (Server Edition) 
 ----
+
+No changes have been made yet. 
+The machine can be powered off and on without causing any harm.
+
+== interactive text mode 
+
+[source,shell]
+----
+===========================================================================
+===========================================================================
+
+1) [x] Language settings           2) [x] Time settings
+       (English (United States))          (US/Eastern timezone)
+3) [x] Network configuration       4) [x] Root password
+       (Wired (eth0) connected)           (Root account is disabled)
+5) [ ] User creation
+       (No user will be created)
+
+Please make a selection from the above ['c' to continue, 'q' to quit, 'r' to refresh]:
+----
+
+Anaconda starts in 
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-installation-text-mode-s390[text mode] and interactive mode. 
+A text menu with no hint of graphics or color appears, asks questions and waits for answers. 
+Organizations prefer non-interactive mode, because the sysadmin installing a hundred machines using interactive mode would lose the will to live. 
+For one machine, interactive mode is fine. 
+
+Being interactive does mean you need to attach a keyboard. 
+
+
+

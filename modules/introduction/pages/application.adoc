@@ -3,6 +3,8 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 14-02-2022
 
+image::hardware-software-12.png[hardware,title="applications run in user space"]
+
 The top layer of the technical stack is the business end of computers. It's the layer where work is done for users, rather than work to make the computer go.  
 
 Most of the work of the lower layers is hidden from applications. An editor needs to know how to ask the OS to store a file, but it doesn't need to know how that file is split into blocks on a storage volume. 

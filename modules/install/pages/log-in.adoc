@@ -1,0 +1,33 @@
+= simple - log in and power off
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 15-04-2023
+
+
+Use the root account to log in. 
+
+[source,shell]
+----
+rpi4 login: root
+Password:
+[root@rpi4 ~]# _
+----
+
+
+
+== power off
+
+Use the CLI.  
+
+[source,shell]
+----
+systemctl poweroff
+----
+
+Systemd messages flash by on the console, then it goes dark. 
+The LED on the Pi stays on. 
+Since a Pi does not come with an on-off switch, the Pi has to be disconnected from power before it can be turned on again. 
+
+Switch off at the wall, or remove the transformer plug (AKA USB power brick). 
+
+

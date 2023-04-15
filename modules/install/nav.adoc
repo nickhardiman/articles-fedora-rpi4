@@ -6,6 +6,8 @@
 ** xref:firmware-boot-usb.adoc[]
 ** xref:image-download.adoc[]
 ** xref:drive-raw-image.adoc[]
+** xref:configure.adoc[]
+** xref:log-in.adoc[]
 ** xref:drive-uefi.adoc[]
 ** xref:drive-os-installer.adoc[]
 ** xref:os-install.adoc[]

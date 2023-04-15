@@ -1,7 +1,0 @@
-= watch the OS installer boot stages
-Nick Hardiman 
-:source-highlighter: highlight.js
-:revdate: 24-10-2020
-
-
-TBD

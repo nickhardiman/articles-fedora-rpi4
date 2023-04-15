@@ -1,0 +1,75 @@
+= web login and power off
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 15-04-2023
+
+
+The web console provides a way of managing the OS through a web browser.
+
+[source,shell]
+----
+Web console: https://rpi4:9090/ or https://192.168.1.2:9090/
+----
+
+The application that makes this work is https://cockpit-project.org/running[Cockpit]. 
+Cockpit is an interactive Linux server admin interface.
+It is already running, and the firewall allows traffic.
+
+== log in to the web console 
+
+Open in a web browser. 
+
+Accept the danger of a self-signed certificate. 
+The login page appears. 
+
+image::cockpit-1.png[hardware,title="Cockpit web UI login page"]
+
+Use your new user account to log in. 
+The dashboard appears. 
+
+image::cockpit-2.png[hardware,title="Cockpit web UI login page"]
+
+Cockpit is running in a limited access mode. 
+Some things, like the Reboot and Shutdown menu, are not displayed. 
+
+
+== power off
+
+Use the CLI.  
+
+[source,shell]
+----
+systemctl poweroff
+----
+
+Systemd messages flash by on the console, then it goes dark. 
+The LED on the Pi stays on. 
+Since a Pi does not come with an on-off switch, the Pi has to be disconnected from power before it can be turned on again. 
+
+Switch off at the wall, or remove the transformer plug (AKA USB power brick). 
+
+
+== microdnf (Pi3, why here?)
+
+DNF 3 is too big for a 1GB Raspberry Pi. 
+Install microdnf. 
+
+[source,shell]
+----
+sudo -i
+dnf install microdnf
+----
+
+Update hundreds of packages.
+
+[source,shell]
+----
+microdnf update
+----
+
+Turn off.
+
+[source,shell]
+----
+systemctl poweroff
+----

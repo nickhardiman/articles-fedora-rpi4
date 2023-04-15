@@ -3,4 +3,5 @@
 ** xref:ten-more-shells.adoc[]
 ** xref:access-control.adoc[]
 ** xref:log.adoc[]
+** xref:microdnf.adoc[]
 ** xref:grow-partition.adoc[]

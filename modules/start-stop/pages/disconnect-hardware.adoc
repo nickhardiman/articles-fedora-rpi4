@@ -1,0 +1,12 @@
+= disconnect hardware  
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 28-10-2021
+
+
+Unplug the keyboard and mouse.
+
+If everything goes well, we won't use the console again. 
+It's only useful for troubleshooting. 
+
+After unplugging, the Pi runs in headless mode. 

@@ -1,25 +1,17 @@
-= system startup and shutdown
+= start, use, stop
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-09-2021
 
+* system startup 
+* login and logout
+* system shutdown
 
-== the boot process 
+Three ways of logging in
 
-When the Raspberry Pi powers up, a chain of firmware programs run before Linux starts. 
+* console 
+* web
+* SSH
 
-hardware 
-
-. power on 
-
-firmware 
-
-. boot ROM, on the SoC
-. bootloader, in EEPROM on the SoC
-. start4x.elf, in the first partition
-. UEFI
-. GRUB2
-
-software 
-
-. Linux
+Logging into the console is the only local connection.  
+The web way and SSH way are both remote. 

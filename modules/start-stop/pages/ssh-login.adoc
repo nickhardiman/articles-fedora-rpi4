@@ -1,0 +1,128 @@
+= SSH
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 10-06-2020
+
+
+remote SSH login
+protocol
+keypair 
+key-based login 
+`ssh-copy-id`
+SSH tunnel
+/home/nick/.ssh/config 
+
+.SSH from workstation to rpi4
+....
+.---------------.      .---------------.
+|               |      |               |
+|  workstation  |----->|  rpi4         |
+|               |      |               |  
+.---------------.      .---------------.
+....
+
+== access
+
+Access covers all the components needed to one machine to contact another.
+A broken network cable, strict firewall software and bad packet routing can all break access.
+
+== authentication
+
+The most common type of security is password authentication.
+An account has a user name and a password. 
+
+== key-based authentication 
+
+Key-based authentication is better, but more complicated. 
+The server world has a lot of key-based authentication.
+
+Each user account has a user name, a public key and a private key.
+
+== host key checking 
+
+Each host also has a pair of keys. 
+
+SSH keeps track of public keys. 
+When a user connects to a new host using the SSH client, things happen in the background. 
+
+. The SSH service on that host hands over its public key.
+. The SSH client looks for the host name in its ``known_hosts`` file.
+. If the host name doesn't match, the SSH client asks the user if it's safe to trust this new host. 
+
+[source,shell]
+----
+The authenticity of host 'rpi4 (10.42.0.3)' can't be established.
+ECDSA key fingerprint is SHA256:/a/PXH7tXpkjhKMjOkQHsCdikOlwW78+sNhzptfh0C4.
+ECDSA key fingerprint is MD5:dd:45:41:de:34:32:dc:cd:63:a2:05:92:17:99:bf:e6.
+Are you sure you want to continue connecting (yes/no)?
+----
+
+If the user agrees, the SSH client adds another line to the ``known_hosts`` file.
+
+
+== connect from workstation to rpi4
+
+start session. 
+
+[source,shell]
+----
+workstation:~ nickh$ ssh nick@rpi4
+The authenticity of host 'rpi4 (10.42.0.2)' can't be established.
+ECDSA key fingerprint is SHA256:JE7mKX8bNSWPbdPUhcL9YzZeO2S4/rPBZsiOodZJCaI.
+ECDSA key fingerprint is MD5:9d:3f:da:94:6e:cb:86:46:d9:63:b6:d5:4d:ae:9a:12.
+Are you sure you want to continue connecting (yes/no)? 
+----
+
+agree 
+
+[source,shell]
+----
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'rpi4,10.42.0.2' (ECDSA) to the list of known hosts.
+nick@rpi4's password: 
+----
+
+password-based login
+
+[source,shell]
+----
+nick@rpi4's password: 
+Last login: Sat Sep 11 10:00:06 2021 from 213.123.178.101
+[nick@rpi4 ~]$ 
+----
+
+end session. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ exit
+logout
+Connection to rpi4 closed.
+workstation:~ nickh$
+----
+
+
+
+
+== the .ssh directory 
+
+
+[source,shell]
+----
+[root@c73 ~]# ls .ssh
+ls: cannot access .ssh: No such file or directory
+[root@c73 ~]# 
+----
+
+== the known_hosts file 
+
+If you answer yes to the ``continue connecting`` question, ssh copies the public key to its known_hosts file. 
+
+Look at this file and you see one line containing address and public key.
+
+[source,shell]
+----
+[root@c71 ~]# cat .ssh/known_hosts 
+c72,10.42.0.2 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBO2ZBXMAf1o8CCJb9kLgqFJ+uUd3n2ZESpT1PkeQf3YKbeCpudUodGsghtcc80yiNMI5WGx/FZvuJsBJTG2dKdE=
+[root@c71 ~]# 
+----
