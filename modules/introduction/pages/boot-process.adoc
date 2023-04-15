@@ -1,0 +1,82 @@
+= boot sequence 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 15-04-2023
+
+The https://en.wikipedia.org/wiki/Booting[boot sequence] is the chain of events that happens when you  a computer like the Raspberry Pi is switched on. 
+
+When the Raspberry Pi powers up, a chain of firmware programs run before Linux starts. 
+
+. power on 
+. boot ROM, on the SoC
+. bootloader, in EEPROM on the SoC
+. start4x.elf, in the first partition
+. UEFI
+. GRUB2
+. Linux
+
+== power on 
+
+== boot ROM, on the SoC
+
+A boot ROM starts first.
+This is stored on the SoC (the BCM2711 chip).
+It has two jobs - first it checks for bootloader updates, then it starts the bootloader. ROM is Read-Only Memory - you can't make any changes to this program. Since you can't change it, you can't break it and permanently brick your computer. 
+
+== bootloader, in EEPROM on the SoC
+
+The bootloader program is also stored on the SoC, in an https://en.wikipedia.org/wiki/EEPROM[EEPROM (Electrically Erasable Programmable Read-only Memory)]. That means this program can be updated, although you do have to jump through a few hoops. If someone talks about a firmware update, they may be talking about updating this bootloader code. 
+The bootloader's job is to search for the next bootloader stage. 
+Usually this means reading the SD card, finding the first partition, and running the code in the file _start4x.elf_. 
+
+
+The bootloader can also search the network and USB storage. 
+
+If you power on the Raspberry Pi without an SD card, then after a couple seconds a screenful of information appears, including _SD card not detected_ errors. 
+These messages are printed by the bootloader. 
+
+== start4x.elf and fixup4.dat, in the first partition
+
+This is firmware that starts the GPU. 
+Graphics software may not seem relevant to the boot process, but that's the way the Pi is wired.  
+
+On a running Fedora system, the first partition is mounted on /boot/efi/ so you can see _start4x.elf_ in that directory.
+
+.bootloader firmware
+[source,shell]
+----
+[root@localhost ~]# file /boot/efi/start4x.elf 
+/boot/efi/start4x.elf: ELF 32-bit LSB executable, Broadcom VideoCore III, version 1 (SYSV), statically linked, stripped
+[root@localhost ~]# 
+----
+
+
+
+== UEFI 
+
+The system loads the UEFI application, efi/fedora/grubaa64.efi.
+UEFI displays a few lines on the screen, including "Found EFI removable media binary efi/fedora/grubaa64.efi".
+
+UEFI is a https://www.uefi.org/specifications[set of specifications], not software. 
+Software that is built to these specification is a UEFI system.
+UEFI defines how to boot over the network (with PXE and TFTP), how secure boot should work, and where to find the OS boot loader.
+A UEFI system is modular and extendable, so it's more like a small OS than an application. It even comes with its own shell. 
+
+The OS needs to know about the clock, console, block storage, memory and all the other devices that make up a computer. 
+The UEFI system presents that information in a standardized way - any OS that talks the UEFI language can get its hands on all that device data.
+
+Linux can be built to do the job of UEFI - it can find all the hardware, initalize it and creating reference tables for how it all hangs together. 
+But then there would be one version of Linux for the  Raspberry Pi 3 and another version the Raspberry Pi 4, with its changed hardware. 
+Instead, the hardware work is handed over to the UEFI application.
+The UEFI application for a Raspberry Pi 4 is different to the UEFI application on the RPi3. 
+
+Usng a UEFI application means the same copy of Linux can run on both machines. 
+In fact, the UEFI system presents all these devices in a standardised way, so any OS can get the information it needs to work. 
+Mac OS X, Windows, Linux and BSD all work with UEFI.
+
+== GRUB2
+
+The UEFI system starts GRUB2. 
+It presents a menu of OS choices.
+After a few seconds, it loads the default kernel and its RAMdisk from the /boot partition and runs it. 
+

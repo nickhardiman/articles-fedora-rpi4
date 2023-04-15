@@ -7,23 +7,4 @@ Running Fedora on the Raspberry Pi 4 is not officially supported.
 Some things do work, thanks to years of coding, reverse engineering and hard toil by project maintainers and developers.  
 Or at least, if you stand back and squint, some things look like they work. 
 
-Installation starts by building a layer of hardware, then building software layers on top. 
-
-* software - OS and applications
-* firmware - device drivers
-* hardware - the physical stuff
-
-== computer layers - hardware, firmware and software 
-
-Like many things in the IT world, computer components are grouped together in layers. Abstracting away all the messy details leaves a computer system built up of three layers: hardware, firmware and software.
-
-There's the hardware layer at the bottom that contains all the devices. This is the physical stuff that you can touch. 
-
-A layer of software makes this hardware work. This is supplied with the hardware and doesn're require much attention. This software is in the middle of the stack, being halfway between hardware and software, and is called firmware.
-
-Another layer of software makes a computer useful to us humans. 
-The OS and applications are in this layer. 
-
-Abstractions are good for understanding, but not so good in real life. 
-Computer systems are complex and some components refuse to get classified as either hardware, firmware or software. 
 
