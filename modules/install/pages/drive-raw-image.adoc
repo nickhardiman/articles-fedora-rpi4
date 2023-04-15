@@ -1,4 +1,4 @@
-= boot the raw server image   
+= simple - boot the raw server image   
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 28-02-2023
@@ -26,45 +26,6 @@ Complex install with choices (Tiano Core firmware, full installer, etc.)
 * xref:drive-os-installer.adoc[]
 * xref:os-install.adoc[]
 
-
-Fedora Server includes about 1GB of swap, a simple LVM configuration and 1000 packages. 
-Fedora Server does not include a graphical desktop. 
-
-
-== get the ISO file
-
-https://getfedora.org/en/server/download/
-
-== prepare the USB drive 
-
-Unpack 
-
-[source,shell]
-----
-[root@host1 images]# unxz Fedora-Server-37-1.7.aarch64.raw.xz 
-[root@host1 images]# 
-----
-
-Copy image
-
-[source,shell]
-----
-[root@host1 images]# dd if=Fedora-Server-37-1.7.aarch64.raw of=/dev/sdb bs=1M
-7168+0 records in
-7168+0 records out
-7516192768 bytes (7.5 GB, 7.0 GiB) copied, 447.263 s, 16.8 MB/s
-[root@host1 images]# 
-----
-
-turn off Pi
-
-Sync and remove SD card 
-
-[source,shell]
-----
-[root@host1 images]# eject /dev/sdb
-[root@host1 images]# 
-----
 
 insert USB drive
 

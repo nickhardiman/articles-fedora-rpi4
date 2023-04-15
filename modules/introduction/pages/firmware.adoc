@@ -78,11 +78,12 @@ Firmware carries out many jobs, like these.
 Firmware starts before many devices work, so it's not stored on a disk. Instead, some kind of non-volatile memory on the motherboard stores the first firmware program.
 
 
-== firmware is device-specific
+== some firmware is device-specific
 
-Firmware is tied to the computer it runs on. 
+Some firmware is tied to the computer it runs on. 
 It has to understand how to work with the many devices that make up a computer, and different types of computer have different collections of devices.
-Even two closely related computers like the Raspberry Pi 3 and the Raspberry Pi 4 are different.
+
+Even two closely related computers like the Raspberry Pi 3 and the Raspberry Pi 4 have different collections of devices.
 If you look at these two side by side, you can see the chips are different and the layout has changed. 
 The way devices are connected on the Raspberry Pi has changed, too. 
 Ethernet used to be connected to USB, and now it has its own controller. 
