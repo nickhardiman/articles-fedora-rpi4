@@ -1,16 +1,16 @@
-= SSH
+= SSH login and power off
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 10-06-2020
 
 
-remote SSH login
-protocol
-keypair 
-key-based login 
-`ssh-copy-id`
-SSH tunnel
-/home/nick/.ssh/config 
+* remote SSH login
+* protocol
+* keypair 
+* key-based login 
+* `ssh-copy-id`
+* SSH tunnel
+* /home/nick/.ssh/config 
 
 .SSH from workstation to rpi4
 ....
@@ -100,6 +100,23 @@ logout
 Connection to rpi4 closed.
 workstation:~ nickh$
 ----
+
+
+
+== power off
+
+Use the CLI.  
+
+[source,shell]
+----
+systemctl poweroff
+----
+
+Systemd messages flash by on the console, then it goes dark. 
+The LED on the Pi stays on. 
+Since a Pi does not come with an on-off switch, the Pi has to be disconnected from power before it can be turned on again. 
+
+Switch off at the wall, or remove the transformer plug (AKA USB power brick). 
 
 
 

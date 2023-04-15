@@ -10,3 +10,29 @@ If everything goes well, we won't use the console again.
 It's only useful for troubleshooting. 
 
 After unplugging, the Pi runs in headless mode. 
+
+Switch off the screen. 
+
+== check your work
+
+Use SSH to connect to the machine. 
+
+Power off. 
+
+Power on. 
+
+Wait a minute. 
+It's difficult to tell how long to wait, because there is no way of telling when the boot process is complete. 
+
+Connect from your workstation using SSH.
+
+[source,shell]
+----
+nickh@workstation ~ % ssh nick@rpi4      
+Web console: https://rpi4:9090/ or https://192.168.1.201:9090/
+
+Last login: Sat Apr 15 18:55:44 2023 from ::ffff:192.168.1.199
+[nick@rpi4 ~]$ 
+----
+
+The boot process did not hang when it did not find a keyboard, mouse or display screen.

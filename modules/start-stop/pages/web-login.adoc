@@ -27,7 +27,7 @@ image::cockpit-1.png[hardware,title="Cockpit web UI login page"]
 Use your new user account to log in. 
 The dashboard appears. 
 
-image::cockpit-2.png[hardware,title="Cockpit web UI login page"]
+image::cockpit-2.png[hardware,title="Cockpit web UI dashboard page"]
 
 Cockpit is running in a limited access mode. 
 Some things, like the Reboot and Shutdown menu, are not displayed. 
@@ -35,41 +35,18 @@ Some things, like the Reboot and Shutdown menu, are not displayed.
 
 == power off
 
-Use the CLI.  
+Use administrator mode.
+A drop-down menu appears on the right. 
 
-[source,shell]
-----
-systemctl poweroff
-----
+image::cockpit-3.png[hardware,title="Cockpit shutdown menu"]
 
-Systemd messages flash by on the console, then it goes dark. 
-The LED on the Pi stays on. 
-Since a Pi does not come with an on-off switch, the Pi has to be disconnected from power before it can be turned on again. 
+Select Shutdown.
+A https://en.wikipedia.org/wiki/Wall_(Unix)[wall] message window appears. 
+
+* message: (none)
+* delay: No delay
+
+Shutdown. 
+The pane changes to a Disconnected message. 
 
 Switch off at the wall, or remove the transformer plug (AKA USB power brick). 
-
-
-== microdnf (Pi3, why here?)
-
-DNF 3 is too big for a 1GB Raspberry Pi. 
-Install microdnf. 
-
-[source,shell]
-----
-sudo -i
-dnf install microdnf
-----
-
-Update hundreds of packages.
-
-[source,shell]
-----
-microdnf update
-----
-
-Turn off.
-
-[source,shell]
-----
-systemctl poweroff
-----
