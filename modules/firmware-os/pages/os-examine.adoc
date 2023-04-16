@@ -1,4 +1,4 @@
-= examine the OS (Operating System) 
+= look at OS (Operating System) files
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-10-2020
