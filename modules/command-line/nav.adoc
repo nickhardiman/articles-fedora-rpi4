@@ -1,6 +1,7 @@
 * xref:index.adoc[]
 ** xref:shell-bash-login.adoc[]
 ** xref:shell-bash-use.adoc[]
+** xref:hostname.adoc[]
 ** xref:shell-login.adoc[]
 ** xref:shell-interactive.adoc[]
 ** xref:account-examine.adoc[]

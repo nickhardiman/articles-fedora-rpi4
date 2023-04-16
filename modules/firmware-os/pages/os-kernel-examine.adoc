@@ -1,4 +1,4 @@
-= examine the kernel
+= look at kernel files
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 31-07-2021

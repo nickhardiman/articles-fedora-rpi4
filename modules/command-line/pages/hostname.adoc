@@ -1,0 +1,97 @@
+= set the hostname
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 16-04-2023
+
+
+!!! hostname being picked up from DHCP on home router
+
+== rpi4, a network host
+
+Name this host _rpi4_. 
+
+https://en.wikipedia.org/wiki/Host_(network)
+
+== rpi4.lab.example.com, a Fully Qualified Domain Name
+
+https://en.wikipedia.org/wiki/Fully_qualified_domain_name
+
+host in the sub-sub-domain. sub-sub-domain . sub-domain . top level domain
+
+== localhost.localdomain, the default hostname
+
+The hostnamectl hostname command shows the full name is localhost.localdomain.
+
+[source,shell]
+----
+[nick@localhost ~]# hostnamectl hostname
+localhost.localdomain
+[nick@localhost ~]#
+----
+
+== a transient hostname from DHCP
+
+A hostname can be set by the OS or set elsewhere in the network and given to the OS. 
+
+A common way is to configure a DHCP server to hand over domain names.
+The prompt shows the host name from DHCP. 
+hostnamectl shows this as a transient hostname. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ hostnamectl
+   Static hostname: n/a                             
+Transient hostname: rpi4
+         Icon name: computer-desktop
+           Chassis: desktop 🖥️
+        Machine ID: c17a00ac7c0142478ee75d81065051dd
+           Boot ID: 0b388168d6ac4d74b6eb797aef8c530a
+  Operating System: Fedora Linux 37 (Server Edition)
+       CPE OS Name: cpe:/o:fedoraproject:fedora:37
+            Kernel: Linux 6.0.7-301.fc37.aarch64
+      Architecture: arm64
+   Hardware Vendor: raspberrypi,4-model-b
+    Hardware Model: Raspberry Pi 4 Model B Rev 1.4
+  Firmware Version: 2022.10
+[nick@rpi4 ~]$ 
+----
+
+== set a static name
+
+Replace the localhost hostname with the command hostnamectl set-hostname. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo hostnamectl set-hostname rpi4.lab.example.com. 
+[sudo] password for nick: 
+[nick@rpi4 ~]$ 
+[nick@rpi4 ~]$ hostnamectl
+ Static hostname: rpi4.lab.example.com
+       Icon name: computer-desktop
+         Chassis: desktop 🖥️
+      Machine ID: c17a00ac7c0142478ee75d81065051dd
+         Boot ID: 608f788eb9cc4b029c63a3999f6b4833
+Operating System: Fedora Linux 37 (Server Edition)
+     CPE OS Name: cpe:/o:fedoraproject:fedora:37
+          Kernel: Linux 6.0.7-301.fc37.aarch64
+    Architecture: arm64
+ Hardware Vendor: raspberrypi,4-model-b
+  Hardware Model: Raspberry Pi 4 Model B Rev 1.4
+Firmware Version: 2022.10
+[nick@rpi4 ~]$ 
+----
+
+== prompt 
+
+The prompt doesn’t change until you start another shell.
+
+Start another shell with the command 'exec bash'. 
+The prompt in the new shell is different. 
+
+[source,shell]
+----
+[nick@localhost ~]$ exec bash
+[nick@rpi4 ~]$ 
+----
+
+

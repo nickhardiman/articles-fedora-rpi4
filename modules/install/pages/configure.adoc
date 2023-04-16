@@ -3,6 +3,8 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 15-04-2023
 
+!!! host name rpi4 is being picked up from DHCP. Should be localhost?
+
 The Fedora server image does not come with any passwords or user accounts. 
 First run throws up a menu of basic options to configure. 
 
@@ -11,6 +13,8 @@ First run throws up a menu of basic options to configure.
 A setup agent called 
 https://github.com/rhinstaller/initial-setup[initial-setup] 
 manages this first-run configuration. 
+
+When the system is up and running, use the rpm command to query its database (-q) to get information on this package (-i).
 
 [source,shell]
 ----
