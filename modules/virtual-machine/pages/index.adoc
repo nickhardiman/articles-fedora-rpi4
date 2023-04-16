@@ -1,33 +1,53 @@
 = virtual machine
 Nick Hardiman 
 :source-highlighter: highlight.js
-:revdate: 01-01-2021
+:revdate: 16-04-2023
 
-xref:introduction:layer-diagram.adoc[layers]
+Use libvirt to create a virtual network on the rpi4.
 
-* guest application 
-* guest container
-* guest OS  
-* guest hardware  <- here
-* host hypervisor
-* host OS   
-* host firmware
-* host hardware 
+This one physical machine is the host to two virtual machines. 
+ one physical host with virtual guests. 
 
-== host hypervisor 
+== "ipsal" VM
 
-Already included? 
+A  VM that provides some core Internet services. 
+https://en.wikipedia.org/wiki/Internet_protocol_suite
 
-== guest hardware
+The name ipsal is an abbreviation of Internet protocol suite Application layer
 
-The virtual machine is built from virtual hardware. 
-There are a few popular machine architectures. 
-Fedora uses QEMU's upstream machine architectures, like "pc" for an Intel-based machine, "q35" for an older Intel machine (it's named after an https://en.wikipedia.org/wiki/List_of_Intel_chipsets#Core_2_chipsets[Intel chipset]), and "https://en.wikipedia.org/wiki/AArch64[aarch64]" for the Raspberry Pi and other 64-bit ARM machines.
+== "dev" VM
 
-[source,shell]
-----
-[root@rpi4 ~]# virsh dumpxml guest1 | grep "type arch"
-    <type arch='aarch64' machine='virt-5.1'>hvm</type>
-[root@rpi4 ~]# 
-----
+A VM to hold a toolbox and work in progress. 
 
+
+== network bridge 
+
+.network bridge
+[%header,format=csv]
+|===
+name,         interface, MAC,               IP,             domain
+*public0*,    *pubbr0*,  52:54:00:03:00:01, 192.168.1.234,    lab.example.com
+|===
+
+== guest interfaces, names and addresses
+
+Guests get the next available MAC address and IP address from this table. 
+This means we can take a MAC address from something like an `arp` command and find out more details about it from here. 
+
+This doesn't mean we can build extra clues into our names and addresses.
+For instance, if guest1 has a MAC address and an IP address that both end in 1, that would be an easy clue for which address belongs to which name. But we can't do that with this scheme. 
+
+* hosts attached to pubbr0 get their names and addresses from the home network router. 
+* host1 is a physical PC with a real-world MAC address. 
+* The guest MAC addresses are created by our virt-install commands. 
+* guest1 has two interfaces and a modern interface naming convention (enp1s0). 
+* guest2 also has two interfaces using the old naming convention (eth0).
+
+.host and guests
+[%header,format=csv]
+|===
+name,         interface, MAC,               IP,             domain
+rpi4,         eth0,      12:34:56:12:34:56, 192.168.1.234,  home.network
+ipsal,        eth0,      52:54:00:03:00:02, 192.168.1.235,  lab.example.com
+dev,          eth0,      52:54:00:03:00:03, 192.168.1.236,  lab.example.com
+|===
