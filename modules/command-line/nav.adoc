@@ -6,6 +6,7 @@
 ** xref:shell-interactive.adoc[]
 ** xref:account-examine.adoc[]
 ** xref:account-add.adoc[]
+** xref:dnf-use.adoc[]
 ** xref:dnf-update.adoc[]
 ** xref:dnf-group-view.adoc[]
 ** xref:storage-examine.adoc[]

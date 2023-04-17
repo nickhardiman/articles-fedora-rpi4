@@ -1,0 +1,116 @@
+= install virtual machine software
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2021
+
+
+== the DNF  group Virtualization  
+
+* QEMU
+* KVM
+* libvirt
+
+[source,shell]
+....
+[nick@rpi4 ~]# dnf group info Virtualization
+Last metadata expiration check: 1:40:46 ago on Mon 17 Apr 2023 07:23:03 BST.
+Group: Virtualisation
+ Description: These packages provide a graphical virtualisation environment.
+ Mandatory Packages:
+   virt-install
+ Default Packages:
+   libvirt-daemon-config-network
+   libvirt-daemon-kvm
+   qemu-kvm
+   virt-manager
+   virt-viewer
+ Optional Packages:
+   guestfs-tools
+   libguestfs-tools
+   python3-libguestfs
+   virt-top
+[nick@rpi4 ~]# 
+....
+
+
+== install the group
+
+The dependencies pull in hundreds of RPM packages. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ sudo dnf group install Virtualization
+Last metadata expiration check: 1:43:48 ago on Mon 17 Apr 2023 07:23:03 BST.
+Dependencies resolved.
+================================================================================
+ Package                                Arch    Version           Repo     Size
+================================================================================
+Installing group/module packages:
+ libvirt-daemon-config-network          aarch64 8.6.0-5.fc37      updates  13 k
+ libvirt-daemon-kvm                     aarch64 8.6.0-5.fc37      updates  10 k
+ qemu-kvm                               aarch64 2:7.0.0-15.fc37   updates  13 k
+ virt-install                           noarch  4.1.0-1.fc37      fedora   40 k
+ virt-manager                           noarch  4.1.0-1.fc37      fedora  718 k
+ virt-viewer                            aarch64 11.0-5.fc37       fedora  315 k
+Installing dependencies:
+ SDL2                                   aarch64 2.26.3-1.fc37     updates 666 k
+ SDL2_image                             aarch64 2.6.3-1.fc37      updates 107 k
+ adwaita-cursor-theme                   noarch  43-1.fc37         fedora  633 k
+...
+ xdg-desktop-portal                     aarch64 1.15.0-4.fc37     updates 412 k
+ xml-common                             noarch  0.6.3-59.fc37     fedora   31 k
+ xorriso                                aarch64 1.5.4-5.fc37      fedora  315 k
+Installing weak dependencies:
+ brltty                                 aarch64 6.5-7.fc37        fedora  1.7 M
+ exiv2                                  aarch64 0.27.6-4.fc37     updates 977 k
+ jxl-pixbuf-loader                      aarch64 1:0.7.0-5.fc37    updates  30 k
+...
+ tracker-miners                         aarch64 3.4.3-1.fc37      updates 934 k
+ unbound-anchor                         aarch64 1.17.1-1.fc37     updates  36 k
+ xdg-desktop-portal-gtk                 aarch64 1.14.1-1.fc37     updates 144 k
+Installing Groups:
+ Virtualization                                                                
+
+Transaction Summary
+================================================================================
+Install  280 Packages
+
+Total download size: 135 M
+Installed size: 760 M
+Is this ok [y/N]: 
+....
+
+
+== add a VM plug-in to cockpit
+
+Extend cockpit to work with virtual machines. 
+
+https://cockpit-project.org/[Cockpit] is a server management system with a web-based control panel.
+
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo dnf install cockpit-machines
+[sudo] password for nick: 
+Last metadata expiration check: 2:23:45 ago on Mon 17 Apr 2023 07:23:03 BST.
+Dependencies resolved.
+================================================================================
+ Package                Architecture  Version               Repository     Size
+================================================================================
+Installing:
+ cockpit-machines       noarch        287-1.fc37            updates       1.1 M
+Installing dependencies:
+ libvirt-dbus           aarch64       1.4.0-6.fc37          fedora         89 k
+ qemu-kvm-core          aarch64       2:7.0.0-15.fc37       updates        13 k
+
+Transaction Summary
+================================================================================
+Install  3 Packages
+
+Total download size: 1.2 M
+Installed size: 1.4 M
+Is this ok [y/N]: 
+----
+
+image::cockpit-vm.png[hardware,title="Cockpit VM page"] 
+

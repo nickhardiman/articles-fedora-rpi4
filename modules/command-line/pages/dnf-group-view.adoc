@@ -27,6 +27,29 @@ Groups are listed under four headings.
 * Available Groups
 
 
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf group list
+Last metadata expiration check: 1:11:13 ago on Mon 17 Apr 2023 07:23:03 BST.
+Available Environment Groups:
+   Fedora Custom Operating System
+   Minimal Install
+   Fedora Server Edition
+...
+Installed Groups:
+   Container Management
+   Domain Membership
+   Headless Management
+Available Groups:
+   3D Printing
+   Administration Tools
+   Audio Production
+...
+[nick@rpi4 ~]$ 
+----
+
+The Fedora Server image does not have any installed environment groups. 
+
 == an environment group 
 
 An environment group is everything required to create a customized environment, such as a Fedora Spin.
@@ -37,27 +60,38 @@ An environment group contains groups.
 
 [source,shell]
 ....
-[nick@host1 roles]$ dnf group info 'Virtualization Host'
-...
-Environment Group: Virtualization Host
- Description: Minimal virtualization host.
+[nick@rpi4 ~]$ dnf group info  'Infrastructure Server'
+Last metadata expiration check: 1:18:19 ago on Mon 17 Apr 2023 07:25:27 BST.
+Environment Group: Infrastructure Server
+ Description: Server for operating network infrastructure services.
  Mandatory Groups:
-   Base
+   Container Management
    Core
+   Hardware Support
+   Headless Management
    Standard
-   Virtualization Hypervisor
-   Virtualization Tools
  Optional Groups:
-   Debugging Tools
-   Network File System Client
-   Remote Management for Linux
-   Virtualization Platform
-[nick@host1 roles]$ 
+   Basic Web Server
+   DNS Name Server
+   Directory Server
+   Dogtag Certificate System
+   FTP Server
+   FreeIPA Server
+   Guest Agents
+   High Availability
+   Load Balancer
+   Mail Server
+   MariaDB (MySQL) Database
+   Network Servers
+   PostgreSQL Database
+   Printing Support
+   Virtualization
+   Windows File Server
+[nick@rpi4 ~]$ 
 ....
 
 
-
-=== a Fedora Spin 
+== a Fedora Spin is an environment group
 
 A https://spins.fedoraproject.org/[Fedora spin] is a themed version of Fedora.
 That usually means Fedora combined with one desktop system. 
@@ -65,10 +99,16 @@ There are many desktop spins, including the https://spins.fedoraproject.org/en/k
 A spin can also be Fedora combined with productivity tools.
 https://labs.fedoraproject.org/[Fedora Labs] provide an https://labs.fedoraproject.org/en/astronomy/[Astronomy spin], a https://labs.fedoraproject.org/en/games/[Games spin], a https://labs.fedoraproject.org/en/scientific/[Scientific spin] and others. 
 
+A spin is defined using an environment group. 
+
+
+
+
 == group commands 
 
 `dnf group (something)`, where something is info, install, list, remove, upgrade or mark. 
 Run `man dnf` and search for _Group Command_. 
+
 
 == list groups 
 
@@ -89,6 +129,41 @@ Available Environment Groups:
 ----
 
 
+== list hidden groups 
+
+Most groups are hidden. 
+A group list shows the most popular 60 groups. 
+There are about three times that in total. 
+
+Use the --hidden option. The _Available Environment Groups_ list doesn't change, but the lists of installed and available groups are much longer.
+
+[source,shell]
+----
+[root@rpi4 ~]# dnf group list --hidden 
+Last metadata expiration check: 1:33:10 ago on Mon 17 Apr 2023 07:23:03 BST.
+...
+Installed Groups:
+   ARM Tools
+   Container Management
+   Core
+   Domain Membership
+   Guest Agents
+   Hardware Support
+   Headless Management
+   Common NetworkManager Submodules
+   Hardware Support for Server Systems
+   Fedora Server product core
+   Standard
+Available Groups:
+   3D Printing
+   Administration Tools
+   Anaconda tools
+...
+   Xfce Software Development
+   XMonad
+   XMonad for MATE
+[root@rpi4 ~]# 
+----
 
 
 == list packages in a group
@@ -123,7 +198,6 @@ Group: System Tools
 
 
 == lists groups and their IDs 
-
 
 Each group has a group ID. 
 The group name and ID are similar. 
@@ -172,22 +246,4 @@ Available Environment Groups:
 ----
 
 
-== view hidden groups 
 
-The group list includes the most useful groups, not all. 
-Dozens of groups are hidden, including the installed Gnome group. 
-View all 160 groups using the --hidden option. 
-
-[source,shell]
-----
-[nick@rpi4 ~]$ dnf group list --hidden
-...
-Installed Groups:
-   Core
-   GNOME
-...
-   Xfce Software Development
-   XMonad
-   XMonad for MATE
-[nick@rpi4 ~]$ 
-----

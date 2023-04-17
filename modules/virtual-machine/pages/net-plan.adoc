@@ -1,0 +1,81 @@
+= plan the network
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 16-04-2023
+
+
+== virtual network
+
+A bridge acts like a network switch that a guest plugs into. 
+A guest using any bridge can be reached from the host.
+Guests using the private bridges have restricted network access. 
+Only guests using pubbr0 can talk to the outside world. 
+
+
+
+.libvirt networks and guests 
+....
+                 bridge        host machine         guest machines
+               .----------.
+               |          |
+Internet ------| public0  |----------+-------------------+-------------------+---
+               |          |          |                   |                   |
+               .----------.          |                   |                   |
+                                     |                   |                   |
+                                +------------+      +------------+     +------------+
+                                |            |      |            |     |            |
+                                | host1      |      | ipsal      |     | dev        |
+                                |            |      |            |     |            |
+                                +------------+      +------------+     +------------+
+
+==  DNS 
+
+Each guest gets an FQDN (Fully Qualified Domain Name)  along the lines of dev.lab.example.com
+
+A new DNS service will be used by the new guests.
+One new zone will be created. 
+
+* .lab.example.com  
+
+
+==  IP addresses
+
+An IP address pool provides IP addresses to guests. 
+
+
+== MAC addresses 
+
+Each guest MAC address is set to a known value, to make configuration and network experiments easier. 
+
+
+== guest network interfaces 
+
+predictable IP adresses and MAC addresses. 
+
+* network addresses end in 1
+* IP and MAC addresses end with the same number eg. 52:54:00:00:00:02 and 192.168.122.2
+
+Each bridge has an IP address and MAC address. 
+This provides guests with a gateway address.
+
+
+
+.interfaces 
+
+.Interfaces, MAC addresses and IP addresses 
+....
+                 bridge            host machine         guest machines
+               .-------------------.
+               | public0           |
+Internet ------| pubbr0            |----------+-------------------+---------------------+---
+               | 192.168.1.2       |          |                   |                     |
+               | 52:54:00:03:00:01 |          |                   |                     |
+               .-------------------.          |                   |                     |
+                                              |                   |                     |
+                            +-------------------+      +-------------------+     +-------------------+
+                            | host1             |      | ipsal             |     | dev               |
+                            | eth0              |      | eth0              |     | eth0              |
+                            | 192.168.1.2       |      | 192.168.1.3       |     | 192.168.1.4       |
+                            | 52:54:00:03:00:02 |      | 52:54:00:03:00:03 |     | 52:54:00:03:00:04 |
+                            +-------------------+      +-------------------+     +-------------------+
+

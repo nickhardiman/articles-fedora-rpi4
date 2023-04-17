@@ -35,3 +35,4 @@ nav:
 - modules/container/nav.adoc 
 - modules/network/nav.adoc 
 - modules/next/nav.adoc 
+- modules/virtual-machine-old/nav.adoc 

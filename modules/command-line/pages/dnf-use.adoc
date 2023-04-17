@@ -1,0 +1,105 @@
+= use DNF
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2023
+
+These are read-only commands. 
+They don't change anything. 
+
+For more information on DNF, see
+
+* https://en.wikipedia.org/wiki/DNF_(software)[Wikipedia].
+* The https://dnf.readthedocs.io/en/latest/index.html[DNF user guide] 
+* https://docs.fedoraproject.org/en-US/fedora/f34/system-administrators-guide/package-management/DNF/[Fedora docs]
+8 https://fedoraproject.org/wiki/DNF[Fedora wiki]
+* The DNF command reference page, by running `man dnf`. This page only makes sense for experienced users.
+
+== RPM package 
+
+== the dnf command 
+
+DNF packages are already installed. 
+There's the dnf package which provides dnf itself, dnf-plugins-core which extends what dnf can do, python3-dnf which fills up /usr/lib/python3.6/site-packages/dnf/, and others.   
+
+These packages provide DNF version 4. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf --version
+4.6.1
+  Installed: dnf-0:4.6.1-1.fc33.noarch at Thu 15 Apr 2021 13:09:56 GMT
+  Built    : Fedora Project at Tue 02 Mar 2021 16:03:22 GMT
+
+  Installed: rpm-0:4.16.1.3-1.fc33.aarch64 at Thu 15 Apr 2021 13:06:45 GMT
+  Built    : Fedora Project at Mon 22 Mar 2021 11:27:48 GMT
+[nick@rpi4 ~]$ 
+----
+
+
+
+== view advisories
+
+Fedora calls package updates _advisories_. There are three types: security, bug fix and enhancement.
+
+* A security advisory package fixes security problems. A security package also has a priority of low, moderate, important and critical.  
+* A bugfix advisory package fixes code problems. 
+* An enhancement advisory package provides new features. 
+
+If software hasn't been updated for a while, there can be a lot of these. 
+DNF can print totals for each type. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf updateinfo --summary
+Last metadata expiration check: 0:07:28 ago on Thu 09 Sep 2021 21:20:33 BST.
+Updates Information Summary: available
+    38 Security notice(s)
+         1 Critical Security notice(s)
+        12 Important Security notice(s)
+        15 Moderate Security notice(s)
+         8 Low Security notice(s)
+    69 Bugfix notice(s)
+    23 Enhancement notice(s)
+    23 other notice(s)
+[nick@rpi4 ~]$ 
+----
+
+Use DNF to list all these packages. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf updateinfo --list
+...
+[nick@rpi4 ~]$ dnf updateinfo --list
+FEDORA-2021-8a91778c77 unknown        NetworkManager-1:1.26.8-1.fc33.aarch64
+FEDORA-2021-8a91778c77 unknown        NetworkManager-adsl-1:1.26.8-1.fc33.aarch64
+...
+FEDORA-2021-0f36063660 enhancement    appstream-data-33-3.fc33.noarch
+FEDORA-2021-8d0e5b3cd8 Moderate/Sec.  apr-1.7.0-7.fc33.aarch64
+...
+FEDORA-2021-312568e814 bugfix         yum-4.8.0-1.fc33.noarch
+FEDORA-2021-61a7c105e3 bugfix         zchunk-libs-1.1.15-1.fc33.aarch64
+[nick@rpi4 ~]$ 
+----
+
+
+
+== a repository
+
+Packages are downloaded from repositories. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ dnf repolist
+repo id                       repo name
+fedora                        Fedora 33 - aarch64
+fedora-cisco-openh264         Fedora 33 openh264 (From Cisco) - aarch64
+fedora-modular                Fedora Modular 33 - aarch64
+updates                       Fedora 33 - aarch64 - Updates
+updates-modular               Fedora Modular 33 - aarch64 - Updates
+[nick@rpi4 ~]$ 
+----
+
+These are defined in the configuration directory /etc/yum.repos.d/.
+
+

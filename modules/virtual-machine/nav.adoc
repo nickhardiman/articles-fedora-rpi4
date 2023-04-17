@@ -1,2 +1,4 @@
 * xref:index.adoc[]
+** xref:net-plan.adoc[]
+** xref:virt-install.adoc[]
 

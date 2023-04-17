@@ -1,11 +1,12 @@
-= start, use, stop
+= start, login, stop
 Nick Hardiman 
 :source-highlighter: highlight.js
 :revdate: 24-09-2021
 
-* system startup 
-* login and logout
-* system shutdown
+* system startup or power up
+* local login and logout
+* remote login and logout
+* system shutdown or power down
 
 Three ways of logging in
 
