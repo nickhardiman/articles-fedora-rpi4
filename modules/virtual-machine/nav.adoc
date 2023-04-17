@@ -1,4 +1,5 @@
 * xref:index.adoc[]
 ** xref:net-plan.adoc[]
 ** xref:virt-install.adoc[]
-
+** xref:virt-systemd-units.adoc[]
+** xref:virt-systemd-enable.adoc[]

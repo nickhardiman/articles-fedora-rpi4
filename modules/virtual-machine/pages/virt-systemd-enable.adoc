@@ -1,0 +1,85 @@
+= enable libvirt's systemd units
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2021
+
+The system is not yet ready to manage virtual machines. 
+Set up systemd for the QEMU driver and secondary drivers. 
+
+
+== enable units for QEMU and secondary drivers
+
+Use the root account. 
+
+use the new libvirt script directory.
+
+Create a new script to hold the systemctl commands. 
+
+[source,shell]
+----
+[root@host2 libvirt]# vim libvirt-unit-enable.sh
+----
+
+Add content. 
+(taken from https://libvirt.org/daemons.html)
+
+[source,shell]
+----
+for drv in qemu interface network nodedev nwfilter secret storage
+do
+    systemctl unmask virt${drv}d.service
+    systemctl unmask virt${drv}d{,-ro,-admin}.socket
+    systemctl enable virt${drv}d.service
+    systemctl enable virt${drv}d{,-ro,-admin}.socket
+done
+----
+
+Change permissions. Run the new script. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# chmod 754 libvirt-unit-enable.sh 
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# ./libvirt-unit-enable.sh 
+Created symlink /etc/systemd/system/multi-user.target.wants/virtinterfaced.service → /usr/lib/systemd/system/virtinterfaced.service.
+Created symlink /etc/systemd/system/sockets.target.wants/virtinterfaced-ro.socket → /usr/lib/systemd/system/virtinterfaced-ro.socket.
+Created symlink /etc/systemd/system/sockets.target.wants/virtinterfaced-admin.socket → /usr/lib/systemd/system/virtinterfaced-admin.socket.
+...
+[root@rpi4 libvirt]# 
+----
+
+
+
+== start sockets
+
+Create a new script to hold the systemctl commands. 
+This list of drivers is the same as the one above, except for interface. 
+
+
+[source,shell]
+----
+[root@host2 libvirt]# vim libvirt-socket-start.sh
+----
+
+Add content. 
+(taken from https://libvirt.org/daemons.html)
+
+[source,shell]
+----
+for drv in qemu network nodedev nwfilter secret storage
+do
+    systemctl start virt${drv}d{,-ro,-admin}.socket
+done
+----
+
+Change permissions. Run the new script. 
+This script does not show any output. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# chmod 754 libvirt-socket-start.sh 
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# ./libvirt-socket-start.sh 
+[root@rpi4 libvirt]# 
+----
+

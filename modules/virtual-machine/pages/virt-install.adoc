@@ -81,6 +81,33 @@ Is this ok [y/N]:
 ....
 
 
+== install the QEMU system emulator for ARM systems
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo dnf install qemu-system-arm
+[sudo] password for nick: 
+Last metadata expiration check: 2:40:27 ago on Mon 17 Apr 2023 15:04:30 BST.
+Dependencies resolved.
+================================================================================
+ Package               Arch     Version                          Repo      Size
+================================================================================
+Installing:
+ qemu-system-arm       aarch64  2:7.0.0-15.fc37                  updates   15 k
+Installing dependencies:
+ edk2-arm              noarch   20230301gitf80f052277c8-1.fc37   updates  2.8 M
+ qemu-system-arm-core  aarch64  2:7.0.0-15.fc37                  updates  4.3 M
+
+Transaction Summary
+================================================================================
+Install  3 Packages
+
+Total download size: 7.1 M
+Installed size: 150 M
+Is this ok [y/N]: 
+----
+
+
 == add a VM plug-in to cockpit
 
 Extend cockpit to work with virtual machines. 

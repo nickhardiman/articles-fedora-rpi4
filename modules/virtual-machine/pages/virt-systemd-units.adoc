@@ -1,0 +1,194 @@
+= view libvirt's systemd units
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2023
+
+
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+It ties together a few infrastructure building blocks like QEMU, bridge, DHCP and DNS.
+
+Various libvirt socket listeners and modular daemons  manage  virtualization. 
+For more information, see https://libvirt.org/daemons.html.
+
+The systemd unit files that manage these are stored in /usr/lib/systemd/system/. 
+
+== libvirt socket units
+
+Some sockets are enabled and some are not. 
+These are enabled. 
+
+. virtlockd  
+. virtlogd
+. virtnetworkd  - use libvirt-managed networks
+. virtnodedevd
+. virtnwfilterd
+. virtqemud-admin
+. virtqemud-ro - manage the VM
+. virtqemud - manage the VM
+. virtsecretd - use secrets storage
+. virtstoraged - uses libvirt managed storage
+
+There are plenty of socket units. 
+Each driver has three units, with names like this. 
+
+* virt(DRIVER)-admin.socket
+* virt(DRIVER)-ro.socket
+* virt(DRIVER).socket
+
+There are a few exceptions: virtlockd, virtlogd and virtproxyd-tls.
+
+== create a new libvirt file directory 
+
+Create a new directory to hold libvirt scripts. 
+
+
+[source,shell]
+----
+[root@rpi4 ~]# mkdir libvirt
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+----
+
+== create a script to list sockets 
+
+Create a new script to view the state of virtualization sockets. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# vim libvirt-socket-view.sh
+----
+
+Add these lines. 
+
+[source,shell]
+----
+for UNIT in \
+  virtinterfaced-admin.socket  \
+  virtinterfaced-ro.socket  \
+  virtinterfaced.socket  \
+  virtlockd-admin.socket  \
+  virtlockd.socket  \
+  virtlogd-admin.socket  \
+  virtlogd.socket  \
+  virtnetworkd-admin.socket  \
+  virtnetworkd-ro.socket  \
+  virtnetworkd.socket  \
+  virtnodedevd-admin.socket  \
+  virtnodedevd-ro.socket  \
+  virtnodedevd.socket  \
+  virtnwfilterd-admin.socket  \
+  virtnwfilterd-ro.socket  \
+  virtnwfilterd.socket  \
+  virtqemud-admin.socket  \
+  virtqemud-ro.socket  \
+  virtqemud.socket  \
+  virtproxyd-admin.socket  \
+  virtproxyd-ro.socket  \
+  virtproxyd.socket  \
+  virtproxyd-tls.socket  \
+  virtsecretd-admin.socket  \
+  virtsecretd-ro.socket  \
+  virtsecretd.socket  \
+  virtstoraged-admin.socket  \
+  virtstoraged-ro.socket  \
+  virtstoraged.socket
+do
+  printf "%30s" $UNIT
+  echo "  " $(systemctl is-active $UNIT)  $(systemctl is-enabled $UNIT)  $(systemctl is-failed $UNIT)
+done
+----
+
+Change permissions. Run the new script. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# chmod 754 libvirt-socket-view.sh 
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# ./libvirt-socket-view.sh 
+   virtinterfaced-admin.socket   inactive disabled inactive
+      virtinterfaced-ro.socket   inactive disabled inactive
+         virtinterfaced.socket   inactive enabled inactive
+        virtlockd-admin.socket   inactive disabled inactive
+              virtlockd.socket   inactive enabled inactive
+         virtlogd-admin.socket   inactive disabled inactive
+               virtlogd.socket   inactive enabled inactive
+     virtnetworkd-admin.socket   inactive disabled inactive
+        virtnetworkd-ro.socket   inactive disabled inactive
+           virtnetworkd.socket   inactive enabled inactive
+     virtnodedevd-admin.socket   inactive disabled inactive
+        virtnodedevd-ro.socket   inactive disabled inactive
+           virtnodedevd.socket   inactive enabled inactive
+    virtnwfilterd-admin.socket   inactive disabled inactive
+       virtnwfilterd-ro.socket   inactive disabled inactive
+          virtnwfilterd.socket   inactive enabled inactive
+        virtqemud-admin.socket   inactive enabled inactive
+           virtqemud-ro.socket   inactive enabled inactive
+              virtqemud.socket   inactive enabled inactive
+       virtproxyd-admin.socket   inactive disabled inactive
+          virtproxyd-ro.socket   inactive disabled inactive
+             virtproxyd.socket   inactive enabled inactive
+         virtproxyd-tls.socket   inactive disabled inactive
+      virtsecretd-admin.socket   inactive disabled inactive
+         virtsecretd-ro.socket   inactive disabled inactive
+            virtsecretd.socket   inactive enabled inactive
+     virtstoraged-admin.socket   inactive disabled inactive
+        virtstoraged-ro.socket   inactive disabled inactive
+           virtstoraged.socket   inactive enabled inactive
+[root@rpi4 libvirt]# 
+----
+
+
+== view libvirt service units
+
+Only one of these services - virtqemud - is enabled by default. 
+The others are started by the socket units. 
+When a request is made, they fire up. 
+
+Create another script. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# vim libvirt-service-view.sh
+----
+
+Add content. 
+
+[source,shell]
+----
+for UNIT in \
+  virtinterfaced.service   \
+  virtlockd.service   \
+  virtlogd.service   \
+  virtnetworkd.service   \
+  virtnodedevd.service   \
+  virtnwfilterd.service  \
+  virtproxyd.service      \
+  virtqemud.service      \
+  virtsecretd.service    \
+  virtstoraged.service
+do
+  printf "%30s" $UNIT
+  echo "  " $(systemctl is-active $UNIT)  $(systemctl is-enabled $UNIT)  $(systemctl is-failed $UNIT)
+done
+----
+
+Change permissions. Run the new script. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# chmod 754 libvirt-service-view.sh 
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# ./libvirt-service-view.sh 
+        virtinterfaced.service   inactive disabled inactive
+             virtlockd.service   inactive indirect inactive
+              virtlogd.service   inactive indirect inactive
+          virtnetworkd.service   inactive disabled inactive
+          virtnodedevd.service   inactive disabled inactive
+         virtnwfilterd.service   inactive disabled inactive
+            virtproxyd.service   inactive disabled inactive
+             virtqemud.service   inactive enabled inactive
+           virtsecretd.service   inactive disabled inactive
+          virtstoraged.service   inactive disabled inactive
+[root@rpi4 libvirt]# 
+----
