@@ -1,0 +1,93 @@
+= see new dnsmasq service
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2023
+
+The first time virt services run, they set up new things. 
+
+
+
+== the DHCP and DNS service dnsmasq
+
+dnsmasq handles some infrastructure services for the virtual network. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ps -C dnsmasq
+    PID TTY          TIME CMD
+   1224 ?        00:00:00 dnsmasq
+   1225 ?        00:00:00 dnsmasq
+[nick@rpi4 ~]$ 
+----
+
+
+.VMs use dnsmasq services 
+....
+.-------------------------------------.  
+|                                     |
+|  host1                              |
+|                                     |
+|   +----------+        +----------+  |
+|   |          |        |          |  |
+|   |  guest1  | DHCP   | dnsmasq  |  |
+|   |          +------->|          |  |
+|   |          |        |          |  |
+|   |          | DNS    |          |  |
+|   |          +------->|          |  |
+|   +----------+        +----------+  |
+.-------------------------------------.  
+....
+
+RHEL includes a complete system for managing VMs (virtual machines) - the KVM hypervisor, QEMU machine emulator and libvirt tools. 
+The libvirt daemon uses http://www.thekelleys.org.uk/dnsmasq/doc.html[dnsmasq] to provide 
+https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol[DHCP] 
+and https://en.wikipedia.org/wiki/Domain_Name_System[DNS] services. 
+This article configures dnsmasq to set a fixed IPv4 address and domain name for our new guest VM.  
+
+People remember names better than numbers. A fixed IP address is easier to use than a random IP address, and a DNS name is easier still.  
+Out of the box, dnsmasq reads names and addresses from the /etc/hosts file. 
+Add _guest2.private.example.com_ to two places. 
+
+* the host's /etc/hosts file, so the host can look up the guest's name
+* the host's dnsmasq configuration, so guests can look up the name
+
+
+== libvirt runs the service, not systemd
+
+Usually _systemd_ is in charge of running services, but not here. 
+The _libvirtd_ daemon controls _dnsmasq_ services, not systemd. 
+Running the command ``systemctl status dnsmasq`` says dnsmasq isn't running. 
+
+[source,shell]
+....
+[nick@host1 ~]# systemctl status dnsmasq
+● dnsmasq.service - DNS caching server.
+   Loaded: loaded (/usr/lib/systemd/system/dnsmasq.service; disabled; vendor preset: disabled)
+   Active: inactive (dead)
+[nick@host1 ~]# 
+....
+
+
+== dnsmasq processes 
+
+One pair of processes - a parent and child - are started for each libvirt network that needs DHCP.
+The _public0_ network doesn't use dnsmasq.
+The _default_ and _private0_ networks do.
+
+You can see these in a process list. 
+The list has four entries for the executable /usr/sbin/dnsmasq. 
+The list doesn't give any hints about which processes are for which networks. 
+
+[source,shell]
+....
+[nick@host1 ~]# ps -fwwC dnsmasq
+UID          PID    PPID  C STIME TTY          TIME CMD
+dnsmasq     2077       1  0 08:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+root        2078    2077  0 08:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+dnsmasq    16756       1  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/private0.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+root       16757   16756  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/private0.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
+[nick@host1 ~]#  
+....
+
+
+

@@ -1,0 +1,143 @@
+= use virsh
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 23-11-2023
+
+
+
+The CLI tool for working with libvirt is called https://libvirt.org/manpages/virsh.html[virsh].
+
+== engine 
+
+* virsh 
+* libvirtd 
+* qemu
+
+
+The virsh command is part of the ``libvirt-client`` package. 
+This package is part of the _virtualization_ DNF group.
+
+== resources 
+
+The virsh tool helps manage these resources. 
+
+* Domain resources include machine emulation, what storage is attached, 
+* Network resources include bridges, IP address pools, gateways.
+* Storage pools are locations where disk images, installer ISOs are stored. 
+
+There are some resources already created in the directory /var/lib/libvirt/.
+For instance, there is an _images_ directory for storing disk images, but it's empty. 
+And there is no config yet to tell libvirt to use this location. 
+
+== configuration 
+
+Libvirt configuration lives in the directory /etc/libvirt/. 
+There are many files here ending in _.conf_ which define how the executables behave. 
+
+Libvirt defines resources using XML. 
+A fresh install only has a couple XML files, like /etc/libvirt/qemu/networks/default.xml.
+This file contains a definition for the default network.
+
+Configuration is added using virsh, not by editing these XML files. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo cat /etc/libvirt/qemu/networks/autostart/default.xml
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh net-edit default
+or other application using the libvirt API.
+-->
+
+<network>
+  <name>default</name>
+  <uuid>1d54ee16-579b-44d4-9c1e-0d01f826e907</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:af:1d:a3'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+[nick@rpi4 ~]$ 
+----
+
+
+== the virsh command 
+
+use _virsh_ to display the https://libvirt.org/news.html[version] of libvirt.  
+
+[source,shell]
+----
+[nick@rpi4 ~]$ virsh version
+Compiled against library: libvirt 6.6.0
+Using library: libvirt 6.6.0
+Using API: QEMU 6.6.0
+Running hypervisor: QEMU 5.1.0
+
+[nick@rpi4 ~]$ 
+----
+
+
+== view networks with virsh 
+
+Configuration files in /etc/libvirt/ can only be read by root. 
+
+Using your own account shows nothing. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ virsh net-list --all
+ Name   State   Autostart   Persistent
+----------------------------------------
+
+[nick@rpi4 ~]$ 
+....
+
+Using the root account shows something. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ sudo virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+
+[nick@rpi4 ~]$ 
+....
+
+
+== list virtual machines 
+
+List all virtual machines. 
+There are no machines defined, so virsh displays an empty table.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo virsh list --all
+ Id   Name   State
+--------------------
+
+[nick@rpi4 ~]$ 
+----
+
+== list storage pools 
+
+There are no storage pools either. 
+
+[source,shell]
+----
+[root@rpi4 images]# sudo virsh pool-list --all
+ Name   State   Autostart
+---------------------------
+
+[root@rpi4 images]# 
+----
+
+
+???
+sudo virsh net-dumpxml default
+

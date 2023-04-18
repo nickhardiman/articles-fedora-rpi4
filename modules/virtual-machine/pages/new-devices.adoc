@@ -1,0 +1,85 @@
+= see new devices
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2023
+
+The first time virt services run, they set up new things. 
+
+
+== the new bridge device virbr0
+
+A bridge is a kind of internal layer 2 switch that connects virtual machines to the physical network.
+
+virbr0 is a bridge. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ nmcli device status
+DEVICE        TYPE      STATE                   CONNECTION   
+enabcm6e4ei0  ethernet  connected               enabcm6e4ei0 
+virbr0        bridge    connected (externally)  virbr0       
+wlan0         wifi      unavailable             --           
+lo            loopback  unmanaged               --           
+virbr0-nic    tun       unmanaged               --           
+[nick@rpi4 ~]$ 
+----
+
+NetworkManager is configured to manage virbr0.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ nmcli con show
+NAME                UUID                                  TYPE      DEVICE 
+Wired connection 1  b8265e30-441b-3ee9-a547-9d675b065fe9  ethernet  eth0   
+virbr0              2c3ccfd7-882c-4ddb-84b1-4b594955fb1e  bridge    virbr0 
+enp1s0              83d67bc4-4398-454c-8bf8-602edb3bb501  ethernet  --     
+[nick@rpi4 ~]$ 
+----
+
+
+== virsh network default manages virbr0 
+
+The new virsh network _default_ manages bridge _virbr0_.
+
+Use virsh to display XML. 
+This XML is copied from the file /etc/libvirt/qemu/networks/autostart/default.xml.
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo virsh net-dumpxml default
+<network>
+  <name>default</name>
+  <uuid>1d54ee16-579b-44d4-9c1e-0d01f826e907</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:af:1d:a3'/>
+  <ip address='192.168.122.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.122.2' end='192.168.122.254'/>
+    </dhcp>
+  </ip>
+</network>
+
+[nick@rpi4 ~]$ 
+----
+
+
+
+
+== the new character device kvm 
+
+The /dev/ directory has a character device named kvm. 
+You can tell this file is a character device because the long list starts with a "c".
+
+[source,shell]
+----
+[nick@rpi4 ~]$ ls -l /dev/kvm 
+crw-rw-rw-. 1 root kvm 10, 232 Sep 30 01:00 /dev/kvm
+[nick@rpi4 ~]$ 
+----
+
+

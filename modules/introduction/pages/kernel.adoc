@@ -34,3 +34,9 @@ The kernel release name is rather long, like this. 4.18.0-193.6.3.el8_2.x86_64
 == files 
 
 The /boot/ directory contains kernel files. 
+
+
+== kernel modules 
+
+???
+lsmod 

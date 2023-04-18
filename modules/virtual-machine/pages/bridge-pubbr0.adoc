@@ -1,0 +1,176 @@
+= create libvirt network public0
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 23-11-2020
+
+
+Add network config to libvirt's configuration.
+Call the network public0.
+The config tells libvirt about bridge _pubbr0_.
+
+
+== all the networks 
+
+* public network *public0*
+* private network *private0* 
+* private network *private1* 
+
+
+== config 
+
+The config tells libvirt about bridge _pubbr0_.
+This XML file defines the new network.
+
+[source,XML]
+....
+<network>
+  <name>public0</name>
+  <forward mode="bridge"/>
+  <bridge name="pubbr0" />
+</network>
+....
+
+== create the libvirt network public0 
+
+Use the root account.
+
+Change to the libvirt directory. 
+
+Add the XML to a file. 
+
+[source,shell]
+....
+[root@host1 libvirt]# vi net-public0.xml 
+....
+
+Tell libvirt about the new configuration.
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh net-define net-public0.xml
+Network public0defined from net-public0.xml
+
+[root@host1 libvirt]# 
+....
+
+Check with the _virsh net-list_ command. 
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh net-list --all
+ Name      State      Autostart   Persistent
+----------------------------------------------
+ default   active     yes         yes
+ public0   inactive   no          yes
+
+[root@host1 libvirt]# 
+....
+
+=== delete libvirt's public0
+
+If it's not right, remove the new config with _virsh net-undefine_.
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh net-undefine pubbr0
+Network public0 has been undefined
+
+[root@host1 libvirt]# 
+....
+
+
+
+== start the libvirt network
+
+This is a temporary change. 
+The network stays active until the machine turns off. 
+After the next reboot, this will be inactive again. 
+
+OLD NAMING 
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh net-start public0
+Network public0 started
+
+[root@host1 libvirt]# 
+[root@host1 libvirt]# virsh net-list --all
+ Name         State    Autostart   Persistent
+-----------------------------------------------
+ default      active   yes         yes
+ public0      active   no          yes
+
+[root@host1 libvirt]# 
+....
+
+Make the change permanent. 
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh net-autostart public0
+Network public0 marked as autostarted
+
+[root@host1 libvirt]# 
+[root@host1 libvirt]# virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ default   active   yes         yes
+ public0   active   yes         yes
+
+[root@host1 libvirt]# 
+....
+
+
+== delete the new bridge 
+
+???
+
+If something is wrong, back out with these _nmcli_ commands. 
+
+Create a script to do the work. 
+
+[source,shell]
+....
+[root@host1 libvirt]# vi pubbr0-delete.sh
+....
+
+Add these lines. 
+
+[source,bash]
+....
+#!/bin/bash
+nmcli con down pubbr0
+nmcli connection delete bridge-slave-enp2s0f0 
+nmcli connection delete pubbr0 
+nmcli con up enp2s0f0
+....
+
+Run it. 
+
+[source,shell]
+....
+[root@host1 libvirt]# chmod 754 pubbr0-delete.sh 
+[root@host1 libvirt]# 
+[root@host1 libvirt]# ./pubbr0-delete.sh 
+Connection 'pubbr0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/6)
+Connection 'bridge-slave-enp2s0f0' (0ae977d2-7c5c-490c-bad8-be647014886a) successfully deleted.
+Connection 'pubbr0' (a4d5ddf3-e0db-49f6-85c1-09b124537dd1) successfully deleted.
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)
+[root@host1 libvirt]# 
+....
+
+Check the slave is gone.
+
+[source,shell]
+....
+[root@host1 libvirt]# nmcli device
+DEVICE          TYPE      STATE                   CONNECTION 
+enp2s0f0        ethernet  connected               enp2s0f0   
+virbr0          bridge    connected (externally)  virbr0     
+wlp3s0          wifi      disconnected            --         
+p2p-dev-wlp3s0  wifi-p2p  disconnected            --         
+lo              loopback  unmanaged               --         
+virbr0-nic      tun       unmanaged               --         
+[root@host1 libvirt]# 
+....
+
