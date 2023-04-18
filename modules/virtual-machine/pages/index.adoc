@@ -8,6 +8,12 @@ Use libvirt to create a virtual network on the rpi4.
 This one physical machine is the host to two virtual machines. 
  one physical host with virtual guests. 
 
+commands 
+
+* nmcli 
+* ip
+* virsh 
+
 == "ipsal" VM
 
 A  VM that provides some core Internet services. 

@@ -1,0 +1,48 @@
+= create bridge and network private0
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 23-11-2020
+
+https://libvirt.org/formatnetwork.html#using-an-existing-host-bridge
+
+Create a linux bridge named _privbr0_.
+Create a libvirt network named _private0_.
+
+Libvirt usually does  a bunch of jobs to set up a new network, including creating the bridge, setting the MAC address and setting up DHCP. 
+We don't want DNS and DHCP for this one. 
+We don't want NetworkManager to run another copy of dnsmasq to provide DHCP and DNS services. 
+
+
+== theory 
+
+.networks 
+....
+.----------------------------.
+|                            |
+|   host                     |
+|                            |   
+|   +----------+             |    
+|   |          |             |
+|   |  guest   |             |  
+|   |          +---> public -+--> Internet  
+|   +----------+             |
+|                            |   
+|   +----------+             |    
+|   |          |             |
+|   |  guest   |             |  
+|   |          +---> private |   
+|   +----------+             |
+.----------------------------.  
+....
+
+Guests can join the _public_ network and talk to each other and machines in the Internet. 
+NetworkManager runs a copy of dnsmasq to provide DHCP and DNS services. 
+
+Guests can join the _private_ network and talk to each other.
+Unlike _public_, this network is isolated because there is no connection to the outside world.
+dnsmasq is not available for this network.
+
+The host is connected to both networks.
+It can talk to all the guests. 
+
+

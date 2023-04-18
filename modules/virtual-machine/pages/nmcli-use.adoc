@@ -1,0 +1,88 @@
+= use the nmcli and ip commands
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 23-11-2023
+
+
+== nmcli connection show, nmcli device status and ip addr show
+
+Use the commands _nmcli connection show_, _nmcli device status_ and _ip addr show_ to see how the network is configured. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# nmcli
+eth0: connected to eth0
+        "eth0"
+        ethernet (bcmgenet), DC:A6:32:D1:32:A9, hw, mtu 1500
+        ip4 default, ip6 default
+        inet4 192.168.1.201/24
+        route4 192.168.1.0/24 metric 100
+        route4 default via 192.168.1.254 metric 100
+        inet6 fdaa:bbcc:ddee:0:dea6:32ff:fed1:32a9/64
+        inet6 2a00:23a8:4b47:fc01:dea6:32ff:fed1:32a9/64
+        inet6 fe80::dea6:32ff:fed1:32a9/64
+        route6 fe80::/64 metric 1024
+        route6 2a00:23a8:4b47:fc01::/64 via fe80::2cb:51ff:fe99:c64d metric 100
+        route6 fdaa:bbcc:ddee::/64 via fe80::2cb:51ff:fe99:c64d metric 100
+        route6 default via fe80::2cb:51ff:fe99:c64d metric 100
+
+wlan0: disconnected
+        "Broadcom BCM43438 combo and Bluetooth Low Energy"
+        wifi (brcmfmac), 26:2C:53:60:8E:A8, hw, mtu 1500
+
+p2p-dev-wlan0: disconnected
+        "p2p-dev-wlan0"
+        wifi-p2p, hw
+
+lo: unmanaged
+        "lo"
+        loopback (unknown), 00:00:00:00:00:00, sw, mtu 65536
+
+DNS configuration:
+        servers: 192.168.1.254
+        domains: home
+        interface: eth0
+
+Use "nmcli device show" to get complete information about known devices and
+"nmcli connection show" to get an overview on active connection profiles.
+
+Consult nmcli(1) and nmcli-examples(7) manual pages for complete usage details.
+[root@rpi4 libvirt]# 
+....
+
+
+[source,shell]
+....
+root@rpi4 libvirt]# nmcli con
+NAME               UUID                                  TYPE      DEVICE 
+eth0               63a0eefc-67e4-3361-8a97-09a066e47813  ethernet  --     
+[root@rpi4 libvirt]# 
+....
+
+[source,shell]
+....
+[nick@rpi4 ~]$ nmcli connection show
+NAME    UUID                                  TYPE      DEVICE 
+eth0    63a0eefc-67e4-3361-8a97-09a066e47813  ethernet  eth0   
+virbr0  9d579083-3d4a-474e-b952-fb6bd4080310  bridge    virbr0 
+[nick@rpi4 ~]$ 
+....
+
+Network Manager can also show a list of devices. 
+This is longer because it shows devices that are not currently active. 
+For instance, there is a wifi device but no wifi connection.
+
+[source,shell]
+....
+[root@host1 libvirt]# nmcli device status
+DEVICE          TYPE      STATE                   CONNECTION            
+pubbr0          bridge    connected               pubbr0                
+virbr0          bridge    connected (externally)  virbr0                
+enp2s0f0        ethernet  connected               bridge-slave-enp2s0f0 
+wlp3s0          wifi      disconnected            --                    
+p2p-dev-wlp3s0  wifi-p2p  disconnected            --                    
+lo              loopback  unmanaged               --                    
+virbr0-nic      tun       unmanaged               --                    
+[root@host1 libvirt]# 
+....
+

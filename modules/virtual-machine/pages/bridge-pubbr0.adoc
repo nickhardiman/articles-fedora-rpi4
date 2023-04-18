@@ -1,129 +1,315 @@
-= create libvirt network public0
+= create linux bridge pubbr0
 Nick Hardiman
 :source-highlighter: highlight.js
-:revdate: 23-11-2020
+:revdate: 23-11-2023
 
 
-Add network config to libvirt's configuration.
-Call the network public0.
-The config tells libvirt about bridge _pubbr0_.
+Add linux bridge _pubbr0_.
+A bridge is like a network switch that you plug many computers into. 
+
+https://developers.redhat.com/blog/2018/10/22/introduction-to-linux-interfaces-for-virtual-networking#bonded_interface
+A Linux bridge behaves like a network switch. ... Use a bridge when you want to establish communication channels between VMs, containers, and your hosts.
+
+The _host1_ computer has one physical network interface. 
 
 
-== all the networks 
-
-* public network *public0*
-* private network *private0* 
-* private network *private1* 
+* Create a bridge called *pubbr0*. 
+* Attach host1's physical interface to this new bridge. 
+* Add more bridges using commands _nmcli_ and _virsh_. 
 
 
-== config 
+== all the linux bridges 
 
-The config tells libvirt about bridge _pubbr0_.
-This XML file defines the new network.
+* NAT bridge *virbr0*, the one that is automatically created 
+* public bridge *pubbr0*, the one we create here. Remote machines can contact our services using this bridge. 
+* private bridge *privbr0*, the next one to create. Remote machines can see our services, if they use rpi4 as a gateway. 
 
-[source,XML]
-....
-<network>
-  <name>public0</name>
-  <forward mode="bridge"/>
-  <bridge name="pubbr0" />
-</network>
-....
+== bridge pubbr0
 
-== create the libvirt network public0 
+pubbr0 is a public bridge that makes VMs part of the home lab network. 
+Remote machines can contact services running on our VMs using this bridge. 
 
-Use the root account.
 
-Change to the libvirt directory. 
 
-Add the XML to a file. 
+== create pubbr0
 
-[source,shell]
-....
-[root@host1 libvirt]# vi net-public0.xml 
-....
+Use the root account. 
+Network changes require elevated privilege, and there are a few commands to type in. 
 
-Tell libvirt about the new configuration.
+Add a new bridge. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-define net-public0.xml
-Network public0defined from net-public0.xml
-
-[root@host1 libvirt]# 
+[root@rpi4 ~]# nmcli con add ifname pubbr0 type bridge con-name pubbr0
+Connection 'pubbr0' (65dcd5ac-b0aa-4dcc-90d2-d6028bfb1208) successfully added.
+[root@rpi4 ~]# 
 ....
 
-Check with the _virsh net-list_ command. 
+Check with the ip command. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-list --all
- Name      State      Autostart   Persistent
-----------------------------------------------
- default   active     yes         yes
- public0   inactive   no          yes
-
-[root@host1 libvirt]# 
+[root@rpi4 ~]# ip -brief link show type bridge
+pubbr0           DOWN           ea:77:44:40:24:28 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 ~]# 
+[root@rpi4 ~]# ip addr show dev pubbr0
+5: pubbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether ea:77:44:40:24:28 brd ff:ff:ff:ff:ff:ff
+[root@rpi4 ~]# 
+[root@rpi4 libvirt]# ip -brief link show
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+eth0             UP             dc:a6:32:d1:32:a9 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+wlan0            DOWN           26:d9:a2:4b:91:ec <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+pubbr0           DOWN           ea:77:44:40:24:28 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 libvirt]# 
 ....
 
-=== delete libvirt's public0
-
-If it's not right, remove the new config with _virsh net-undefine_.
+Check with the nmcli command. 
+Attribute _connection.type_ has the value _bridge_. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-undefine pubbr0
-Network public0 has been undefined
-
-[root@host1 libvirt]# 
+[root@rpi4 ~]# nmcli connection show
+NAME    UUID                                  TYPE      DEVICE 
+pubbr0  65dcd5ac-b0aa-4dcc-90d2-d6028bfb1208  bridge    pubbr0 
+eth0    63a0eefc-67e4-3361-8a97-09a066e47813  ethernet  eth0   
+[root@rpi4 ~]# 
+[root@rpi4 ~]# nmcli connection show pubbr0
+connection.id:                          pubbr0
+connection.uuid:                        65dcd5ac-b0aa-4dcc-90d2-d6028bfb1208
+connection.stable-id:                   --
+connection.type:                        bridge
+...(a hundred more lines)...
+GENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/Settings/3
+GENERAL.ZONE:                           --
+GENERAL.MASTER-PATH:                    --
+[root@rpi4 ~]# 
 ....
 
 
+== connect eth0 to the bridge
 
-== start the libvirt network
+The text of nmcli is stuck in the past, using the appalling names master and slave. 
+https://www.zdnet.com/article/linux-team-approves-new-terminology-bans-terms-like-blacklist-and-slave/[Replacement terms] haven't appeared in nmcli yet. 
 
-This is a temporary change. 
-The network stays active until the machine turns off. 
-After the next reboot, this will be inactive again. 
-
-OLD NAMING 
+Plug in the physical interface. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-start public0
-Network public0 started
-
-[root@host1 libvirt]# 
-[root@host1 libvirt]# virsh net-list --all
- Name         State    Autostart   Persistent
------------------------------------------------
- default      active   yes         yes
- public0      active   no          yes
-
-[root@host1 libvirt]# 
+[root@rpi4 ~]# nmcli con add type bridge-slave ifname eth0 master pubbr0
+Connection 'bridge-slave-eth0' (a3891bc1-4166-4d5a-8aa4-55993da933b2) successfully added.
+[root@rpi4 ~]# 
 ....
 
-Make the change permanent. 
+
+Check your work.
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-autostart public0
-Network public0 marked as autostarted
+[root@rpi4 ~]# nmcli con show
+NAME               UUID                                  TYPE      DEVICE 
+pubbr0             65dcd5ac-b0aa-4dcc-90d2-d6028bfb1208  bridge    pubbr0 
+eth0               63a0eefc-67e4-3361-8a97-09a066e47813  ethernet  eth0   
+bridge-slave-eth0  a3891bc1-4166-4d5a-8aa4-55993da933b2  ethernet  --     
+[root@rpi4 ~]# 
+....
 
-[root@host1 libvirt]# 
-[root@host1 libvirt]# virsh net-list --all
- Name      State    Autostart   Persistent
---------------------------------------------
- default   active   yes         yes
- public0   active   yes         yes
+The new connection won't work yet. 
+The new entry _bridge-slave-eth0_ is there, but its DEVICE field is not set.
+ 
 
-[root@host1 libvirt]# 
+== copy eth0 MAC address. 
+
+Find the MAC address of eth0. 
+We want pubbr0 to use the same address. 
+If the MAC address changes, the pubbr0 bridge will get a new IP address. 
+We don't want that. 
+
+This address is shown in the ip link table, but it is not easily copied from there. 
+The MAC address is stored in a file. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ip -brief link show
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+eth0             UP             dc:a6:32:d1:32:a9 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+wlan0            DOWN           36:08:8b:d9:af:16 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+pubbr0           DOWN           ea:77:44:40:24:28 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 libvirt]#
+[root@rpi4 libvirt]# cat /sys/class/net/eth0/address
+dc:a6:32:d1:32:a9
+[root@rpi4 libvirt]#  
+....
+
+Copy the address.
+Set this as the cloned address. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# MAC_ADDRESS=$(cat /sys/class/net/eth0/address)
+[root@rpi4 libvirt]# nmcli connection modify pubbr0  802-3-ethernet.cloned-mac-address $MAC_ADDRESS
+[root@rpi4 libvirt]# 
+....
+
+
+== restart the bridge 
+
+Changes work after some stop-start action. 
+Afterwards, the DEVICE field will show _eth0_.
+
+Changing network settings is safer to do on the local console than a remote network connection. 
+If this goes wrong, the SSH connection will be broken.
+For instance, if the MAC address changes, the pubbr0 bridge will get a new IP address. 
+The CLI will sit there doing nothing, in a frustrating way. 
+
+Use a script to make changes. 
+
+
+Use the libvirt script directory.
+
+[source,shell]
+....
+[root@rpi4 ~]# cd libvirt
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# vi pubbr0-up.sh
+....
+
+Add content. 
+This does not include the nmcli commands already run to create the bridge and bridge slave. 
+
+[source,shell]
+....
+#!/bin/bash
+nmcli con down eth0
+nmcli con up pubbr0
+....
+
+Change permissions so the script can be run. 
+Run the script to bring up the new interface. 
+This pauses for a nail-biting ten seconds. 
+
+
+[source,shell]
+....
+[root@rpi4 libvirt]# chmod 754 pubbr0-up.sh
+[root@rpi4 libvirt]# ./pubbr0-up.sh 
+Connection 'eth0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)
+Connection successfully activated (master waiting for slaves) (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/10)
+[root@rpi4 libvirt]#
+....
+
+Connection _eth0_ no longer has device _eth0_. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# nmcli con show
+NAME               UUID                                  TYPE      DEVICE 
+pubbr0             1ef352ce-7a94-4ba0-9c27-0aff1187ed2a  bridge    pubbr0 
+bridge-slave-eth0  f6ba53ed-0615-45a4-b8a6-1b19904a407e  ethernet  eth0   
+eth0               63a0eefc-67e4-3361-8a97-09a066e47813  ethernet  --     
+[root@rpi4 libvirt]# 
+....
+
+
+The IP address list command _ip addr show_ has a lot more detail, so it can be harder to spot the same information. 
+This list no longer shows device _enp2s0f0_. 
+Its address _192.168.1.195_ now belongs to _pubbr0_.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ip addr show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq master pubbr0 state UP group default qlen 1000
+    link/ether dc:a6:32:d1:32:a9 brd ff:ff:ff:ff:ff:ff
+3: wlan0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
+    link/ether 96:f1:12:66:6b:df brd ff:ff:ff:ff:ff:ff permaddr dc:a6:32:d1:32:aa
+6: pubbr0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether dc:a6:32:d1:32:a9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.201/24 brd 192.168.1.255 scope global dynamic noprefixroute pubbr0
+       valid_lft 85870sec preferred_lft 85870sec
+    inet6 fdaa:bbcc:ddee:0:f9e4:9332:f953:286a/64 scope global noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 2a00:23a8:4b47:fc01:bef5:81a1:892f:266f/64 scope global dynamic noprefixroute 
+       valid_lft 62207977sec preferred_lft 31103977sec
+    inet6 fe80::b507:e578:1d1e:c675/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+[root@rpi4 libvirt]# 
+....
+
+== restart eth0 
+
+Swap back from pubbr0 to eth0.
+
+Use a script to make changes. 
+
+Use the libvirt script directory.
+
+[source,shell]
+....
+[root@rpi4 ~]# cd libvirt
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# vi pubbr0-down.sh
+....
+
+Add content. 
+
+[source,shell]
+....
+#!/bin/bash
+nmcli con down pubbr0
+nmcli con up eth0
+....
+
+Run. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# chmod 754 pubbr0-down.sh
+[root@rpi4 libvirt]# ./pubbr0-down.sh 
+Connection 'pubbr0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/10)
+Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/12)
+[root@rpi4 libvirt]# 
+....
+
+Check. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether dc:a6:32:d1:32:a9 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.201/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0
+       valid_lft 86382sec preferred_lft 86382sec
+    inet6 fdaa:bbcc:ddee:0:dea6:32ff:fed1:32a9/64 scope global noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 2a00:23a8:4b47:fc01:dea6:32ff:fed1:32a9/64 scope global dynamic noprefixroute 
+       valid_lft 62207985sec preferred_lft 31103985sec
+    inet6 fe80::dea6:32ff:fed1:32a9/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: wlan0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
+    link/ether 96:f1:12:66:6b:df brd ff:ff:ff:ff:ff:ff permaddr dc:a6:32:d1:32:aa
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# nmcli con
+NAME               UUID                                  TYPE      DEVICE 
+eth0               63a0eefc-67e4-3361-8a97-09a066e47813  ethernet  eth0   
+bridge-slave-eth0  f6ba53ed-0615-45a4-b8a6-1b19904a407e  ethernet  --     
+pubbr0             1ef352ce-7a94-4ba0-9c27-0aff1187ed2a  bridge    --     
+[root@rpi4 libvirt]# 
 ....
 
 
 == delete the new bridge 
-
-???
 
 If something is wrong, back out with these _nmcli_ commands. 
 
