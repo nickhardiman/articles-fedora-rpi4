@@ -3,3 +3,4 @@
 ** xref:firmware-grub2-examine.adoc[]
 ** xref:os-examine.adoc[]
 ** xref:os-kernel-examine.adoc[]
+** xref:systemd-view.adoc[]

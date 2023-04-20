@@ -1,0 +1,33 @@
+= the init process systemd
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 31-07-2020
+
+
+
+After setting up the system, the kernel runs one program named _/sbin/init_. 
+This used to be a script that start the SysV init system. 
+Now it's a symlink to a compiled systemd program.
+
+== systemd  
+
+[source,shell]
+----
+[nick@guest3 ~]$ ls -l /sbin/init
+lrwxrwxrwx. 1 root root 22 Apr 15 10:51 /sbin/init -> ../lib/systemd/systemd
+[nick@guest3 ~]$ 
+[nick@guest3 ~]$ file /lib/systemd/systemd
+/lib/systemd/systemd: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=74096f3b6e127110a1cc23fb4800d0dd2753354b, stripped
+[nick@guest3 ~]$ 
+----
+
+Since systemd runs first, it gets the first process ID. 
+
+[source,shell]
+----
+[nick@guest1 ~]$ ps -fC systemd
+UID          PID    PPID  C STIME TTY          TIME CMD
+root           1       0  0 19:34 ?        00:00:01 /usr/lib/systemd/systemd --switched-root --system --deserialize 17
+nick        1396       1  0 19:34 ?        00:00:00 /usr/lib/systemd/systemd --user
+[nick@guest1 ~]$ 
+----
