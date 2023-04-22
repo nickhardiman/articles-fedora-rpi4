@@ -11,6 +11,8 @@ Now it's a symlink to a compiled systemd program.
 
 == systemd  
 
+https://access.redhat.com/sites/default/files/attachments/12052018_systemd_6.pdf
+
 [source,shell]
 ----
 [nick@guest3 ~]$ ls -l /sbin/init

@@ -5,7 +5,7 @@ Nick Hardiman
 
 
 Add network config to libvirt's configuration.
-Call the network public0.
+Call the network *public0*.
 The config tells libvirt about bridge _pubbr0_.
 
 == all the networks 
@@ -35,6 +35,12 @@ Use the root account.
 
 Change to the libvirt directory. 
 
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+----
+
 Add the XML to a file. 
 
 [source,shell]
@@ -42,81 +48,120 @@ Add the XML to a file.
 [root@host1 libvirt]# vi net-public0.xml 
 ....
 
+List all libvirt's networks, both active and inactive. 
+There are none. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# virsh net-list --all
+ Name   State   Autostart   Persistent
+----------------------------------------
+
+[root@rpi4 libvirt]#
+----
+
 Tell libvirt about the new configuration.
+Use the 
+https://download.libvirt.org/virshcmdref/html/sect-net-define.html[net-define] 
+command. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-define net-public0.xml
-Network public0defined from net-public0.xml
+[root@rpi4 libvirt]# virsh net-define net-public0.xml
+Network public0 defined from net-public0.xml
 
-[root@host1 libvirt]# 
+[root@rpi4 libvirt]#
 ....
+
+== check your work 
 
 Check with the _virsh net-list_ command. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-list --all
+[root@rpi4 libvirt]# virsh net-list --all
  Name      State      Autostart   Persistent
 ----------------------------------------------
- default   active     yes         yes
  public0   inactive   no          yes
 
-[root@host1 libvirt]# 
+[root@rpi4 libvirt]# 
+....
+
+Behind the scenes, systemd starts some virt processes to do the work. 
+These disappear after two minutes. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ps x | grep virt
+  11382 ?        Ssl    0:00 /usr/sbin/virtqemud --timeout 120
+  11403 ?        Ssl    0:00 /usr/sbin/virtnetworkd --timeout 120
+  11518 pts/0    S+     0:00 grep --color=auto virt
+[root@rpi4 libvirt]# 
 ....
 
 
 == start the libvirt network
 
-This is a temporary change. 
+The bridge is already in use, but libvirt's virtual network is not.
+Manually start it. 
+
+This is a temporary change - the network is transient. 
 The network stays active until the machine turns off. 
 After the next reboot, this will be inactive again. 
 
-OLD NAMING 
-
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-start public0
+[root@rpi4 libvirt]# virsh net-start public0
 Network public0 started
 
-[root@host1 libvirt]# 
-[root@host1 libvirt]# virsh net-list --all
- Name         State    Autostart   Persistent
------------------------------------------------
- default      active   yes         yes
- public0      active   no          yes
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# virsh net-list --all
+ Name      State    Autostart   Persistent
+--------------------------------------------
+ public0   active   no          yes
 
-[root@host1 libvirt]# 
+[root@rpi4 libvirt]# 
 ....
 
-Make the change permanent. 
+Make the change permanent.
+Enable automatic starting with the 
+https://download.libvirt.org/virshcmdref/html/sect-net-autostart.html[net-autostart] 
+command. 
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-autostart public0
+[root@rpi4 libvirt]# virsh net-autostart public0
 Network public0 marked as autostarted
 
-[root@host1 libvirt]# 
-[root@host1 libvirt]# virsh net-list --all
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# virsh net-list --all
  Name      State    Autostart   Persistent
 --------------------------------------------
- default   active   yes         yes
  public0   active   yes         yes
 
-[root@host1 libvirt]# 
+[root@rpi4 libvirt]# 
 ....
 
 
-=== delete libvirt's public0
+=== problems? delete libvirt's public0
 
 If it's not right, remove the new config with _virsh net-undefine_.
 
 [source,shell]
 ....
-[root@host1 libvirt]# virsh net-undefine pubbr0
+[root@rpi4 libvirt]# virsh net-destroy public0
+Network public0 destroyed
+
+[root@rpi4 libvirt]#
+[root@rpi4 libvirt]# virsh net-undefine public0
 Network public0 has been undefined
 
-[root@host1 libvirt]# 
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# virsh net-list --all
+ Name   State   Autostart   Persistent
+----------------------------------------
+
+[root@rpi4 libvirt]# 
 ....
 
 

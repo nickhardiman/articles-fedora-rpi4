@@ -5,6 +5,8 @@ Nick Hardiman
 
 The first time virt services run, they set up new things. 
 
+??? this right?
+I deleted these during my experiments, they remain gone. 
 
 == the new bridge device virbr0
 
@@ -68,8 +70,6 @@ This XML is copied from the file /etc/libvirt/qemu/networks/autostart/default.xm
 ----
 
 
-
-
 == the new character device kvm 
 
 The /dev/ directory has a character device named kvm. 
@@ -81,5 +81,4 @@ You can tell this file is a character device because the long list starts with a
 crw-rw-rw-. 1 root kvm 10, 232 Sep 30 01:00 /dev/kvm
 [nick@rpi4 ~]$ 
 ----
-
 

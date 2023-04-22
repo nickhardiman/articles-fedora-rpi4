@@ -1,4 +1,4 @@
-= create bridge and network private0
+= create bridge privbr0
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 23-11-2020
@@ -45,4 +45,145 @@ dnsmasq is not available for this network.
 The host is connected to both networks.
 It can talk to all the guests. 
 
+
+== create privbr0
+
+Use the root account. 
+Network changes require elevated privilege, and there are a few commands to type in. 
+
+Add a new bridge. 
+
+[source,shell]
+....
+[root@rpi4 ~]# nmcli con add ifname privbr0 type bridge con-name privbr0
+Connection 'pubbr0' (65dcd5ac-b0aa-4dcc-90d2-d6028bfb1208) successfully added.
+[root@rpi4 ~]# 
+....
+
+Check with the ip command. 
+The bridge gets a new randomly generated MAC address.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# ip -brief link show type bridge
+pubbr0           UP             dc:a6:32:d1:32:a9 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+privbr0          DOWN           be:6a:0a:db:5a:68 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# ip addr show dev privbr0
+8: privbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+    link/ether be:6a:0a:db:5a:68 brd ff:ff:ff:ff:ff:ff
+[root@rpi4 libvirt]# 
+....
+
+Don't connect eth0 to this bridge. 
+
+
+Set a new MAC address.
+Change it from the randomly generated one to 52:54:00:40:00:01.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# MAC_ADDRESS=52:54:00:40:00:01
+[root@rpi4 libvirt]# nmcli connection modify privbr0  bridge.mac-address $MAC_ADDRESS
+[root@rpi4 libvirt]# 
+....
+
+The MAC address won't change until this device is stopped and started. 
+We can wait for the next reboot, or make the change now using _nmcli connection_ commands. 
+[source,shell]
+----
+[root@rpi4 libvirt]# nmcli con down privbr0
+Connection 'privbr0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/15)
+[root@rpi4 libvirt]# nmcli con up privbr0
+Connection successfully activated (master waiting for slaves) (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/16)
+[root@rpi4 libvirt]# 
+----
+
+Check the MAC address changed. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# ip -brief link show type bridge
+pubbr0           UP             dc:a6:32:d1:32:a9 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+privbr0          DOWN           52:54:00:40:00:01 <NO-CARRIER,BROADCAST,MULTICAST,UP> 
+[root@rpi4 libvirt]# 
+----
+
+== store create commands in a script
+
+The commands have already been run, but there is no record of what was done. 
+
+Store the commands to create this linux bridge in a file. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch bridge-privbr0-add.sh
+[root@rpi4 libvirt]# chmod 754 bridge-privbr0-add.sh
+[root@rpi4 libvirt]# vim bridge-privbr0-add.sh
+----
+
+Add this content. 
+
+[source,bash]
+....
+echo before -----------------------
+ip -brief link show type bridge
+nmcli con show
+echo add -----------------------
+nmcli con add ifname privbr0 type bridge con-name privbr0
+MAC_ADDRESS=52:54:00:40:00:01
+nmcli connection modify privbr0  bridge.mac-address $MAC_ADDRESS
+nmcli con down privbr0
+nmcli con up privbr0
+echo after -----------------------
+ip -brief link show type bridge
+nmcli con show
+....
+
+== problems? delete privbr0
+
+Use nmcli to delete the new bridge. 
+Nothing is using this bridge, so there is no network traffic disruption to worry about. 
+
+[source,bash]
+....
+[root@rpi4 libvirt]# nmcli con down privbr0
+Connection 'privbr0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/16)
+[root@rpi4 libvirt]# nmcli connection delete privbr0 
+Connection 'privbr0' (475eee60-daf4-432b-9279-2f3701bd7436) successfully deleted.
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# ip -brief link show type bridge
+pubbr0           UP             dc:a6:32:d1:32:a9 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+[root@rpi4 libvirt]# 
+....
+
+== store delete commands in a script
+
+Store the commands to delete this bridge in a file. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch bridge-privbr0-delete.sh
+[root@rpi4 libvirt]# chmod 754 bridge-privbr0-delete.sh
+[root@rpi4 libvirt]# vim bridge-privbr0-delete.sh
+----
+
+Add this content. 
+
+[source,bash]
+....
+echo before -----------------------
+ip -brief link show type bridge
+nmcli con show
+echo delete -----------------------
+nmcli con down privbr0
+nmcli connection delete privbr0
+echo after -----------------------
+ip -brief link show type bridge
+nmcli con show
+....
 

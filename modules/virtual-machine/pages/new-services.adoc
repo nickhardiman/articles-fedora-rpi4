@@ -3,8 +3,9 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 12-01-2023
 
-The first time virt services run, they set up new things. 
+??? I got rid of dnsmasq by defining bridge then libvirt network.  
 
+The first time virt services run, they set up new things. 
 
 
 == the DHCP and DNS service dnsmasq
@@ -88,6 +89,4 @@ dnsmasq    16756       1  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-fil
 root       16757   16756  0 20:16 ?        00:00:00 /usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/private0.conf --leasefile-ro --dhcp-script=/usr/libexec/libvirt_leaseshelper
 [nick@host1 ~]#  
 ....
-
-
 

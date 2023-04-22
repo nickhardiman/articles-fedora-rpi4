@@ -7,8 +7,6 @@ Nick Hardiman
 Add linux bridge _pubbr0_.
 A bridge is like a network switch that you plug many computers into. 
 
-https://developers.redhat.com/blog/2018/10/22/introduction-to-linux-interfaces-for-virtual-networking#bonded_interface
-A Linux bridge behaves like a network switch. ... Use a bridge when you want to establish communication channels between VMs, containers, and your hosts.
 
 The _host1_ computer has one physical network interface. 
 
@@ -16,6 +14,32 @@ The _host1_ computer has one physical network interface.
 * Create a bridge called *pubbr0*. 
 * Attach host1's physical interface to this new bridge. 
 * Add more bridges using commands _nmcli_ and _virsh_. 
+
+
+== theory 
+
+.pubbr0 is a bridge to the Internet 
+....
+.----------------------------.
+|                            |
+|   host                     |
+|                            |   
+|   +----------+             |    
+|   |          |             |
+|   |  guest   |             |  
+|   |          +---> pubbr0 -+--> Internet  
+|   +----------+             |
+|                            |   
+.----------------------------.  
+....
+
+https://developers.redhat.com/blog/2018/10/22/introduction-to-linux-interfaces-for-virtual-networking#bonded_interface
+A Linux bridge behaves like a network switch. ... Use a bridge when you want to establish communication channels between VMs, containers, and your hosts.
+
+Guests use the bridge *pubbr0* to get to the Internet. 
+
+Later, we create a libvirt virtual network named _public0_.
+Libvirt guests can join the _public0_ network.
 
 
 == all the linux bridges 
@@ -44,6 +68,8 @@ Add a new bridge.
 Connection 'pubbr0' (65dcd5ac-b0aa-4dcc-90d2-d6028bfb1208) successfully added.
 [root@rpi4 ~]# 
 ....
+
+== check your work 
 
 Check with the ip command. 
 
@@ -101,6 +127,8 @@ Connection 'bridge-slave-eth0' (a3891bc1-4166-4d5a-8aa4-55993da933b2) successful
 [root@rpi4 ~]# 
 ....
 
+
+== check your work 
 
 Check your work.
 
@@ -241,9 +269,10 @@ Its address _192.168.1.195_ now belongs to _pubbr0_.
 [root@rpi4 libvirt]# 
 ....
 
-== restart eth0 
 
-Swap back from pubbr0 to eth0.
+== problems? restart eth0 
+
+If something goes wrong, swap back from pubbr0 to eth0.
 
 Use a script to make changes. 
 
@@ -276,7 +305,7 @@ Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkMa
 [root@rpi4 libvirt]# 
 ....
 
-Check. 
+== check your work
 
 [source,shell]
 ....
@@ -309,7 +338,7 @@ pubbr0             1ef352ce-7a94-4ba0-9c27-0aff1187ed2a  bridge    --
 ....
 
 
-== delete the new bridge 
+== problems? delete the new bridge 
 
 If something is wrong, back out with these _nmcli_ commands. 
 
@@ -344,6 +373,8 @@ Connection 'pubbr0' (a4d5ddf3-e0db-49f6-85c1-09b124537dd1) successfully deleted.
 Connection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)
 [root@host1 libvirt]# 
 ....
+
+== check your work 
 
 Check the slave is gone.
 
