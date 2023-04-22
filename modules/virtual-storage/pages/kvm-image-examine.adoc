@@ -135,7 +135,7 @@ List only the filesystem part of the XML document by chaining commands.
 ----
 
 
-=== use virt-filesystems
+=== list partitions with virt-filesystems
 
 Use the _virt-filesystems_ command to display a list of partitions. 
 
@@ -148,9 +148,14 @@ Use the _virt-filesystems_ command to display a list of partitions.
 [root@rpi4 ~]# 
 ----
 
-Check partition sizes. 
+== thin or thick provisioned
 
+A thin-provisioned storage volume is smaller than it says it is. 
+Unused space is not included. 
+As the storage volume fills up, the file gets bigger. 
 
+A thick-provisioned storage volume is just as big as it says it is. 
+This prevents any chance of the file system filling up later and causing a nasty surprise. 
 
 [source,shell]
 ----
@@ -166,7 +171,8 @@ The root file system is in _/dev/sda3_, which is about 5 GiB in size (take 60649
 
 The QCOW2 file is a fraction the size of this partition. 
 It's only 566M (Mebibytes), which is a tiny fraction of 5G. 
-A https://en.wikipedia.org/wiki/Qcow[QCOW] file is compressed to save space. 
+A https://en.wikipedia.org/wiki/Qcow[QCOW] file is thnly provisioned. 
+It is compressed to save space. 
 
 [source,shell]
 ----
