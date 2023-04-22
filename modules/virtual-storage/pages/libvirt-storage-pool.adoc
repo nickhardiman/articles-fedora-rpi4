@@ -1,0 +1,247 @@
+= create a libvirt storage pool
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2023
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+Create a libvirt storage pool using the ``virsh`` command. 
+
+We use the simplest kind of storage pool - a directory.
+
+
+
+== view libvirt's storage directory
+
+Use the root account. 
+
+There is no storage pool yet. 
+
+[source,shell]
+----
+[root@rpi4 ~]# virsh pool-list --all
+ Name   State   Autostart
+---------------------------
+
+[root@rpi4 ~]# 
+----
+
+But a directory to hold images does exist.
+Files in here get the special SELinux file type _virt_var_lib_t_.
+
+[source,shell]
+----
+[root@host1 ~]# cd /var/lib/libvirt/images/
+[root@host1 images]# 
+[root@rpi4 images]# ls -laZ
+total 0
+drwx--x--x. 2 root root system_u:object_r:virt_image_t:s0     6 Nov 20 18:48 .
+drwxr-xr-x. 9 root root system_u:object_r:virt_var_lib_t:s0 106 Apr 17 09:14 ..
+[root@rpi4 images]#  
+----
+
+== create a libvirt storage pool
+
+Create a libvirt storage pool named _images_. 
+
+Add a configuration file to the libvirt directory. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# vim pool-images.xml
+----
+
+Add content. 
+This XML defines the storage pool in a way libvirt can understand.
+
+[source,XML]
+----
+<pool type='dir'>
+  <name>images</name>
+  <target>
+    <path>/var/lib/libvirt/images</path>
+    <permissions>
+      <mode>0711</mode>
+      <owner>0</owner>
+      <group>0</group>
+      <label>system_u:object_r:virt_image_t:s0</label>
+    </permissions>
+  </target>
+</pool>
+----
+
+Create the pool.
+
+[source,shell]
+----
+[root@rpi4 libvirt]# virsh pool-define pool-images.xml
+Pool images defined from pool-images.xml
+
+[root@rpi4 libvirt]# 
+----
+
+== check your work 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# virsh pool-list --all
+ Name     State    Autostart
+------------------------------
+ images   active   no
+
+[root@rpi4 libvirt]# 
+----
+
+[source,shell]
+----
+[root@rpi4 ~]# virsh pool-list --all
+ Name   State   Autostart
+---------------------------
+
+[root@rpi4 ~]# 
+----
+
+Virsh stores a copy of this XML in its configuration directory. 
+The file has more settings and a warning to not try editing this file. 
+
+[source,shell]
+----
+[root@host1 libvirt]# cat /etc/libvirt/storage/images.xml
+<!--
+WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
+OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
+  virsh pool-edit images
+or other application using the libvirt API.
+-->
+
+<pool type='dir'>
+...
+</pool>
+[root@host1 libvirt]# 
+----
+
+
+
+
+== start the libvirt pool
+
+Start. 
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh pool-start images
+Pool images started
+
+[root@host1 libvirt]# 
+[root@host1 libvirt]# virsh pool-list  --all
+ Name     State    Autostart
+------------------------------
+ images   active   no
+
+[root@host1 libvirt]# 
+....
+
+Make the change permanent. 
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh pool-autostart images
+Pool images marked as autostarted
+
+[root@host1 libvirt]# 
+[root@host1 libvirt]# virsh pool-list  --all
+ Name     State    Autostart
+------------------------------
+ images   active   yes
+
+[root@host1 libvirt]# 
+....
+
+== this pool has no volumes yet 
+
+Check the pool is empty.
+
+[source,shell]
+....
+[root@host1 libvirt]# virsh vol-list images
+ Name   Path
+--------------
+
+[root@host1 libvirt]# 
+....
+
+
+== store add commands in a script
+
+The commands have already been run, but there is no record of what was done. 
+
+Store the commands to create this linux bridge in a file. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch pool-images-add.sh
+[root@rpi4 libvirt]# chmod 754 pool-images-add.sh
+[root@rpi4 libvirt]# vim pool-images-add.sh
+----
+
+Add this content. 
+
+[source,bash]
+....
+echo before -----------------------
+virsh pool-list  --all
+echo add -----------------------
+virsh pool-define pool-images.xml
+virsh pool-start images
+virsh pool-autostart images
+echo after -----------------------
+virsh pool-list  --all
+....
+
+== problems? delete the pool
+
+If it's not right, remove the new config with _virsh pool-undefine_.
+
+[source,shell]
+....
+[root@rpi4 libvirt]# virsh pool-destroy images
+Pool images destroyed
+
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# virsh pool-undefine images
+Pool images has been undefined
+
+[root@rpi4 libvirt]# 
+....
+
+== store delete commands in a script
+
+Store the commands to delete this libvirt pool in a file. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch pool-images-delete.sh
+[root@rpi4 libvirt]# chmod 754 pool-images-delete.sh
+[root@rpi4 libvirt]# vim pool-images-delete.sh
+----
+
+Add this content. 
+
+[source,bash]
+....
+echo before -----------------------
+virsh pool-list  --all
+echo delete -----------------------
+virsh pool-destroy images
+virsh pool-undefine images
+echo after -----------------------
+virsh pool-list  --all
+....
+
+
+

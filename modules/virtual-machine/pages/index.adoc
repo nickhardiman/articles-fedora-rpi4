@@ -1,59 +1,7 @@
 = virtual machine
 Nick Hardiman 
 :source-highlighter: highlight.js
-:revdate: 16-04-2023
+:revdate: 01-01-2021
 
-Use libvirt to create a virtual network on the rpi4.
+I'm in the process of experimenting.
 
-This one physical machine is the host to two virtual machines. 
- one physical host with virtual guests. 
-
-commands 
-
-* nmcli 
-* ip
-* virsh 
-
-== "ipsal" VM
-
-A  VM that provides some core Internet services. 
-https://en.wikipedia.org/wiki/Internet_protocol_suite
-
-The name ipsal is an abbreviation of Internet protocol suite Application layer
-
-== "dev" VM
-
-A VM to hold a toolbox and work in progress. 
-
-
-== network bridge 
-
-.network bridge
-[%header,format=csv]
-|===
-name,         interface, MAC,               IP,             domain
-*public0*,    *pubbr0*,  52:54:00:03:00:01, 192.168.1.234,    lab.example.com
-|===
-
-== guest interfaces, names and addresses
-
-Guests get the next available MAC address and IP address from this table. 
-This means we can take a MAC address from something like an `arp` command and find out more details about it from here. 
-
-This doesn't mean we can build extra clues into our names and addresses.
-For instance, if guest1 has a MAC address and an IP address that both end in 1, that would be an easy clue for which address belongs to which name. But we can't do that with this scheme. 
-
-* hosts attached to pubbr0 get their names and addresses from the home network router. 
-* host1 is a physical PC with a real-world MAC address. 
-* The guest MAC addresses are created by our virt-install commands. 
-* guest1 has two interfaces and a modern interface naming convention (enp1s0). 
-* guest2 also has two interfaces using the old naming convention (eth0).
-
-.host and guests
-[%header,format=csv]
-|===
-name,         interface, MAC,               IP,             domain
-rpi4,         eth0,      12:34:56:12:34:56, 192.168.1.234,  home.network
-ipsal,        eth0,      52:54:00:03:00:02, 192.168.1.235,  lab.example.com
-dev,          eth0,      52:54:00:03:00:03, 192.168.1.236,  lab.example.com
-|===

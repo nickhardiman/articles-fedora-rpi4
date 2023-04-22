@@ -1,0 +1,82 @@
+= VM image storage
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 01-01-2023
+
+
+The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+It's used by RHV (Red Hat Virtualization), Openstack, and even the latest Openshift.
+
+Every virtual machine needs a file storage volume. 
+Libvirt manages storage using pools to store files that contain these volumes.
+Here the storage pool is a directory, _/var/lib/libvirt/images/_. 
+It's a default location provided by libvirt. 
+Other storage options include an NFS share, an iSCSI target or multipath to a SAN. 
+
+The first things we put in this storage pool are installer ISO and disk image files.
+This example shows two RHEL 8 images and two RHEL 9 images.
+The files with names ending in _dvd.iso_ are installer ISOs.
+Two are storage volumes for VMs, ending in _kvm.qcow2_. 
+
+The example also shows the SELinux file type label, _virt_image_t_. 
+
+[source,shell]
+----
+[nick@host2 ~]$ sudo ls -lhZ /var/lib/libvirt/images/
+total 21G
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0  11G Jul 27 17:21 rhel-8.6-x86_64-dvd.iso
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0 794M Jul 27 18:08 rhel-8.6-x86_64-kvm.qcow2
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0 8.0G Jul 27 16:57 rhel-baseos-9.0-x86_64-dvd.iso
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0 665M Jul 27 16:38 rhel-baseos-9.0-x86_64-kvm.qcow2
+[nick@host2 ~]$ 
+----
+
+The disk image used by a virtual machine is a storage volume. 
+Install ISO files will also go in here. 
+
+Create a libvirt storage pool using the ``virsh`` command. 
+
+.storage pool containing three volumes 
+....
+.-------------------------------------.
+|                                     |    
+|   storage pool 1                    |    
+|                                     |    
+|   +-----------------------------+   |    
+|   |                             |   |   
+|   |  storage volume 1           |   |
+|   |                             |   |  
+|   +-----------------------------+   |  
+|                                     |    
+|   +-----------------------------+   |    
+|   |                             |   |   
+|   |  storage volume 2           |   |
+|   |                             |   |  
+|   +-----------------------------+   |  
+|                                     |    
+|   +-----------------------------+   |    
+|   |                             |   |   
+|   |  storage volume 3           |   |
+|   |                             |   |  
+|   +-----------------------------+   |  
+.-------------------------------------.  
+....
+
+
+
+
+== a storage pool for your image files  
+
+Each virtual machine has a storage volume - this is the disk image.
+
+A storage pool is where image files are kept. 
+A storage pool can be made from many types of storage, 
+like a local disk drive, a distributed file system, or a SCSI volume.
+Machine image files contain a lot of empty space. 
+Storing them somewhere that deduplicates blocks saves a lot of room. 
+VDO 
+
+We use the simplest kind of storage pool - a directory.
+
+
+
