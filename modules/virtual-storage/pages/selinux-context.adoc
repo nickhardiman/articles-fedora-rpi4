@@ -1,0 +1,41 @@
+= check the SELinux context 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 11-07-2022
+
+
+If the file was downloaded somewhere else and moved, it may well have a different SELinux file context. 
+
+== virt_image_t
+
+We need the SELinux file type context label __virt_image_t__.
+
+If a file is downloaded to a user's home directory first, then moved, 
+the file has a SELinux file type of __user_home_t__ (or __admin_home_t__ from root's home directory).
+
+This is good. 
+
+[source,shell]
+....
+[root@rpi4 images]# ls -lZ
+total 2807124
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0      12786 Apr 22 17:13 fedora.gpg
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0       1229 Apr 22 17:12 Fedora-Server-38-1.6-aarch64-CHECKSUM
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0 2281897984 Apr 22 17:11 Fedora-Server-dvd-aarch64-38-1.6.iso
+-rw-r--r--. 1 root root unconfined_u:object_r:virt_image_t:s0  592576512 Apr 22 17:30 Fedora-Server-KVM-38-1.6.aarch64.qcow2
+[root@rpi4 images]# 
+....
+
+== fix with restorecon 
+
+If a label is wrong, fix it with the restorecon command. 
+
+Fix the file type. 
+
+[source,shell]
+....
+[root@host1 ~]# restorecon -Rv /var/lib/libvirt/images/
+Relabeled /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2 from unconfined_u:object_r:user_home_t:s0 to unconfined_u:object_r:virt_image_t:s0
+[root@host1 ~]# 
+....
+

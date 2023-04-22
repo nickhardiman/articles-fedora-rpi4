@@ -1,0 +1,177 @@
+= examine the QEMU image
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 23-11-2020
+
+Look inside Fedora's ready-made QEMU image, Fedora-Server-dvd-aarch64-38-1.6.iso. 
+
+== install utilities
+
+Examine the KVM image with utilities _virt-inspector_ and _virt-filesystems_.
+These are part of the _guestfs-tools_ package.
+
+[source,shell]
+----
+[root@rpi4 images]# dnf provides virt-inspector
+Last metadata expiration check: 1:40:05 ago on Sat 22 Apr 2023 16:01:46 BST.
+guestfs-tools-1.49.4-1.fc37.aarch64 : Tools to access and modify virtual machine
+                                    : disk images
+Repo        : fedora
+Matched from:
+Filename    : /usr/bin/virt-inspector
+
+guestfs-tools-1.50.1-1.fc37.aarch64 : Tools to access and modify virtual machine
+                                    : disk images
+Repo        : updates
+Matched from:
+Filename    : /usr/bin/virt-inspector
+
+[root@rpi4 images]# 
+----
+
+Install the _guestfs-tools_ package. 
+
+[source,shell]
+----
+[root@rpi4 images]# dnf install guestfs-tools
+Last metadata expiration check: 1:40:51 ago on Sat 22 Apr 2023 16:01:46 BST.
+Dependencies resolved.
+================================================================================
+ Package                 Arch    Version                          Repo     Size
+================================================================================
+Installing:
+ guestfs-tools           aarch64 1.50.1-1.fc37                    updates 5.1 M
+Installing dependencies:
+ binutils                aarch64 2.38-25.fc37                     updates 5.8 M
+ binutils-gold           aarch64 2.38-25.fc37                     updates 923 k
+ clevis                  aarch64 19-2.fc37                        updates  54 k
+...
+================================================================================
+Install  25 Packages
+
+Total download size: 18 M
+Installed size: 79 M
+Is this ok [y/N]: 
+----
+
+This package adds about 20 tools.
+List all the executable tools in this package. 
+
+[source,shell]
+----
+[root@rpi4 images]# rpm -ql guestfs-tools | grep /usr/bin/
+/usr/bin/virt-alignment-scan
+/usr/bin/virt-builder
+/usr/bin/virt-builder-repository
+/usr/bin/virt-cat
+/usr/bin/virt-customize
+/usr/bin/virt-df
+/usr/bin/virt-diff
+/usr/bin/virt-drivers
+/usr/bin/virt-edit
+/usr/bin/virt-filesystems
+/usr/bin/virt-format
+/usr/bin/virt-get-kernel
+/usr/bin/virt-index-validate
+/usr/bin/virt-inspector
+/usr/bin/virt-log
+/usr/bin/virt-ls
+/usr/bin/virt-make-fs
+/usr/bin/virt-resize
+/usr/bin/virt-sparsify
+/usr/bin/virt-sysprep
+/usr/bin/virt-tail
+[root@rpi4 images]# 
+----
+
+
+== use virt-inspector
+
+View the partitions inside the _rhel-baseos-9.0-x86_64-kvm.qcow2_ file. 
+
+The _virt-inspector_ utility can display this information. 
+The command `virt-inspector rhel-baseos-9.0-x86_64-kvm.qcow2` displays a lot of information about this file. 
+In fact, it produces a vast amount of data  - far more than required here.
+It's a long XML document, mostly describing installed packages. 
+
+[source,shell]
+----
+[root@rpi4 ~]# virt-inspector /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2 
+<?xml version="1.0"?>
+<operatingsystems>
+  <operatingsystem>
+    <root>/dev/sysvg/root</root>
+
+...(thousands of lines of XML)...
+
+RU5ErkJggg==</icon>
+  </operatingsystem>
+</operatingsystems>
+[root@rpi4 ~]# 
+----
+
+Use XPATH to display a subset of all this data.
+List only the filesystem part of the XML document by chaining commands.
+
+[source,XML]
+----
+[root@rpi4 ~]# virt-inspector -a /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2 | virt-inspector --xpath '//filesystems'
+<filesystems>
+  <filesystem dev="/dev/sda1">
+    <type>vfat</type>
+    <uuid>706C-FF9D</uuid>
+  </filesystem>
+  <filesystem dev="/dev/sda2">
+    <type>ext4</type>
+    <uuid>a5d1694d-01d5-4b53-b1ff-e9e7fe2aedb4</uuid>
+  </filesystem>
+  <filesystem dev="/dev/sysvg/root">
+    <type>xfs</type>
+    <label>sysroot</label>
+    <uuid>497a2ac7-8eb2-4ddb-a444-0b95977be9ec</uuid>
+  </filesystem>
+</filesystems>
+[root@rpi4 ~]# 
+----
+
+
+=== use virt-filesystems
+
+Use the _virt-filesystems_ command to display a list of partitions. 
+
+[source,shell]
+----
+[root@rpi4 ~]# virt-filesystems --parts --add  /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+/dev/sda1
+/dev/sda2
+/dev/sda3
+[root@rpi4 ~]# 
+----
+
+Check partition sizes. 
+
+
+
+[source,shell]
+----
+[root@rpi4 ~]# virt-filesystems --filesystems --long --add  /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+Name             Type        VFS   Label    Size        Parent
+/dev/sda1        filesystem  vfat  -        305979392   -
+/dev/sda2        filesystem  ext4  -        1020702720  -
+/dev/sysvg/root  filesystem  xfs   sysroot  6064963584  -
+[root@rpi4 ~]# 
+----
+
+The root file system is in _/dev/sda3_, which is about 5 GiB in size (take 6064963584 bytes,  divide by 1024 for KiB, and divide by 1024 again for MiB, and finally divide by 1024 for GiB. Try running `echo "6064963584 / 1024 / 1024 / 1024" | bc` on the CLI). 
+
+The QCOW2 file is a fraction the size of this partition. 
+It's only 566M (Mebibytes), which is a tiny fraction of 5G. 
+A https://en.wikipedia.org/wiki/Qcow[QCOW] file is compressed to save space. 
+
+[source,shell]
+----
+[root@rpi4 ~]# ls -lh /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+-rw-r--r--. 1 qemu qemu 566M Apr 22 17:30 /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+[root@rpi4 ~]# 
+----
+

@@ -1,0 +1,276 @@
+= extend storage
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 26-10-2020
+
+The USB drive is the storage device. 
+
+== device sda
+
+This appears in the OS as block device sda.
+
+[source,shell]
+----
+[root@rpi4 images]# lsblk
+NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda               8:0    1 28.7G  0 disk 
+├─sda1            8:1    1  600M  0 part /boot/efi
+├─sda2            8:2    1    1G  0 part /boot
+└─sda3            8:3    1  5.4G  0 part 
+  └─fedora-root 253:0    0  5.4G  0 lvm  /
+zram0           252:0    0  7.6G  0 disk [SWAP]
+[root@rpi4 images]# 
+----
+
+== file /dev/sda
+
+In Linux, everything is represented as a file. 
+Device file /dev/sda represents this device. 
+
+[source,shell]
+----
+[root@rpi4 images]# ls -lZ /dev/sda
+brw-rw----. 1 root disk system_u:object_r:fixed_disk_device_t:s0 8, 0 Apr 22 16:32 /dev/sda
+[root@rpi4 images]# 
+----
+
+== partition /dev/sda3 is managed by LVM
+
+[source,shell]
+----
+[root@rpi4 images]# pvs
+  PV         VG     Fmt  Attr PSize PFree
+  /dev/sda3  fedora lvm2 a--  5.41g    0 
+[root@rpi4 images]# 
+[root@rpi4 images]# vgs
+  VG     #PV #LV #SN Attr   VSize VFree
+  fedora   1   1   0 wz--n- 5.41g    0 
+[root@rpi4 images]# 
+[root@rpi4 images]# lvs
+  LV   VG     Attr       LSize Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root fedora -wi-ao---- 5.41g                                                    
+[root@rpi4 images]# 
+----
+
+
+== default size
+
+5GB
+
+5 GB for the root file system is not enough to hold VM files. 
+Sooner or later, it will fill up. 
+The df command shows /dev/mapper/fedora-root is 100% full. 
+
+[source,shell]
+----
+[root@rpi4 images]# df -h
+Filesystem               Size  Used Avail Use% Mounted on
+devtmpfs                 4.0M     0  4.0M   0% /dev
+tmpfs                    3.9G     0  3.9G   0% /dev/shm
+tmpfs                    1.6G  920K  1.6G   1% /run
+/dev/mapper/fedora-root  5.4G  5.4G   24K 100% /
+tmpfs                    3.9G     0  3.9G   0% /tmp
+/dev/sda2                960M  349M  612M  37% /boot
+/dev/sda1                599M   33M  567M   6% /boot/efi
+tmpfs                    783M  4.0K  783M   1% /run/user/1000
+[root@rpi4 images]# 
+----
+
+
+== check free space 
+
+The fdisk command shows the USB drive provides 28.65 GiB space. 
+
+[source,shell]
+----
+[root@rpi4 images]# fdisk --list
+Disk /dev/sda: 28.65 GiB, 30765219840 bytes, 60088320 sectors
+Disk model:  SanDisk 3.2Gen1
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x5c5e303a
+
+Device     Boot   Start      End  Sectors  Size Id Type
+/dev/sda1  *       2048  1230847  1228800  600M  6 FAT16
+/dev/sda2       1230848  3327999  2097152    1G 83 Linux
+/dev/sda3       3328000 14680063 11352064  5.4G 8e Linux LVM
+
+
+Disk /dev/mapper/fedora-root: 5.41 GiB, 5809111040 bytes, 11345920 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/zram0: 7.64 GiB, 8204058624 bytes, 2002944 sectors
+Units: sectors of 1 * 4096 = 4096 bytes
+Sector size (logical/physical): 4096 bytes / 4096 bytes
+I/O size (minimum/optimal): 4096 bytes / 4096 bytes
+[root@rpi4 images]# 
+----
+
+All the space in the PV is used. 
+
+[source,shell]
+----
+[root@rpi4 images]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               fedora
+  PV Size               5.41 GiB / not usable 2.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              1385
+  Free PE               0
+  Allocated PE          1385
+  PV UUID               HDOvFl-Oe8a-F2Eb-FQ7v-Dke5-V7gP-UxwsmF
+   
+[root@rpi4 images]# 
+----
+
+
+
+== extend the partition 
+
+https://docs.fedoraproject.org/en-US/fedora-server/virtualization/vm-install-diskimg-fedoraserver/
+uses cfdisk to change the partition, not fdisk.
+Maybe this is because the only way to do it in fdisk is to delete and recreate the partition. 
+
+[source,shell]
+----
+[root@rpi4 images]# cfdisk
+                                 Disk: /dev/sda
+              Size: 28.65 GiB, 30765219840 bytes, 60088320 sectors
+                       Label: dos, identifier: 0x5c5e303a
+
+    Device       Boot        Start        End    Sectors    Size   Id Type
+    /dev/sda1    *            2048    1230847    1228800    600M    6 FAT16
+    /dev/sda2              1230848    3327999    2097152      1G   83 Linux
+>>  /dev/sda3              3328000   14680063   11352064    5.4G   8e Linux LVM 
+    Free space            14680064   60088319   45408256   21.7G
+
+
+
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │ Partition type: Linux LVM (8e)                                             │
+ │Filesystem UUID: HDOvFl-Oe8a-F2Eb-FQ7v-Dke5-V7gP-UxwsmF                     │
+ │     Filesystem: LVM2_member                                                │
+ └────────────────────────────────────────────────────────────────────────────┘
+     [Bootable]  [ Delete ]  [ Resize ]  [  Quit  ]  [  Type  ]  [  Help  ]
+     [  Write ]  [  Dump  ]
+----
+
+Resize 
+
+New size: 27.1G
+
+Write 
+
+Quit. 
+Message _Syncing disks._ is displayed. 
+
+== extend the PV and VG
+
+Extend the PV. 
+Space is made available to the VG.
+
+
+[source,shell]
+----
+[root@rpi4 images]# pvresize /dev/sda3
+  Physical volume "/dev/sda3" changed
+  1 physical volume(s) resized or updated / 0 physical volume(s) not resized
+[root@rpi4 images]# 
+----
+
+Check. 
+PV Size changed from 5.41 GiB to 27.06 GiB.
+
+[source,shell]
+----
+[root@rpi4 images]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               fedora
+  PV Size               27.06 GiB / not usable 2.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              6928
+  Free PE               5543
+  Allocated PE          1385
+  PV UUID               HDOvFl-Oe8a-F2Eb-FQ7v-Dke5-V7gP-UxwsmF
+   
+[root@rpi4 images]# 
+----
+
+VG Size is now the same, 27.06 GiB
+
+[source,shell]
+----
+[root@rpi4 images]# vgdisplay
+  --- Volume group ---
+  VG Name               fedora
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  5
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               27.06 GiB
+  PE Size               4.00 MiB
+  Total PE              6928
+  Alloc PE / Size       1385 / 5.41 GiB
+  Free  PE / Size       5543 / 21.65 GiB
+  VG UUID               nhE3ww-N2U8-m3pM-JfsB-PNgN-kjnR-F29s0M
+   
+[root@rpi4 images]# 
+----
+
+== extend the LV
+
+/dev/mapper/fedora-root
+
+[source,shell]
+----
+[root@rpi4 images]# lvextend -L 25G /dev/mapper/fedora-root
+  Size of logical volume fedora/root changed from 5.41 GiB (1385 extents) to 25.00 GiB (6400 extents).
+  Logical volume fedora/root successfully resized.
+[root@rpi4 images]# 
+----
+
+== extend the xfs file system
+
+[source,shell]
+----
+[root@rpi4 images]# xfs_growfs /dev/mapper/fedora-root
+meta-data=/dev/mapper/fedora-root isize=512    agcount=4, agsize=354560 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=1418240, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 1418240 to 6553600
+[root@rpi4 images]# 
+----
+
+Check. 
+
+[source,shell]
+----
+[root@rpi4 images]# df -h /
+Filesystem               Size  Used Avail Use% Mounted on
+/dev/mapper/fedora-root   25G  4.7G   21G  19% /
+[root@rpi4 images]# 
+----

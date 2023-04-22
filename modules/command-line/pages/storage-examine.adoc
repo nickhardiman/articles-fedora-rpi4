@@ -3,6 +3,9 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 26-10-2020
 
+
+!!! this is not the fedora server QEMU layout. 
+
 The USB drive is the storage device. 
 
 == storage device files

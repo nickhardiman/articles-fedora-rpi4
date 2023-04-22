@@ -1,0 +1,57 @@
+= add a QEMU volume to the pool 
+Nick Hardiman 
+:source-highlighter: highlight.js
+
+Start with a basic image, make a few changes.
+
+.storage pool containing two volumes
+....
+.--------------------------------------------------.
+|                                                  |    
+|   images                                         |    
+|                                                  |    
+|   +------------------------------------------+   |    
+|   |                                          |   |   
+|   |  Fedora-Server-KVM-38-1.6.aarch64.qcow2  |   |
+|   |                                          |   |  
+|   +------------------------------------------+   |  
+|                                                  |    
+|   +------------------------------------------+   |    
+|   |                                          |   |   
+|   |  Fedora-Server-dvd-aarch64-38-1.6.iso    |   |
+|   |                                          |   |  
+|   +------------------------------------------+   |  
+.--------------------------------------------------. 
+....
+
+
+Fedora provide a disk image that's ready to use.  
+It's a minimal install, with no graphical desktop. 
+
+This is a qcow2 (QEMU v2) disk image. 
+There are many other volume formats, from bochs to vpc. 
+The image is split into three parts.
+
+* The first part is tiny and contains the BIOS
+* The second part is the /boot partition.
+* The third part is another partition. LVM splits this into three volumes - root file system, home directory, and swap space.
+
+
+== download the QEMU image  
+
+https://fedoraproject.org/server/download/
+
+Download this KVM QEMU image and copy to the images directory. 
+
+[source,shell]
+----
+[root@rpi4 images]# curl  --location --remote-name https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+ 10  565M   10 57.0M    0     0  7858k      0  0:01:13  0:00:07  0:01:06 8854k
+----
+
+This image has no root password set. 
+It does have cloud-init enabled for public cloud systems. 
+

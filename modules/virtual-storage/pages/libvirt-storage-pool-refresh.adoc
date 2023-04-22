@@ -1,0 +1,48 @@
+= refresh the libvirt pool
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 11-07-2022
+
+
+Libvirt may not notice the new volumes in its pool.
+
+[source,shell]
+....
+[root@rpi4 ~]# virsh vol-list images
+ Name   Path
+--------------
+
+[root@rpi4 ~]# 
+....
+
+== refresh 
+
+Refresh the pool. 
+This tells libvirt to take another look at what's stored in _images_. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh pool-refresh images
+Pool images refreshed
+
+[root@rpi4 images]#
+....
+
+== check 
+
+The new file is now listed. 
+
+[source,shell]
+....
+[root@rpi4 images]# virsh vol-list images
+ Name                                     Path
+----------------------------------------------------------------------------------------------------------
+ Fedora-Server-38-1.6-aarch64-CHECKSUM    /var/lib/libvirt/images/Fedora-Server-38-1.6-aarch64-CHECKSUM
+ Fedora-Server-dvd-aarch64-38-1.6.iso     /var/lib/libvirt/images/Fedora-Server-dvd-aarch64-38-1.6.iso
+ Fedora-Server-KVM-38-1.6.aarch64.qcow2   /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+ fedora.gpg                               /var/lib/libvirt/images/fedora.gpg
+
+[root@rpi4 images]# 
+....
+
+

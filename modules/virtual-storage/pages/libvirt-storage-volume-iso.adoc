@@ -1,0 +1,184 @@
+= add an installer ISO to the images pool
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 11-01-2021
+
+There are two ways to prepare a storage volume for a new VM. 
+
+* Follow an install process using an installer ISO, to copy RPM packages and create the OS.
+* Use a QCOW image, a file that already has the OS installed. 
+
+The installer ISO process is a flexible way to build a new virtual machine and install the OS.
+A QCOW2 saves time by skipping the install process, but you get what you're given.
+
+
+== an ISO file
+
+For the install process, we need an install 
+https://en.wikipedia.org/wiki/ISO_9660[ISO]. 
+The ISO file acts like a DVD in an optical disk drive. 
+For more information on Red Hat's ISO files, check out the https://access.redhat.com/solutions/104063[Understanding the various RHEL .iso files] page. 
+
+There's also the Live ISO, which attempts to combine the getting-started speed of a ready-made QCOW2 file with the flexibility of the install process. 
+This is the format of  
+https://fedoraproject.org/workstation/download/[Fedora Workstation] ISOs. 
+
+
+== the source of ISO files
+
+Fedora comes in many 
+https://fedoraproject.org/#editions[editions], 
+including IoT, CoreOS, and spin.
+
+This site is all about server work. 
+Pick the 
+https://fedoraproject.org/server/[server edition]. 
+The server edition is packaged in a few different ways. 
+
+* Raw - a ready-made OS image, not wrapped in a file format like QCOW2
+* QEMU - a ready-made OS image, in a QCOW2 file
+* DVD - an installer, a the big bucket of everything
+* Netboot - an installer, contains just enough OS to get started and download the rest of the OS from the Internet.
+
+Downloading files from Fedora is free. It's public access - you don't need a login.
+
+
+
+== download the DVD ISO
+
+Download the latest installer DVD ISO file and add it to libvirt's _images_ storage pool. 
+It doesn't matter if the DVD version of Fedora is later than the installed version of Fedora on the RPi4 host.
+
+Downloading the ISO requires a little jumping around between the web browser interface and the command line interface. 
+You could use the web browser to download, then copy from your workstation to _rpi4_. 
+But this method saves a step by getting tricky with the URL and the _curl_ command.
+
+on the workstation
+
+* Use a web browser. 
+* Open https://fedoraproject.org/server/download/. 
+* Find the _ARM® aarch64 systems_ section.
+* Find the _Fedora Server 38 DVD iso_ download icon.
+* Right click and copy the link address. This looks something like https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso.
+
+On the Rpi4
+
+* Use the root account. 
+* Change to the images directory. cd /var/lib/libvirt/images/
+* Use the curl command to download the image. Type in `curl  --location --remote-name`  and paste the copied link address. Fedora redirects the request to a mirror location, and the download starts. 
+
+The file takes a few minutes to download. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd /var/lib/libvirt/images/
+[root@rpi4 images]# 
+[root@rpi4 images]# curl  --location --remote-name  https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  1 2176M    1 23.5M    0     0  4053k      0  0:09:09  0:00:05  0:09:04 4697k
+----
+
+
+== check 
+
+Compare checksums.
+
+Fedora provides GPG and a checksum to help prove nobody messed with the download. 
+
+on the workstation
+
+* Use a web browser. 
+* Open https://fedoraproject.org/server/download/. 
+* Find the _ARM® aarch64 systems_ section.
+* Find the _Fedora Server 38 DVD iso_ verify icon.
+* Click. Instructions to _Verify your download_ appear. 
+* Right click the checksum file link and copy the link address. This looks something like https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-dvd-aarch64-38-1.6.iso.
+
+On the Rpi4
+
+* Use the root account. 
+* Download the checksum file. curl  --location --remote-name https://download.fedoraproject.org/pub/fedora/linux/releases/38/Server/aarch64/iso/Fedora-Server-38-1.6-aarch64-CHECKSUM
+* Display the checksum. cat Fedora-Server-38-1.6-aarch64-CHECKSUM
+* Download Fedora's GPG key. This is a binary file so there is no content to display on a terminal.
+* Check the checksum file has a good signature. gpgv --keyring ./fedora.gpg Fedora-Server-38-1.6-aarch64-CHECKSUM
+* Check the ISO has the right SHA-256 checksum. 
+
+
+
+[source,shell]
+----
+[root@rpi4 images]# cat Fedora-Server-38-1.6-aarch64-CHECKSUM 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+# Fedora-Server-dvd-aarch64-38-1.6.iso: 2281897984 bytes
+SHA256 (Fedora-Server-dvd-aarch64-38-1.6.iso) = 0b40485d74fc60c0a78f071396aba78fafb2f8f3b1ab4cbc3388bda82f764f9b
+# Fedora-Server-netinst-aarch64-38-1.6.iso: 687929344 bytes
+SHA256 (Fedora-Server-netinst-aarch64-38-1.6.iso) = 0cbc11231f3e27b3e29c88936d0eca289546f8c7eba53f39b81ea575ceba454a
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEalG7q7o9VGe2FxIhgJqNfOsQtGQFAmQ5BywACgkQgJqNfOsQ
+tGSXUhAArbo3Z5+tWR2Lm7PZY0yvtZswEMjuPtTh5NG3egP3B4/nOk/vjNn00Ypz
+AMMyXLdtiBe2k5wKwRREAYW4cNWe+MwecBf/WMjub/ofWKmQIznCIKvphjw5LQs/
+nrl6B20G54IywSeITscyFHDaaLLe/c8f1QCr4pWXVFGD0kbWo/VY8W3ZWnv+Q/pn
+J79R8Mh7eNQkh+JRVnilgwnEILC/cd+o8ZIVqsSweSU2g8jwSLTCTlel/qvoBlbA
+NIAyil+DuYOXYnli1gGY3NCZnQ0LUIZgUn9uzEQwnuq0CNwG6MMJTpNsjC4ZYLEp
+GTvRPyutjhHCjvwVyH2CsieMGbw0sOj4NcOkDJdUy1bch/nIYHihCXYodIKDFW5E
+udGppyAbTnU1pYM47xdRZ6RXgPZFRH6qgfAAaFuq9hccq6TELUJIsh/7/EZ+lN9S
+NyVG1EateYjOqscrirBTD4azhAgIUkLcvTVI8EGZVdtD/rRmqTNyLDxkmgWIG9sS
+dFHY7Bf4vvqBBUsb5PzViR+v0L3CS2E/xs0P6k6vqOiI4PKDmtXH3ZeO+oIdeZHs
+5MFWU3ImcY3Apf3fEo9BlZZHi1NO8dwzQgeC6WcqPn2pMkchXEk+qH+3vBDYAGZE
+0Bc7au8D3E+djtViipOy3CD1r/FGHSSc97TJgkHdz1OihP4lqt8=
+=B8pf
+-----END PGP SIGNATURE-----
+[root@rpi4 images]# 
+----
+
+A https://en.wikipedia.org/wiki/Secure_Hash_Algorithms[secure hash algorithm]
+creates a message digest that is useful for checking file integrity.  
+A SHA-256 message digest is a long string of characters. 
+
+[source,shell]
+----
+[root@rpi4 images]# sha256sum Fedora-Server-dvd-aarch64-38-1.6.iso 
+0b40485d74fc60c0a78f071396aba78fafb2f8f3b1ab4cbc3388bda82f764f9b  Fedora-Server-dvd-aarch64-38-1.6.iso
+[root@rpi4 images]# 
+----
+
+Download the GPG key. 
+
+[source,shell]
+----
+[root@rpi4 images]# curl -O https://fedoraproject.org/fedora.gpg
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 12786  100 12786    0     0  41257      0 --:--:-- --:--:-- --:--:-- 41378
+[root@rpi4 images]# ls
+fedora.gpg                             Fedora-Server-dvd-aarch64-38-1.6.iso
+Fedora-Server-38-1.6-aarch64-CHECKSUM
+[root@rpi4 images]# 
+[root@rpi4 images]# file fedora.gpg 
+fedora.gpg: OpenPGP Public Key Version 4, Created Mon Dec 16 02:42:12 2013, RSA (Encrypt or Sign, 4096 bits); User ID; Signature; OpenPGP Certificate
+[root@rpi4 images]# 
+[root@rpi4 images]# gpgv --keyring ./fedora.gpg Fedora-Server-38-1.6-aarch64-CHECKSUM
+gpgv: Signature made Fri 14 Apr 2023 08:56:28 BST
+gpgv:                using RSA key 6A51BBABBA3D5467B6171221809A8D7CEB10B464
+gpgv: Good signature from "Fedora (38) <fedora-38-primary@fedoraproject.org>"
+[root@rpi4 images]# 
+----
+
+Check the checksum of file Fedora-Server-dvd-aarch64-38-1.6.iso is OK.
+So much complaining. 
+
+[source,shell]
+----
+[root@rpi4 images]# sha256sum -c Fedora-Server-38-1.6-aarch64-CHECKSUM
+Fedora-Server-dvd-aarch64-38-1.6.iso: OK
+sha256sum: Fedora-Server-netinst-aarch64-38-1.6.iso: No such file or directory
+Fedora-Server-netinst-aarch64-38-1.6.iso: FAILED open or read
+sha256sum: WARNING: 17 lines are improperly formatted
+sha256sum: WARNING: 1 listed file could not be read
+[root@rpi4 images]# 
+----

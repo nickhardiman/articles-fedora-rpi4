@@ -1,2 +1,7 @@
 * xref:index.adoc[]
 ** xref:libvirt-storage-pool.adoc[]
+** xref:libvirt-storage-volume-iso.adoc[]
+** xref:libvirt-storage-volume-qemu.adoc[]
+** xref:selinux-context.adoc[]
+** xref:libvirt-storage-pool-refresh.adoc[]
+** xref:kvm-image-examine.adoc[]
