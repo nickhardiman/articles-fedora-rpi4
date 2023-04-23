@@ -1,0 +1,271 @@
+= copy the KVM image for dev0
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 23-11-2020
+
+
+Create a new storage volume, _dev0.home.qcow2_.
+Base it on the ready-made KVM image, Fedora-Server-KVM-38-1.6.aarch64.qcow2. 
+This KVM image acts as a base image, or template, from which we can make many more images. 
+The original base image - the template that we copy - is called a golden image, after https://en.wikipedia.org/wiki/Mastering_(audio)[master audio] recordings. Which were, ironically, never gold. 
+
+This is the procedure for making a customized copy. 
+After this, we can build a new virtual machine using this copy.
+
+* Install utilities on host1. 
+* Examine the golden image. 
+* Create an empty qcow2 image. 
+* Copy the golden image. 
+* Customize the new image. 
+
+
+== a golden image 
+
+Creating a VM using a golden image is quicker than a fresh install. 
+Creating many VMs using a golden image does not mean they are all identical - Each new image is edited to make a few configuration changes. 
+A new machine may need a unique MAC address, host name and private key. 
+A golden image is often a base OS, rather than a complete installation. 
+It contains a minimal set of packages, ready to extend for business applications. 
+
+An alternative process is a _fresh install_, where all packages are  installed  from scratch onto an empty volume.
+The _guest1_ VM is a fresh install, using a kickstart file to automate the process. 
+
+
+== create an empty qcow2 image 
+
+Copy the QCOW image file.  
+Don't use this original file for creating a machine. 
+It can remain as the backup file. 
+
+First create an empty qcow2 image file. 
+The command _virsh vol-create-as_ needs a pool name, the new file name and how big the volume should be. 
+If you can't remember your pool name, run _virsh pool-list_ to check.
+
+Use the root account. 
+
+[source,shell]
+----
+[nick@host2 ~]$ sudo su -
+[sudo] password for nick: 
+[root@host2 ~]# 
+[root@host2 ~]# cd  /var/lib/libvirt/images/
+[root@host2 images]# 
+----
+
+Create a file in qcow2 format. 
+
+[source,shell]
+----
+[root@host1 images]# MY_COPY=guest2.qcow2
+[root@host1 images]# SIZE=30G
+[root@host1 images]# virsh vol-create-as --format qcow2 images $MY_COPY $SIZE
+Vol guest2 created
+
+[root@host1 images]# 
+----
+
+== check the file size 
+
+This big 30G volume is compressed down into a tiny file. 
+This is called a sparse volume. 
+The whole 30 GiB is not allocated now - space is added later, when it is required.
+
+
+[source,shell]
+----
+[root@host1 images]# ls -lh $MY_COPY
+-rw-------. 1 root root 193K Feb 24 19:40 guest2.qcow2
+[root@host1 images]# 
+----
+
+== check libvirt's storage pool
+
+It doesn't take long for libvirt to notice the new file and add config to its volume inventory. 
+
+List libvirt's config with this _virsh vol-info_ command. 
+
+[source,shell]
+----
+[root@host2 images]# virsh vol-info guest2.qcow2 images
+Name:           guest2.qcow2
+Type:           file
+Capacity:       30.00 GiB
+Allocation:     196.00 KiB
+
+[root@host2 images]# 
+----
+
+If the new file isn't there, try running `virsh pool-refresh images`.
+
+
+
+== copy the golden image
+
+Fill up the new volume using the _virt_resize_ command. 
+Expand the root filesystem to use the extra space. 
+
+The _virt_resize_ utility doesn't actually resize one file in-place - it reads one file and overwrites a second file. 
+Virt_resize expands the volume in the second file while it's copying.
+
+Libvirt does come with a volume copying command, _virsh vol-clone_. It can make a new copy, but it can't change its size. 
+
+[source,shell]
+----
+[root@host1 images]# MY_COPY=guest2.qcow2
+[root@host1 images]# GOLDEN_IMAGE=rhel-baseos-9.0-x86_64-kvm.qcow2 
+[root@host1 images]# 
+[root@host2 images]# virt-resize --expand /dev/sda4 $GOLDEN_IMAGE $MY_COPY
+[   0.0] Examining rhel-baseos-9.0-x86_64-kvm.qcow2
+**********
+
+Summary of changes:
+
+/dev/sda1: This partition will be left alone.
+
+/dev/sda2: This partition will be left alone.
+
+/dev/sda3: This partition will be left alone.
+
+/dev/sda4: This partition will be resized from 9.3G to 29.3G.  The 
+filesystem xfs on /dev/sda4 will be expanded using the ‘xfs_growfs’ 
+method.
+
+**********
+[   6.9] Setting up initial partition table on guest2.qcow2
+[  21.8] Copying /dev/sda1
+[  21.8] Copying /dev/sda2
+[  22.0] Copying /dev/sda3
+[  22.6] Copying /dev/sda4
+ 100% ⟦▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒⟧ 00:00
+[  31.9] Expanding /dev/sda4 using the ‘xfs_growfs’ method
+
+Resize operation completed with no errors.  Before deleting the old disk, 
+carefully check that the resized disk boots and works correctly.
+[root@host2 images]# 
+----
+
+The file is much bigger now, but still a fraction of its defined size. 
+
+[source,shell]
+----
+[root@host2 images]# ls -lh guest2.qcow2 
+-rw-------. 1 root root 1.2G Jul 31 15:05 guest2.qcow2
+[root@host2 images]# 
+----
+
+
+== customize the new image  
+
+This image has no root password and no other accounts, so we can't log in.
+Change this and a few other things with the ``virt-customize`` command.
+
+Create your own root password and store it in a password manager. 
+
+Customize the image. 
+
+[source,shell]
+----
+virt-customize \
+  --add            guest2.qcow2  \
+  --root-password  password:'x%5ckA-1'  \
+  --hostname       guest2.lab.example.com  \
+  --timezone       'Europe/London'  \
+  --selinux-relabel
+----
+
+The _virt-customize_ command takes a few seconds. 
+It prints an activity log, along with seconds elapsed.
+
+[source,shell]
+----
+[nick@host ~]$ virt-customize --add guest2.qcow2 --root-password password:'x%5ckA-1' --hostname guest2.lab.example.com   --timezone       'Europe/London'  --selinux-relabel
+[   0.0] Examining the guest ...
+[   4.6] Setting a random seed
+[   4.6] Setting the machine ID in /etc/machine-id
+[   4.6] Setting the hostname: guest2.lab.example.com
+[   4.6] Setting the timezone: Europe/London
+[   4.7] Setting passwords
+[   5.9] SELinux relabelling
+[  18.3] Finishing off
+[nick@host ~]$ 
+----
+
+This new QCOW image file is ready for use. 
+
+
+== write a script
+
+Use the root account. 
+
+[source,shell]
+----
+[nick@host1 ~]$ sudo su -
+[sudo] password for nick: 
+[root@host1 ~]# 
+----
+
+Use the libvirt directory. 
+This directory holds a few scripts used to create the libvirt networks. 
+
+[source,shell]
+....
+[root@host1 ~]# cd libvirt
+[root@host1 libvirt]# 
+....
+
+Create a shell script to hold the commands. 
+
+[source,shell]
+....
+[root@host1 libvirt]# vim vol-guest2-build.sh
+[root@host1 libvirt]# 
+....
+
+Add content. 
+The script exits if the file already exists. 
+This check makes it safer to run. 
+
+[source,shell]
+....
+GOLDEN_IMAGE=rhel-baseos-9.0-x86_64-kvm.qcow2 
+MY_COPY=guest2.qcow2
+SIZE=30G
+cd  /var/lib/libvirt/images/
+if [ -f $MY_COPY ]; then 
+  echo "file $MY_COPY already exists"
+  exit 1
+fi
+virsh vol-create-as --format qcow2 images $MY_COPY $SIZE 
+virt-resize --expand /dev/sda4 $GOLDEN_IMAGE $MY_COPY
+virt-customize \
+  --add            guest2.qcow2  \
+  --root-password  password:'x%5ckA-1'  \
+  --hostname       guest2.lab.example.com  \
+  --timezone       'Europe/London'  \
+  --selinux-relabel
+....
+
+Save your work. 
+
+Set the executable flag. 
+
+[source,shell]
+----
+[root@host2 libvirt]# chmod 754 vol-guest2-build.sh 
+[root@host2 libvirt]# 
+----
+
+Run the script. 
+
+If the volume already exists, the script exits with return code 1. 
+
+[source,shell]
+----
+[root@host2 libvirt]#  ./vol-guest2-build.sh 
+file guest2.qcow2 already exists
+[root@host2 libvirt]# 
+[root@host2 libvirt]# echo $?
+1
+[root@host2 libvirt]# 
+----
+
