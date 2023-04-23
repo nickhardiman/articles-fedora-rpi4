@@ -1,0 +1,81 @@
+= check host resources
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 30-01-2023
+
+Examine host resources (the physical machine). 
+Make a few assumptions about what the guests (virtual machines) need. 
+
+
+
+== host resources 
+
+
+The hypervisor takes CPU, memory and storage resources from the host machine and gives them to virtual machines. 
+
+These resources can be overprovisioned. 
+The hypervisor can promise to give more resources than it has, expecting virtual machines will not need to take all the resources they have been allocated. 
+It's like a budget airline selling more tickets for a flight than there are seats on a plan, expecting some passengers won't turn up.
+
+
+
+=== host CPU 
+
+CPUs can be overprovisioned. 
+
+* *ssume an overprovision of 10X is OK.
+
+4 CPUs x 10 = 40.
+
+
+=== host memory 
+
+Memory is allocated when needed. 
+For example, three idle machines, each specified with 2GB memory, probably use 3GB, not 6GB.
+Memory can be overprovisioned.  
+Hard to calculate. 
+Overprovisioning is riskier than CPU - Memory is protected by the OOM killer.
+
+Assume the host platform needs 1GB for OS. 
+There is no Gnome desktop, so no need to reserve 1GB.
+Reserve 1GB for hypervisor work. 
+
+
+!!! wrong box 
+
+This is top
+These three do not take up 32GB (14 + 14 + 4).
+Satellite is installed on satellite1, but no applications have yet been installed on the other two. 
+
+[source,shell]
+----
+Tasks: 293 total,   1 running, 292 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.7 us,  0.4 sy,  0.0 ni, 97.8 id,  0.0 wa,  0.1 hi,  0.0 si,  0.0 st
+MiB Mem :  31884.5 total,  18644.8 free,   8864.9 used,   4374.7 buff/cache
+MiB Swap:  16088.0 total,  16088.0 free,      0.0 used.  22474.2 avail Mem 
+
+    PID USER  PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                     
+   4281 nick  20   0   16.7g   6.2g  20092 S  14.3  19.9   6:10.69 qemu-kvm                                                    
+   5546 nick  20   0   14.1g 817552  20180 S   0.3   2.5   0:13.51 qemu-kvm                                                    
+   5611 nick  20   0 5568936 861792  20080 S   0.3   2.6   0:48.24 qemu-kvm  
+...  
+----
+
+
+=== host storage 
+
+Disk is not overprovisioned. 
+It can be, but to lessen the strain on the CPU, disks are provisioned in full. 
+No sparse disks, no compression, no encryption.
+
+Assumptions 
+
+* The host platform needs 5G. 
+* The guests need 2G each. 
+* Images take up 4G.
+* The USB drive is 32G.
+
+5G + (2G * 4 guests) + 4G = 17G, which  fits in the 32GB USB drive. 
+
+
+

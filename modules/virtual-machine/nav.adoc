@@ -1,2 +1,6 @@
 * xref:index.adoc[]
+** xref:libvirt-vm-plan.adoc[]
+** xref:host-resources.adoc[]
+** xref:volume-copy.adoc[]
+
 

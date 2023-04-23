@@ -3,5 +3,41 @@ Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 01-01-2021
 
-I'm in the process of experimenting.
+
+One big physical machine can run many small virtual machines. 
+Add three virtual machines to this physical machine. 
+
+== workstation, host and guests
+
+
+.workstation, host and guests  
+....
+.-----------------.      .------------------------------------------------------.     
+|                 |      |                                                      |    
+|   workstation   |      |   host1                                              |    
+|                 +----->|                                                      |    
+|                 |      |   +------------+   +------------+   +------------+   |
+|                 |      |   |            |   |            |   |            |   |
+|                 |      |   |  guest1    |   |  guest2    |   |  guest3    |   |
+|                 |      |   |            |   |            |   |            |   |
+|                 |      |   +------------+   +------------+   +------------+   |
+|                 |      |                                                      |    
+.-----------------.      .------------------------------------------------------.  
+....
+
+
+
+== guest virtual hardware 
+
+KVM, QEMU and libvirt make virtualization work. 
+
+* https://www.linux-kvm.org/page/Main_Page[Linux KVM] is the engine that makes virtualization work on RHEL 8. 
+* https://www.qemu.org/[QEMU] is a machine emulator. 
+QEMU handles hardware emulation for virtual machines.
+* The https://libvirt.org/[libvirt] project provides a virtualization management system. 
+It's used by RHV (Red Hat Virtualization), Openstack, and even the latest Openshift.
+
+
+* QEMU machine type is pc-q35, architecture is x86_64 - run `virsh dumpxml guest1 | grep machine`
+* some machines are underspec'd compared to system requirements - satellite and capsule memory
 

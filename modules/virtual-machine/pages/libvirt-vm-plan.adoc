@@ -1,0 +1,70 @@
+= plan the virtual machines 
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 23-04-2023
+
+
+
+[source,shell]
+....
++-------------------------------------------+
+|                      rpi4.home            |
+|                  192.168.1.2   +--+-------+---(home network) 
+|                                   |       |
+|               linux bridge pubbr0 |       |   
+|           libvirt network public0 |       |   
+|                    192.168.1.0/24 |       |   
+|                                   |       |
+|  +-----------------------------+  |       |
+|  |                   dev0.home |  |       |
+|  |               192.168.1.123 +--+       |   
+|  |                             |  |       |
+|  +-----------------------------+  |       |
+|                                   +       |
+|                                       +   |
+|                  linux bridge privbr0 |   |   
+|              libvirt network private0 |   |   
+|                      192.168.40.0/24  |   |   
+|                                       |   |
+|  +-----------------------------+      |   |
+|  |        dev1.lab.example.com |      |   |
+|  |                192.168.40.2 +------+   |
+|  |                             |      |   |
+|  +-----------------------------+      |   |
+|                                       |   |
+|  +-----------------------------+      |   |
+|  |       ipsal.lab.example.com |      |   |
+|  |                192.168.40.3 +------+   |
+|  |                             |      |   |
+|  +-----------------------------+      |   |
+|                                       +   |
++-------------------------------------------+
+....
+
+
+== public0 
+
+Machines rpi4 and dev0 are connected to public0.  
+You can get to these machines from the workstation, to view web pages, send mail and so on. 
+
+IP addresses are assigned by the home network. 
+They are dynamic addresses, subject to change.  
+I have a home router provided by my ISP, which has a built-in DHCP server. 
+This DHCP server dishes out IPv4 addresses in the range 192.168.1.0/24.
+The rpi4 is given 192.168.1.2 and dev0 gets 192.168.1.123 here, but the dHCP server can pick any IP address from its pool.
+
+The virtual machine guest1 is connected to  bridge pubbr0 - it acts as a gateway between the  guests and the outside world. 
+
+== private0
+
+Two machines are connected to private0 - dev1 and ipsal. 
+These are protected.
+You can SSH to these machines from rpi4. 
+You can also SSH to these machines from the workstation, if a route and gateway are added to the workstation's network config.
+On a Mac, the command to do this is `sudo route add -net 192.168.40.0/24 192.168.1.2` 
+
+IP addresses are defined when building the guests. 
+They are static addresses which don't change. 
+
+It's good for security, but bad for laziness because work is required to make these hidden machines useful. 
+
