@@ -1,0 +1,179 @@
+= create dev0 using the KVM image
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 14-01-2021
+
+!!! first-run and cloud-init issues
+https://fedoramagazine.org/setting-up-a-vm-on-fedora-server-using-cloud-images-and-virt-install-version-3/
+
+
+Tell libvirt to create the _dev0_ virtual machine. 
+
+Use the ready-made _dev0_ disk image. 
+The _dev0_ disk image is a customized copy of the golden image.
+
+
+== create the libvirt domain 
+
+Create a VM using the ready-made _dev0_ disk image. 
+
+There are two ways of doing this. 
+
+* use XML config 
+* use the virt-install command
+
+== use XML config 
+
+A new VM can be created using a command like ``virsh define my-machine.xml``, 
+similar to the way a storage pool can be created using ``virsh pool-define storage-pool.xml``.
+
+The XML configuration is easy to export from a machine that has already been created, but tricky to build from scratch. 
+It's easier to use the ``virt-install`` command to do the hard work, then copy its XML.
+
+
+== write a virt-install script
+
+This ``virt-install`` command is pretty long, so it's split over many lines to make it a little clearer. 
+And the values are parameterized to make them clearer, too.  
+
+There are plenty of commands to run as root here. 
+
+Use the root account. 
+
+[source,shell]
+----
+[nick@rpi4 ~]$ sudo su -
+[sudo] password for nick: 
+[root@rpi4 ~]# 
+----
+
+Use the libvirt directory. 
+This directory holds a few scripts used to create the libvirt networks. 
+
+[source,shell]
+....
+[root@rpi4 ~]# cd libvirt
+[root@rpi4 libvirt]# 
+....
+
+Create a shell script to hold the commands. 
+
+[source,shell]
+....
+[root@rpi4 libvirt]# touch vm-dev0-add.sh
+[root@rpi4 libvirt]# chmod 754 vm-dev0-add.sh
+[root@rpi4 libvirt]# vim vm-dev0-add.sh
+....
+
+Add content. 
+Copy and paste the variables into the file. 
+
+This is a little different from the list for guest1. 
+This specifies bridges, not libvirt networks. 
+It also specifies image pool rather than path to the image file. 
+[source,bash]
+----
+HOST=dev0
+FQDN=$HOST.home
+CPUS=1
+MEMORY=1024
+POOL=images
+VOLUME=$FQDN.qcow2
+OS_VARIANT=fedora37
+IF1_MAC=52:54:00:40:00:02
+IF1_BRIDGE=pubbr0
+----
+
+Copy and paste the virt-install command into the file. 
+
+
+[source,bash]
+----
+echo before -----------------------
+virsh list --all
+echo add -----------------------
+virt-install \
+  --name="$FQDN" \
+  --vcpus=$CPUS \
+  --memory=$MEMORY \
+  --disk="vol=$POOL/$VOLUME"  \
+  --osinfo="$OS_VARIANT" \
+  --network="bridge:${IF1_BRIDGE},mac=$IF1_MAC"   \
+  --boot="uefi,hd,menu=on" \
+  --import   \
+  --noautoconsole
+echo after -----------------------
+virsh list --all
+----
+
+Here's an explanation of what's going on. 
+
+* --name sets the name that libvirt uses (not the OS hostname). 
+* --vcpus, --memory, --disk - The next three options add resources - 1 CPU, 2048MiB memory and a 10GiB disk.
+* --boot sets the firmware -   UEFI rather than the older BIOS.
+* --os-variant sets up some default values. 
+The command ``osinfo-query os`` lists all the choices. 
+* --network defines the ethernet interface and which libvirt network it's connected to.
+* --import - use the disk to boot the new VM. 
+* --noautoconsole - when the virt-install command kicks off the build of the VM, don't hang around and connect to the console. 
+That's done as a seperate step. 
+
+Read `man virt-install` for all the options (and there are a truck-load). 
+The virt-install tool has a lot of default settings, so many are set automatically. 
+There is no need to specify options like `--connect qemu:///system` for the hypervisor and `--graphics spice` for a graphical desktop. 
+
+Run the script. 
+
+[source,shell]
+----
+[root@host2 libvirt]# ./vm-dev0-add.sh 
+
+Starting install...
+Domain creation completed.
+[root@host2 libvirt]# 
+----
+
+libvirt adds XML configuration 
+
+Now there is a VM.
+
+[source,shell]
+----
+[root@rpi4 ~]# virsh list --all
+ Id   Name     State
+------------------------
+ 1    dev0   running
+
+[root@rpi4 ~]# 
+----
+
+
+
+== problems? delete the VM
+
+Store the commands to create this libvirt network in a file. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch vm-dev0-delete.sh
+[root@rpi4 libvirt]# chmod 754 vm-dev0-delete.sh
+[root@rpi4 libvirt]# vim vm-dev0-delete.sh
+----
+
+Add this content. 
+
+[source,bash]
+....
+echo before -----------------------
+virsh list --all
+echo delete -----------------------
+HOST=dev0.home
+virsh destroy $HOST
+virsh undefine --nvram $HOST 
+# this deletes the storage volume
+#virsh vol-delete $HOST.qcow2 --pool images
+echo after -----------------------
+virsh list --all
+....

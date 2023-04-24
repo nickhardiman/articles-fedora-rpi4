@@ -2,5 +2,6 @@
 ** xref:libvirt-vm-plan.adoc[]
 ** xref:host-resources.adoc[]
 ** xref:volume-copy.adoc[]
+** xref:dev0-virt-install.adoc[]
 
 

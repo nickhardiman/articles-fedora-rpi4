@@ -6,6 +6,7 @@ Nick Hardiman
 
 Create a new storage volume, _dev0.home.qcow2_.
 Base it on the ready-made KVM image, Fedora-Server-KVM-38-1.6.aarch64.qcow2. 
+
 This KVM image acts as a base image, or template, from which we can make many more images. 
 The original base image - the template that we copy - is called a golden image, after https://en.wikipedia.org/wiki/Mastering_(audio)[master audio] recordings. Which were, ironically, never gold. 
 
@@ -31,127 +32,23 @@ An alternative process is a _fresh install_, where all packages are  installed  
 The _guest1_ VM is a fresh install, using a kickstart file to automate the process. 
 
 
-== create an empty qcow2 image 
-
-Copy the QCOW image file.  
-Don't use this original file for creating a machine. 
-It can remain as the backup file. 
-
-First create an empty qcow2 image file. 
-The command _virsh vol-create-as_ needs a pool name, the new file name and how big the volume should be. 
-If you can't remember your pool name, run _virsh pool-list_ to check.
-
-Use the root account. 
-
-[source,shell]
-----
-[nick@host2 ~]$ sudo su -
-[sudo] password for nick: 
-[root@host2 ~]# 
-[root@host2 ~]# cd  /var/lib/libvirt/images/
-[root@host2 images]# 
-----
-
-Create a file in qcow2 format. 
-
-[source,shell]
-----
-[root@host1 images]# MY_COPY=guest2.qcow2
-[root@host1 images]# SIZE=30G
-[root@host1 images]# virsh vol-create-as --format qcow2 images $MY_COPY $SIZE
-Vol guest2 created
-
-[root@host1 images]# 
-----
-
-== check the file size 
-
-This big 30G volume is compressed down into a tiny file. 
-This is called a sparse volume. 
-The whole 30 GiB is not allocated now - space is added later, when it is required.
-
-
-[source,shell]
-----
-[root@host1 images]# ls -lh $MY_COPY
--rw-------. 1 root root 193K Feb 24 19:40 guest2.qcow2
-[root@host1 images]# 
-----
-
-== check libvirt's storage pool
-
-It doesn't take long for libvirt to notice the new file and add config to its volume inventory. 
-
-List libvirt's config with this _virsh vol-info_ command. 
-
-[source,shell]
-----
-[root@host2 images]# virsh vol-info guest2.qcow2 images
-Name:           guest2.qcow2
-Type:           file
-Capacity:       30.00 GiB
-Allocation:     196.00 KiB
-
-[root@host2 images]# 
-----
-
-If the new file isn't there, try running `virsh pool-refresh images`.
-
 
 
 == copy the golden image
 
-Fill up the new volume using the _virt_resize_ command. 
-Expand the root filesystem to use the extra space. 
 
-The _virt_resize_ utility doesn't actually resize one file in-place - it reads one file and overwrites a second file. 
-Virt_resize expands the volume in the second file while it's copying.
+!!! cp or clone? 
 
-Libvirt does come with a volume copying command, _virsh vol-clone_. It can make a new copy, but it can't change its size. 
+Libvirt does come with a volume copying command, _virsh vol-clone_. 
 
-[source,shell]
-----
-[root@host1 images]# MY_COPY=guest2.qcow2
-[root@host1 images]# GOLDEN_IMAGE=rhel-baseos-9.0-x86_64-kvm.qcow2 
-[root@host1 images]# 
-[root@host2 images]# virt-resize --expand /dev/sda4 $GOLDEN_IMAGE $MY_COPY
-[   0.0] Examining rhel-baseos-9.0-x86_64-kvm.qcow2
-**********
-
-Summary of changes:
-
-/dev/sda1: This partition will be left alone.
-
-/dev/sda2: This partition will be left alone.
-
-/dev/sda3: This partition will be left alone.
-
-/dev/sda4: This partition will be resized from 9.3G to 29.3G.  The 
-filesystem xfs on /dev/sda4 will be expanded using the ‘xfs_growfs’ 
-method.
-
-**********
-[   6.9] Setting up initial partition table on guest2.qcow2
-[  21.8] Copying /dev/sda1
-[  21.8] Copying /dev/sda2
-[  22.0] Copying /dev/sda3
-[  22.6] Copying /dev/sda4
- 100% ⟦▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒⟧ 00:00
-[  31.9] Expanding /dev/sda4 using the ‘xfs_growfs’ method
-
-Resize operation completed with no errors.  Before deleting the old disk, 
-carefully check that the resized disk boots and works correctly.
-[root@host2 images]# 
-----
-
-The file is much bigger now, but still a fraction of its defined size. 
+virsh vol-clone Fedora-Server-KVM-38-1.6.aarch64.qcow2 dev1.home.qcow2 --pool images
 
 [source,shell]
 ----
-[root@host2 images]# ls -lh guest2.qcow2 
--rw-------. 1 root root 1.2G Jul 31 15:05 guest2.qcow2
-[root@host2 images]# 
+[root@rpi4 images]# cp Fedora-Server-KVM-38-1.6.aarch64.qcow2 dev0.home.qcow2
+[root@rpi4 images]# 
 ----
+
 
 
 == customize the new image  
@@ -166,9 +63,9 @@ Customize the image.
 [source,shell]
 ----
 virt-customize \
-  --add            guest2.qcow2  \
+  --add            dev0.home.qcow2  \
   --root-password  password:'x%5ckA-1'  \
-  --hostname       guest2.lab.example.com  \
+  --hostname       dev0.home  \
   --timezone       'Europe/London'  \
   --selinux-relabel
 ----
@@ -178,94 +75,178 @@ It prints an activity log, along with seconds elapsed.
 
 [source,shell]
 ----
-[nick@host ~]$ virt-customize --add guest2.qcow2 --root-password password:'x%5ckA-1' --hostname guest2.lab.example.com   --timezone       'Europe/London'  --selinux-relabel
+[root@rpi4 images]# virt-customize \
+  --add            dev0.home.qcow2  \
+  --root-password  password:'x%5ckA-1'  \
+  --hostname       dev0.home  \
+  --timezone       'Europe/London'  \
+  --selinux-relabel
 [   0.0] Examining the guest ...
-[   4.6] Setting a random seed
-[   4.6] Setting the machine ID in /etc/machine-id
-[   4.6] Setting the hostname: guest2.lab.example.com
-[   4.6] Setting the timezone: Europe/London
-[   4.7] Setting passwords
-[   5.9] SELinux relabelling
-[  18.3] Finishing off
-[nick@host ~]$ 
+[  26.5] Setting a random seed
+[  26.7] Setting the machine ID in /etc/machine-id
+[  26.7] Setting the hostname: dev0.home
+[  26.9] Setting the timezone: Europe/London
+[  27.1] Setting passwords
+[  34.3] SELinux relabelling
+[ 101.1] Finishing off
+[root@rpi4 images]#
 ----
 
 This new QCOW image file is ready for use. 
 
 
-== write a script
+== check libvirt's storage pool
 
-Use the root account. 
+It doesn't take long for libvirt to notice the new file and add config to its volume inventory. 
+
+List libvirt's config with this _virsh vol-info_ command. 
 
 [source,shell]
 ----
-[nick@host1 ~]$ sudo su -
-[sudo] password for nick: 
-[root@host1 ~]# 
+[root@rpi4 images]# virsh vol-info dev0.home.qcow2 images
+Name:           dev0.home.qcow2
+Type:           file
+Capacity:       7.00 GiB
+Allocation:     594.32 MiB
+
+[root@rpi4 images]# 
 ----
+
+If the new file isn't there, try running `virsh pool-refresh images`.
+
+
+== store create commands in a script
+
+The commands have already been run, but there is no record of what was done. 
+
+Store the commands to create this QEMU KVM volume file. 
 
 Use the libvirt directory. 
 This directory holds a few scripts used to create the libvirt networks. 
+Create a new executable file. 
 
 [source,shell]
-....
-[root@host1 ~]# cd libvirt
-[root@host1 libvirt]# 
-....
+----
+[root@rpi4 images]# cd
+[root@rpi4 ~]# 
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch vol-dev0-add.sh
+[root@rpi4 libvirt]# chmod 754 vol-dev0-add.sh
+[root@rpi4 libvirt]# vim vol-dev0-add.sh
+----
 
-Create a shell script to hold the commands. 
+Add this content. 
+The script adds file checks, to make it safer to run. 
 
-[source,shell]
+[source,bash]
 ....
-[root@host1 libvirt]# vim vol-guest2-build.sh
-[root@host1 libvirt]# 
-....
+# files
+GOLDEN_IMAGE=Fedora-Server-KVM-38-1.6.aarch64.qcow2
+MY_COPY=dev0.home.qcow2
+POOL_DIR=/var/lib/libvirt/images
 
-Add content. 
-The script exits if the file already exists. 
-This check makes it safer to run. 
-
-[source,shell]
-....
-GOLDEN_IMAGE=rhel-baseos-9.0-x86_64-kvm.qcow2 
-MY_COPY=guest2.qcow2
-SIZE=30G
-cd  /var/lib/libvirt/images/
-if [ -f $MY_COPY ]; then 
-  echo "file $MY_COPY already exists"
+# check
+cd  $POOL_DIR
+if [ ! -f $GOLDEN_IMAGE ]; then
+  echo "$POOL_DIR/$GOLDEN_IMAGE does not exist"
   exit 1
 fi
-virsh vol-create-as --format qcow2 images $MY_COPY $SIZE 
-virt-resize --expand /dev/sda4 $GOLDEN_IMAGE $MY_COPY
+if [ -f $MY_COPY ]; then
+  echo "$POOL_DIR/$MY_COPY already exists"
+  exit 2
+fi
+
+# create
+echo before -----------------------
+virsh vol-list images
+echo add -----------------------
+cp  $GOLDEN_IMAGE  $MY_COPY
 virt-customize \
-  --add            guest2.qcow2  \
+  --add            $MY_COPY  \
   --root-password  password:'x%5ckA-1'  \
-  --hostname       guest2.lab.example.com  \
+  --hostname       dev0.home  \
   --timezone       'Europe/London'  \
   --selinux-relabel
+echo after -----------------------
+virsh pool-refresh images
+virsh vol-list images
 ....
 
-Save your work. 
-
-Set the executable flag. 
-
-[source,shell]
-----
-[root@host2 libvirt]# chmod 754 vol-guest2-build.sh 
-[root@host2 libvirt]# 
-----
-
+Check your work. 
 Run the script. 
 
 If the volume already exists, the script exits with return code 1. 
 
 [source,shell]
 ----
-[root@host2 libvirt]#  ./vol-guest2-build.sh 
-file guest2.qcow2 already exists
-[root@host2 libvirt]# 
-[root@host2 libvirt]# echo $?
-1
-[root@host2 libvirt]# 
+[root@rpi4 libvirt]#  ./vol-dev0-add.sh 
+/var/lib/libvirt/images/dev0.home.qcow2 already exists
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# echo $?
+2
+[root@rpi4 libvirt]# 
 ----
 
+
+== problems? delete guest2's new volume 
+
+If things are going wrong with the new image, remove this new file and start again.
+Delete the file with _virsh vol-delete_. 
+
+Don't use the bash command _rm_ because it removes the file and leaves behind libvirt's configuration about this file. 
+The _vol-delete_ command removes both the file and libvirt's config. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# MY_COPY=dev0.home.qcow2
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# virsh vol-delete $MY_COPY --pool images
+Vol dev0.home.qcow2 deleted
+
+[root@rpi4 libvirt]# 
+----
+
+Check. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# virsh vol-list images
+ Name                                     Path
+----------------------------------------------------------------------------------------------------------
+ Fedora-Server-38-1.6-aarch64-CHECKSUM    /var/lib/libvirt/images/Fedora-Server-38-1.6-aarch64-CHECKSUM
+ Fedora-Server-dvd-aarch64-38-1.6.iso     /var/lib/libvirt/images/Fedora-Server-dvd-aarch64-38-1.6.iso
+ Fedora-Server-KVM-38-1.6.aarch64.qcow2   /var/lib/libvirt/images/Fedora-Server-KVM-38-1.6.aarch64.qcow2
+ fedora.gpg                               /var/lib/libvirt/images/fedora.gpg
+
+[root@rpi4 libvirt]# 
+----
+
+
+== store delete commands in a script
+
+The commands have already been run, but there is no record of what was done. 
+
+Store the commands to create this libvirt network in a file. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cd libvirt/
+[root@rpi4 libvirt]# 
+[root@rpi4 libvirt]# touch vol-dev0-delete.sh
+[root@rpi4 libvirt]# chmod 754 vol-dev0-delete.sh
+[root@rpi4 libvirt]# vim vol-dev0-delete.sh
+----
+
+Add this content. 
+
+[source,bash]
+....
+echo before -----------------------
+virsh vol-list images
+echo delete -----------------------
+MY_COPY=dev0.home.qcow2
+virsh vol-delete $MY_COPY --pool images
+echo after -----------------------
+virsh vol-list images
+....

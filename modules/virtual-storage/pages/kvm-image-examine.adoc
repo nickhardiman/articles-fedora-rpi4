@@ -169,6 +169,11 @@ Name             Type        VFS   Label    Size        Parent
 
 The root file system is in _/dev/sda3_, which is about 5 GiB in size (take 6064963584 bytes,  divide by 1024 for KiB, and divide by 1024 again for MiB, and finally divide by 1024 for GiB. Try running `echo "6064963584 / 1024 / 1024 / 1024" | bc` on the CLI). 
 
+
+== compression 
+
+How does a 7 GiB volume fit into file that's less than 1 GiB? 
+
 The QCOW2 file is a fraction the size of this partition. 
 It's only 566M (Mebibytes), which is a tiny fraction of 5G. 
 A https://en.wikipedia.org/wiki/Qcow[QCOW] file is thnly provisioned. 
@@ -181,3 +186,19 @@ It is compressed to save space.
 [root@rpi4 ~]# 
 ----
 
+The qemu-img command gives more information about compression. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# qemu-img info /var/lib/libvirt/images/dev0.home.qcow2 
+image: /var/lib/libvirt/images/dev0.home.qcow2
+file format: qcow2
+virtual size: 7 GiB (7516192768 bytes)
+disk size: 628 MiB
+cluster_size: 65536
+Format specific information:
+    compat: 0.10
+    compression type: zlib
+    refcount bits: 16
+[root@rpi4 libvirt]# 
+----
