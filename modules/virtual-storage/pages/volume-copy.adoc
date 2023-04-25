@@ -5,15 +5,15 @@ Nick Hardiman
 
 
 Create a new storage volume, _dev0.home.qcow2_.
-Base it on the ready-made KVM image, Fedora-Server-KVM-38-1.6.aarch64.qcow2. 
 
+Base it on the ready-made KVM image, Fedora-Server-KVM-38-1.6.aarch64.qcow2. 
 This KVM image acts as a base image, or template, from which we can make many more images. 
 The original base image - the template that we copy - is called a golden image, after https://en.wikipedia.org/wiki/Mastering_(audio)[master audio] recordings. Which were, ironically, never gold. 
 
 This is the procedure for making a customized copy. 
 After this, we can build a new virtual machine using this copy.
 
-* Install utilities on host1. 
+* Install utilities on host. 
 * Examine the golden image. 
 * Create an empty qcow2 image. 
 * Copy the golden image. 
@@ -63,32 +63,55 @@ Customize the image.
 [source,shell]
 ----
 virt-customize \
-  --add            dev0.home.qcow2  \
+  --add            $MY_COPY  \
   --root-password  password:'x%5ckA-1'  \
   --hostname       dev0.home  \
   --timezone       'Europe/London'  \
+  --uninstall      initial-setup  \
+  --ssh-inject     'root:string:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDS9WOAwF/q1dKoHt+CqI1HTmEUNseC/fn3eiDBK/fd3MufeXSBuZzh/jSvM1fV5sCygGm+eblteu6EyCW9ozllsv4tB5SgPzDiiz3DqP4hHqpQ6Vr/2UAPx+549RZ/n/hij6DB15s/IzXvzId4yZTOchsmKUASFsHgfFEXGl77RfH1eEUxcTQ+mte5Uv7DXFt7gk5t9aB40yRGIwYACxesZvjrdcxPiWSvjFt345mYkbYlmsdHEr/zNVhrgV4msD7TedFzDg6NZ85Fze+C2lqKLd/O9BBpVkKkiALQaIHqMotysldAr+IjCj9xC8yqiFfb3ll+ra089JWeIbj83qcUHDUGHdxr8u4J6/zURlJSaGnlt2mVo6kN8KAYTR92B2d0VYBjTngzeo7Rciqw5pZXWm1pwFSBxhaYzeEoHshCxa0PN+D0H1IzVPveqK/pPNoF7AVBhccRoCOx24pU7DGC/gJo6RM52yDgofnr2i2oSjB8ZsJ0WFb2Gq36mrw5dvk= root@rpi4.lab.example.com'  \
   --selinux-relabel
 ----
 
-The _virt-customize_ command takes a few seconds. 
+
+=== options 
+
+*  --add $MY_COPY  - 
+*  --root-password  password:'x%5ckA-1'  - 
+*  --hostname dev0.home  - 
+*  --timezone 'Europe/London'  - 
+*  --uninstall initial-setup  - A setup agent called 
+https://github.com/rhinstaller/initial-setup[initial-setup] 
+usually asks a few questions when the new VM first starts. 
+We don't want this. 
+*  --ssh-inject 'root:string:ssh-rsa AAA...dvk= root@rpi4.lab.example.com'  - 
+*  --selinux-relabel - 
+
+A setup agent called 
+https://github.com/rhinstaller/initial-setup[initial-setup] 
+usually asks a few questions when the new VM first starts. 
+We don't want this. 
+
+
+=== activity log
+
+Running the _virt-customize_ command takes a minute or two. 
 It prints an activity log, along with seconds elapsed.
 
 [source,shell]
 ----
 [root@rpi4 images]# virt-customize \
-  --add            dev0.home.qcow2  \
-  --root-password  password:'x%5ckA-1'  \
-  --hostname       dev0.home  \
-  --timezone       'Europe/London'  \
+...
   --selinux-relabel
 [   0.0] Examining the guest ...
-[  26.5] Setting a random seed
-[  26.7] Setting the machine ID in /etc/machine-id
-[  26.7] Setting the hostname: dev0.home
-[  26.9] Setting the timezone: Europe/London
-[  27.1] Setting passwords
-[  34.3] SELinux relabelling
-[ 101.1] Finishing off
+[  27.3] Setting a random seed
+[  27.5] Setting the machine ID in /etc/machine-id
+[  27.5] Setting the hostname: dev0.home
+[  27.7] Setting the timezone: Europe/London
+[  27.8] Uninstalling packages: initial-setup
+[  50.5] SSH key inject: root
+[  61.8] Setting passwords
+[  66.1] SELinux relabelling
+[ 122.9] Finishing off
 [root@rpi4 images]#
 ----
 
@@ -167,6 +190,8 @@ virt-customize \
   --root-password  password:'x%5ckA-1'  \
   --hostname       dev0.home  \
   --timezone       'Europe/London'  \
+  --uninstall      initial-setup  \
+  --ssh-inject     'root:string:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDS9WOAwF/q1dKoHt+CqI1HTmEUNseC/fn3eiDBK/fd3MufeXSBuZzh/jSvM1fV5sCygGm+eblteu6EyCW9ozllsv4tB5SgPzDiiz3DqP4hHqpQ6Vr/2UAPx+549RZ/n/hij6DB15s/IzXvzId4yZTOchsmKUASFsHgfFEXGl77RfH1eEUxcTQ+mte5Uv7DXFt7gk5t9aB40yRGIwYACxesZvjrdcxPiWSvjFt345mYkbYlmsdHEr/zNVhrgV4msD7TedFzDg6NZ85Fze+C2lqKLd/O9BBpVkKkiALQaIHqMotysldAr+IjCj9xC8yqiFfb3ll+ra089JWeIbj83qcUHDUGHdxr8u4J6/zURlJSaGnlt2mVo6kN8KAYTR92B2d0VYBjTngzeo7Rciqw5pZXWm1pwFSBxhaYzeEoHshCxa0PN+D0H1IzVPveqK/pPNoF7AVBhccRoCOx24pU7DGC/gJo6RM52yDgofnr2i2oSjB8ZsJ0WFb2Gq36mrw5dvk= root@rpi4.lab.example.com'  \
   --selinux-relabel
 echo after -----------------------
 virsh pool-refresh images

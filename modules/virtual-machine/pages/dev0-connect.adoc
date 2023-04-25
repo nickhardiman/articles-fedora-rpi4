@@ -1,0 +1,119 @@
+= connect to guest2 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 29-07-2022
+
+There is no way of connecting to dev0 from your workstation. 
+You can SSH from host1, or use the console. 
+
+
+== connect using the console
+
+Connect to the console with the ``virsh console`` command.
+Hit the Enter key kbd:[⏎]  to get the _login_ prompt to appear. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# virsh console dev0.home
+Connected to domain 'dev0.home'
+Escape character is ^] (Ctrl + ])
+
+dev0 login: 
+----
+
+Trying to login over SSH with the password _Password;1_ failed.
+Logging in on the console with the same password succeeds. 
+
+[source,shell]
+----
+guest2 login: root
+Password:  Password;1
+Last failed login: Mon Aug  1 12:38:34 BST 2022 from 192.168.152.1 on ssh:notty
+There was 1 failed login attempt since the last successful login.
+Last login: Sun Jul 31 21:26:19 on ttyS0
+[root@guest2 ~]# 
+----
+
+
+== get the IP address 
+
+The new VM asks the home DHCP server for an IP address. 
+
+One way of finding out what IP address it gets is to check the DHCP leases.
+This usually means figuring out how to query the home router. 
+The IP address might be listed somewhere in the web UI of the home router.
+
+Another way is to list the IP addresses the VM's OS knows about. 
+
+[source,shell]
+----
+[root@dev0 ~]# ip -brief addr
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp1s0           UP             192.168.1.139/24 fdaa:bbcc:ddee:0:f4e8:5036:b06e:3358/64 2a00:23a8:4b47:fc01:5dee:33f1:7cc1:a8ff/64 fe80::2fed:2d28:61a7:c547/64 
+[root@dev0 ~]# 
+----
+
+== disconnect from the console 
+
+That's enough to prove the virtual machine is working OK. 
+
+Disconnect from the console. 
+The disconnection command is 
+kbd:[Ctrl + ++]++ ] 
+
+
+[source,shell]
+----
+^]
+[root@host1 ~]# 
+----
+
+
+== try to connect from the workstation
+
+You can't use SSH (Secure SHell) to connect from your workstation to your new RHEL machine.
+The only account on this machine is root, but trying to connect with the password does not work.
+This failure not because of spelling errors. 
+It's because of SSH daemon config. 
+The root user is not allowed to connect remotely like this. 
+You don't get a message saying you aren't allowed.
+Instead, you get three tries then a _permission denied_ message. 
+
+[source,shell]
+----
+workstation % ssh root@192.168.1.139
+The authenticity of host '192.168.1.139 (192.168.1.139)' can't be established.
+ED25519 key fingerprint is SHA256:Q4NPOTUdFAt5WLkTOci3YGszaWdE6/k+oujXHI975L0.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.139' (ED25519) to the list of known hosts.
+root@192.168.1.139's password: 
+Permission denied, please try again.
+root@192.168.1.139's password: 
+Permission denied, please try again.
+root@192.168.1.139's password: 
+root@192.168.1.139: Permission denied (publickey,gssapi-with-mic,password).
+workstation % 
+----
+
+==  connect from the host
+
+Connecting remotely using an SSH key pair is allowed. 
+
+[source,shell]
+----
+[root@rpi4 libvirt]# ssh root@192.168.1.139
+The authenticity of host '192.168.1.139 (192.168.1.139)' can't be established.
+ED25519 key fingerprint is SHA256:Qz1mSNCg1oGOilrsGdNishcej5l0VyfH6Porm0MFXFc.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.1.139' (ED25519) to the list of known hosts.
+Web console: https://dev0.home:9090/ or https://192.168.1.139:9090/
+
+Last login: Tue Apr 25 19:52:32 2023
+[root@dev0 ~]# 
+[root@dev0 ~]# cat .ssh/authorized_keys 
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDS9WOAwF/q1dKoHt+CqI1HTmEUNseC/fn3eiDBK/fd3MufeXSBuZzh/jSvM1fV5sCygGm+eblteu6EyCW9ozllsv4tB5SgPzDiiz3DqP4hHqpQ6Vr/2UAPx+549RZ/n/hij6DB15s/IzXvzId4yZTOchsmKUASFsHgfFEXGl77RfH1eEUxcTQ+mte5Uv7DXFt7gk5t9aB40yRGIwYACxesZvjrdcxPiWSvjFt345mYkbYlmsdHEr/zNVhrgV4msD7TedFzDg6NZ85Fze+C2lqKLd/O9BBpVkKkiALQaIHqMotysldAr+IjCj9xC8yqiFfb3ll+ra089JWeIbj83qcUHDUGHdxr8u4J6/zURlJSaGnlt2mVo6kN8KAYTR92B2d0VYBjTngzeo7Rciqw5pZXWm1pwFSBxhaYzeEoHshCxa0PN+D0H1IzVPveqK/pPNoF7AVBhccRoCOx24pU7DGC/gJo6RM52yDgofnr2i2oSjB8ZsJ0WFb2Gq36mrw5dvk= root@rpi4.lab.example.com
+[root@dev0 ~]# 
+----
+
