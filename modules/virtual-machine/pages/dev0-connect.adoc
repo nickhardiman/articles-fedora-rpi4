@@ -1,4 +1,4 @@
-= connect to guest2 
+= connect to guest2 as root
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 29-07-2022
@@ -21,8 +21,11 @@ Escape character is ^] (Ctrl + ])
 dev0 login: 
 ----
 
-Trying to login over SSH with the password _Password;1_ failed.
-Logging in on the console with the same password succeeds. 
+Log in on the console with the password defined when making the volume.
+
+* xref:virtual-storage:volume-copy.adoc[]
+
+!!! wrong host
 
 [source,shell]
 ----

@@ -1,0 +1,92 @@
+= update packages with DNF
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 12-01-2023
+
+!!! exactly the same as 
+
+* xref:command-line:dnf-update.adoc[]
+
+
+Update packages with https://en.wikipedia.org/wiki/DNF_(software)[DNF].
+
+This procedure does not upgrade everything. If you are on an older release of Fedora, like 33, you won't end up with Fedora 34. 
+33 is the release number, and changing from one to the next can break things. 
+Upgrading the release from Fedora 33 to Fedora 34 is called a system upgrade, and there are a few ways to do it. You can use DNF to https://docs.fedoraproject.org/en-US/quick-docs/upgrading-fedora-online/[upgrade Fedora from one release to the next].
+
+
+== RPM packages in the installer ISO
+
+Install media don't get updated with the latest packages. 
+That includes the ISO file used to install Fedora. 
+Packages are frequently updated, so the older the ISO file, the more packages there are to install. 
+
+== update 
+
+[source,shell]
+----
+[nick@dev0 ~]$ sudo dnf update
+
+We trust you have received the usual lecture from the local System
+Administrator. It usually boils down to these three things:
+
+    #1) Respect the privacy of others.
+    #2) Think before you type.
+    #3) With great power comes great responsibility.
+
+For security reasons, the password you type will not be visible.
+
+[sudo] password for nick: 
+Last metadata expiration check: 1:52:18 ago on Wed 26 Apr 2023 01:52:30 PM BST.
+Dependencies resolved.
+================================================================================
+ Package                       Arch       Version              Repository  Size
+================================================================================
+Installing:
+ kernel-core                   aarch64    6.2.12-300.fc38      updates     18 M
+Upgrading:
+ ModemManager                  aarch64    1.20.6-1.fc38        updates    1.2 M
+ ModemManager-glib             aarch64    1.20.6-1.fc38        updates    318 k
+ ...
+ whois-nls                     noarch     5.5.16-1.fc38        updates     38 k
+ zchunk-libs                   aarch64    1.3.1-1.fc38         updates     52 k
+Installing dependencies:
+ kernel-modules-core           aarch64    6.2.12-300.fc38      updates     32 M
+
+Transaction Summary
+================================================================================
+Install   2 Packages
+Upgrade  82 Packages
+
+Total download size: 116 M
+Is this ok [y/N]:
+----
+
+Accept keys. 
+DNF's -y option answers the y/N questions for you. 
+
+[source,shell]
+----
+Importing GPG key 0xEB10B464:
+ Userid     : "Fedora (38) <fedora-38-primary@fedoraproject.org>"
+ Fingerprint: 6A51 BBAB BA3D 5467 B617 1221 809A 8D7C EB10 B464
+ From       : /etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-38-aarch64
+Is this ok [y/N]: 
+----
+
+
+
+== reboot if the kernel is updated
+
+Reboot to swap from the current kernel to the new one. 
+
+[source,shell]
+----
+[nick@dev0 ~]$ sudo systemctl reboot
+[sudo] password for nick: 
+[nick@dev0 ~]$ Connection to dev0 closed by remote host.
+Connection to dev0 closed.
+workstation:~ nick$ 
+----
+
+

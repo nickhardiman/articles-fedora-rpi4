@@ -1,7 +1,11 @@
 * xref:index.adoc[]
 ** xref:libvirt-vm-plan.adoc[]
-** xref:host-resources.adoc[]
+** xref:host-resource-estimate.adoc[]
 ** xref:dev0-virt-install.adoc[]
 ** xref:dev0-connect.adoc[]
+** xref:dev0-dnf-update.adoc[]
+** xref:dev0-user.adoc[]
+** xref:dev0-keys.adoc[]
+** xref:host-resource-check.adoc[]
 
 

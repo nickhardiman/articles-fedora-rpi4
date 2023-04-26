@@ -1,0 +1,336 @@
+= add a user 
+Nick Hardiman
+:source-highlighter: highlight.js
+:revdate: 24-02-2023
+
+
+Carry out some first-run sysadmin on the new machine. 
+
+Use the rpi4 CLI.
+
+Use the console to connect.
+Use the root account so the console is accessible. 
+
+If you know the IP address, use SSH. 
+Use the root account so the private key is accessible. 
+This is stored in the .ssh folder on rpi4. 
+
+[source,shell]
+----
+[root@rpi4 ~]# cat /root/.ssh/id_rsa
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZAAAAAAABAAABlwAAAAdzc2gtcn
+NhAAAAAwEAAQAAAYEA0vVjgMBf6tXSqB7fgqiNR0DbHgv3593ogwSv33dzLn3l0gbmc
+4f40rzNX1ebAsoBpvnm5bXruhMglvaM5ZbL+LQeUw4os9w6j+IR6qUOla/9lAD8fueP
+...
+9sEPn/t1mFXSDDpvmLjJfTY47ro449OBLfi3y58lQ75CVnTcF8fhUwv9jPkTzuVRNUm
+gGPyNwGbkQp2DelTZJnKYNzpiEfJX/8FYD/4NQLYnzsok82p8lYzlhJWCV41+neUXj0
+5YZ0WuDSRBG7CZAAAAGXJvb3RAcnBpNC5sYWIuZXXBsZS5jb20B
+-----END OPENSSH PRIVATE KEY-----
+[root@rpi4 ~]# 
+----
+
+Login with the root account. 
+This is the second login, so the /root/.ssh/known_hosts file now contains dev0's key. 
+
+[root@rpi4 ~]# ssh root@192.168.1.234
+Web console: https://dev0.home:9090/ or https://192.168.1.139:9090/
+
+Last login: Tue Apr 25 19:53:16 2023 from 192.168.1.201
+[root@dev0 ~]# 
+----
+
+
+== add another account 
+
+Check for any home directories. 
+None! 
+
+[source,shell]
+....
+[root@dev0 ~]# ls /home/
+[root@dev0 ~]# 
+....
+
+Add a user. 
+Run these commands.
+The guest account can use the same user name as the host user name.
+
+[source,shell]
+....
+NAME=nick
+useradd $NAME
+usermod -a -G wheel $NAME
+echo 'Password;1' | passwd --stdin $NAME
+....
+
+
+[source,shell]
+....
+[root@dev0 ~]# NAME=nick
+[root@dev0 ~]# useradd $NAME
+[root@dev0 ~]# usermod -a -G wheel $NAME
+[root@dev0 ~]# echo 'Password;1' | passwd --stdin $NAME
+Changing password for user nick.
+passwd: all authentication tokens updated successfully.
+[root@dev0 ~]# 
+....
+
+
+== connect with SSH
+
+Disconnect from the console. 
+
+Login with the new account. 
+I typed the password wrong the first time and got the message  
+"There was 1 failed login attempt since the last successful login".
+
+[source,shell]
+....
+[root@rpi4 ~]# ssh nick@192.168.1.139
+nick@192.168.1.139's password: 
+Permission denied, please try again.
+nick@192.168.1.139's password: 
+Web console: https://dev0.home:9090/ or https://192.168.1.139:9090/
+
+Last failed login: Wed Apr 26 15:12:42 BST 2023 from 192.168.1.201 on ssh:notty
+There was 1 failed login attempt since the last successful login.
+[nick@dev0 ~]$ 
+....
+
+Logout
+
+[source,shell]
+....
+[nick@dev0 ~]$ exit
+logout
+Connection to 192.168.1.139 closed.
+[root@rpi4 ~]# 
+....
+
+
+== stop using root
+
+[source,shell]
+....
+[root@rpi4 ~]# exit
+logout
+[nick@rpi4 ~]$ 
+....
+
+
+
+== create a key pair on rpi4 
+
+[nick@rpi4 ~]$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/nick/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/nick/.ssh/id_rsa
+Your public key has been saved in /home/nick/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:abcdefVadheq9vQ4OY7O/XNR/iWack6luQyPigCnO6U nick@rpi4.lab.example.com
+The key's randomart image is:
++---[RSA 3072]---+
+|          .     |
+|       . . .    |
+|      + = .     |
+|     + * .   .  |
+|  . o B S   o.  |
+|   +.+ B+  .+o .|
+|  .o. .* o ++ o.|
+|  E. o= oo*=.  .|
+|  .. = +oo*=    |
++----[SHA256]----+
+[nick@rpi4 ~]$ 
+
+
+== use key-based login 
+
+Copy your public key from the host.
+This makes login easier and safer. 
+
+Copy the public key.
+
+[source,shell]
+....
+[nick@rpi4 ~]$ ssh-copy-id nick@192.168.1.139
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/nick/.ssh/id_rsa.pub"
+The authenticity of host '192.168.1.139 (192.168.1.139)' can't be established.
+ED25519 key fingerprint is SHA256:Qz1mSNCg1oGOilrsGdNishcej5l0VyfH6Porm0MFXFc.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+nick@192.168.1.139's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'nick@192.168.1.139'"
+and check to make sure that only the key(s) you wanted were added.
+
+[nick@rpi4 ~]$ 
+....
+
+SSH from your workstation to the machine. 
+
+[source,shell]
+....
+[nick@rpi4 ~]$ ssh nick@192.168.1.139
+Web console: https://dev0.home:9090/ or https://192.168.1.139:9090/
+
+Last login: Wed Apr 26 15:12:48 2023 from 192.168.1.201
+[nick@dev0 ~]$ 
+....
+
+
+
+== add swap 
+
+Add swap.
+
+[source,shell]
+....
+# Add 4G swap
+# 1024 K in M * 1024 M in G * 4 G = 4194304
+SWAPFILE=/var/cache/swap
+dd if=/dev/zero of=/var/cache/swap bs=1024 count=4194304
+chmod 0600 $SWAPFILE
+# Setup the swap file with the command:
+mkswap $SWAPFILE
+# To enable the swap file immediately but not automatically at boot time:
+swapon $SWAPFILE
+# To enable it at boot time, edit /etc/fstab to include the following entry:
+echo "$SWAPFILE swap swap defaults 0 0" >> /etc/fstab
+....
+
+
+== harden security  
+
+Anyone on the home network can get at this machine, so security is an issue. 
+
+Disable root login. 
+
+* Use the root account. 
+* Edit /etc/ssh/sshd_config.
+* Change PermitRootLogin to no.
+* Restart the service with _systemctl reload sshd.service_
+
+
+== proxy 
+
+
+??? squid? 
+
+Use squid on guest2 
+
+[source,shell]
+....
+[root@guest2 ~]# vi /etc/profile.d/proxy.sh
+export http_proxy=192.168.152.11:3128
+export https_proxy=192.168.152.11:3128
+....
+
+
+== DNS  
+
+[source,shell]
+....
+nmcli con mod System\ eth0 ipv4.dns 192.168.152.11
+nmcli con mod System\ eth0 ipv4.ignore-auto-dns yes
+....
+
+
+== network routing 
+
+!!! not useful
+Not sure what the point of this is. 
+
+[source,shell]
+....
+[root@guest2 ~]# ip route list
+192.168.152.0/24 dev eth0 proto kernel scope link src 192.168.152.100 metric 100 
+[root@guest2 ~]# 
+[root@guest2 ~]# ip route add default via 192.168.152.11 
+[root@guest2 ~]# 
+[root@guest2 ~]# ip route list
+default via 192.168.152.11 dev eth0 
+192.168.152.0/24 dev eth0 proto kernel scope link src 192.168.152.100 metric 100 
+[root@guest2 ~]# 
+....
+
+IP forwarding on guest2 
+
+[source,shell]
+....
+[root@guest2 ~]# cat /proc/sys/net/ipv4/ip_forward
+0
+[root@guest2 ~]# 
+[root@guest2 ~]# sysctl net.ipv4.ip_forward=1
+net.ipv4.ip_forward = 1
+[root@guest2 ~]# 
+....
+
+Check 
+
+[source,shell]
+....
+[root@guest2 ~]# ping -c1 192.168.1.217 # enp1s0 on guest2
+PING 192.168.1.217 (192.168.1.217) 56(84) bytes of data.
+64 bytes from 192.168.1.217: icmp_seq=1 ttl=64 time=0.372 ms
+
+--- 192.168.1.217 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.372/0.372/0.372/0.000 ms
+[root@guest2 ~]# 
+[root@guest2 ~]# ping -c1 192.168.122.1 # pubbr0 bridge on host1
+PING 192.168.122.1 (192.168.122.1) 56(84) bytes of data.
+
+--- 192.168.122.1 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+[root@guest2 ~]# 
+....
+
+delete 
+
+[source,shell]
+....
+ip route delete default via 192.168.152.11
+....
+
+
+
+
+== subscribe 
+
+Use RHSM (Red Hat Subscription Manager) to entitle this machine to Red Hat's services.
+
+* xref:install-subscribe:host1-rhsm-entitlement.adoc[]
+
+[source,shell]
+....
+subscription-manager status
+subscription-manager register  --username <username>  --password <password>
+subscription-manager attach  --pool=1234567890abcdef1234567890abcdef
+....
+
+
+
+== update packages 
+
+The kickstart process registered this machine with Red Hat and entitled it to receive updates. 
+
+[source,shell]
+....
+[root@guest2 ~]# dnf -y update
+...
+[root@guest2 ~]# systemctl reboot
+Connection to guest2 closed by remote host.
+Connection to guest2 closed.
+workstation:~ nick$ 
+....
+
+Wait a minute and log in again. 
+

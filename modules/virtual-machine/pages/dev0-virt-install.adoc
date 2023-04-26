@@ -84,6 +84,7 @@ IF1_MAC=52:54:00:40:00:02
 IF1_BRIDGE=pubbr0
 ----
 
+Add more lines. 
 Copy and paste the virt-install command into the file. 
 
 

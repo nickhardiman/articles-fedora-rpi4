@@ -1,0 +1,106 @@
+= check resource use
+Nick Hardiman 
+:source-highlighter: highlight.js
+:revdate: 21-11-2021
+
+
+VMs can use a lot of resources. 
+Check resource use. 
+How much storage, CPU and memory do these VMs use?
+
+== check resources with the VMs off
+
+Check resources while the machines are shut down. 
+
+[source,shell]
+....
+[root@host1 ~]# virsh list --all
+ Id   Name     State
+-------------------------
+ -    guest1   shut off
+ -    guest2   shut off
+
+[root@host1 ~]# 
+....
+
+Check the memory. 
+Over half the memory is free.
+The swap has not been used at all. 
+
+[source,shell]
+....
+[root@host1 ~]# free
+              total        used        free      shared  buff/cache   available
+Mem:        7961064      484440     5503248        4156     1973376     7367852
+Swap:       3980284           0     3980284
+[root@host1 ~]# 
+....
+
+Check disk space. 
+
+[source,shell]
+....
+[root@host1 ~]# df /
+Filesystem                     1K-blocks     Used Available Use% Mounted on
+/dev/mapper/fedora_fedora-root  15718400 10992788   4725612  70% /
+[root@host1 ~]# 
+....
+
+Check CPU. 
+A load average of 0 means the CPU is doing nothing. 
+A load average of 1 means there is enough work to keep one CPU core working flat out. 
+The Raspberry Pi has four CPU cores, so a load average approaching 4 means the machine is working too hard. 
+
+[source,shell]
+....
+[root@host1 ~]# uptime
+ 21:22:05 up 13:25,  1 user,  load average: 0.05, 0.24, 0.24
+[root@host1 ~]# 
+....
+
+== check resources with the VMs on
+
+Power up the virtual machines. 
+
+[source,shell]
+....
+[root@host1 ~]# virsh start guest1
+Domain guest1 started
+
+[root@host1 ~]# virsh start guest2
+Domain guest2 started
+
+[root@host1 ~]# 
+....
+
+Check memory. 
+More is used QEMU takes some to give to the VMs, and takes some for itself to manage these VMs. 
+QEMU tries to use as little memory as possible. 
+While these two machines are idle, they don't use much extra memory. 
+
+[source,shell]
+....
+[nick@host1 ~]$ free
+              total        used        free      shared  buff/cache   available
+Mem:        7961064     2334392     3359216        4244     2267456     5517812
+Swap:       3980284           0     3980284
+[nick@host1 ~]$ 
+....
+
+Storage stays the same. 
+The 5GB files do not change in size when they are used. 
+This is sometimes called thick-provisioned storage. 
+There is a type of storage called thin-provisioned, which can grow over time. 
+
+Check CPU. 
+The load goes up for a minute while the VMs start. 
+Since the VMs don't have any work to do, the load drops down again. 
+
+[source,shell]
+....
+[nick@host1 ~]$ uptime
+ 22:14:02 up 14:17,  1 user,  load average: 1.13, 0.39, 0.22
+[nick@host1 ~]$ 
+....
+
+

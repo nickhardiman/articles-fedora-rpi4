@@ -1,4 +1,4 @@
-= check host resources
+= estimate resources for VMs
 Nick Hardiman
 :source-highlighter: highlight.js
 :revdate: 30-01-2023
