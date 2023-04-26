@@ -5,7 +5,7 @@
 ** xref:dev0-connect.adoc[]
 ** xref:dev0-dnf-update.adoc[]
 ** xref:dev0-user.adoc[]
-** xref:dev0-keys.adoc[]
+** xref:dev0-ssh-keys.adoc[]
 ** xref:host-resource-check.adoc[]
 
 
